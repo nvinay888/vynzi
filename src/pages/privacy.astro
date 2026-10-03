@@ -1,0 +1,8 @@
+---
+import ProseLayout from '../layouts/ProseLayout.astro';
+import { privacy } from '../content/utility';
+---
+<ProseLayout title={privacy.title} eyebrow={privacy.eyebrow} text={`Status: ${privacy.updated}`} description="How VynziCFO handles personal information submitted through this website.">
+  {privacy.sections.map((s) => <><h2>{s.title}</h2><p>{s.text}</p></>)}
+  <p class="notice">This policy is a draft prepared with the website and is pending legal review.</p>
+</ProseLayout>

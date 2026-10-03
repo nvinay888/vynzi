@@ -1,0 +1,40 @@
+---
+/* Panxo signature: a long statement whose words light up from 25% to full ink as the reader scrolls through it. */
+interface Props { text: string }
+const { text } = Astro.props;
+const words = text.split(' ');
+---
+<section class="section st" data-scrolltext>
+  <div class="container">
+    <p class="st__text">
+      {words.map((w) => <span class="st__w">{w} </span>)}
+    </p>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-scrolltext]').forEach((root) => {
+    const words = [...root.querySelectorAll<HTMLElement>('.st__w')];
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) { words.forEach((w) => w.classList.add('on')); return; }
+    let ticking = false;
+    const update = () => {
+      ticking = false;
+      const r = root.getBoundingClientRect();
+      const vh = innerHeight;
+      // 0 when the block's top reaches 80% of the viewport, 1 when its bottom reaches 45%.
+      const start = vh * 0.8, end = vh * 0.45;
+      const p = Math.min(1, Math.max(0, (start - r.top) / (start - end + r.height * 0.6)));
+      const lit = Math.round(p * words.length);
+      words.forEach((w, i) => w.classList.toggle('on', i < lit));
+    };
+    const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } };
+    addEventListener('scroll', onScroll, { passive: true }); addEventListener('resize', onScroll); update();
+  });
+</script>
+
+<style>
+  .st__text { max-width: 30ch; margin: 0 auto; font-family: var(--font-display); font-weight: 500; font-size: clamp(26px, 3vw, 40px); line-height: 1.25; letter-spacing: -0.01em; }
+  .st__w { color: rgba(11, 31, 77, 0.2); transition: color .35s ease; }
+  .st__w.on { color: var(--ink); }
+  @media (min-width: 900px) { .st__text { max-width: 32ch; } }
+</style>

@@ -1,0 +1,27 @@
+---
+/* Numbered process row (How we work / methodology). */
+interface Props { steps: { title: string; text: string }[]; columns?: 3 | 4 | 5 }
+const { steps, columns = steps.length as 3 | 4 | 5 } = Astro.props;
+---
+<ol class:list={['steps', `steps--${columns}`]}>
+  {steps.map((s, i) => (
+    <li class="step">
+      <span class="step__num">{String(i + 1).padStart(2, '0')}</span>
+      <h4 class="step__title">{s.title}</h4>
+      <p class="step__text">{s.text}</p>
+    </li>
+  ))}
+</ol>
+
+<style>
+  .steps { display: grid; gap: var(--s-6); counter-reset: step; }
+  .steps--3 { grid-template-columns: repeat(3, 1fr); }
+  .steps--4 { grid-template-columns: repeat(4, 1fr); }
+  .steps--5 { grid-template-columns: repeat(5, 1fr); }
+  .step { position: relative; padding: var(--card-pad); padding-top: 20px; border-radius: var(--r-card); background: var(--surface-elevated); box-shadow: var(--shadow-subtle); }
+  .step__num { display: inline-block; font-family: var(--font-display); font-weight: 500; font-size: 13px; letter-spacing: 0.04em; color: var(--blue); }
+  .step__title { margin-top: 14px; }
+  .step__text { margin-top: 8px; font-size: 14px; line-height: 1.55; color: var(--slate); }
+  @media (max-width: 960px) { .steps--4, .steps--5 { grid-template-columns: repeat(2, 1fr); } .steps--3 { grid-template-columns: 1fr; } }
+  @media (max-width: 560px) { .steps--4, .steps--5 { grid-template-columns: 1fr; } }
+</style>

@@ -1,0 +1,41 @@
+---
+/* Panxo stats row (measured layout): one dark anchor card + three light cells, label on top, large display text at the
+   bottom. VynziCFO has no verified figures yet, so the large text is the benefit itself, never a number. */
+import { Icon } from 'astro-icon/components';
+interface Item { title: string; text: string; icon?: string }
+interface Props { eyebrow?: string; heading: string; items: Item[] }
+const { eyebrow = 'Why VynziCFO', heading, items } = Astro.props;
+const icons = ['ph:trend-up-duotone', 'ph:eye-duotone', 'ph:shield-check-duotone'];
+---
+<section class="section section--tight why">
+  <div class="container why__grid">
+    <div class="why__dark" data-reveal>
+      <span class="why__rings" aria-hidden="true"></span>
+      <p class="eyebrow why__eyebrow">{eyebrow}</p>
+      <p class="why__heading">{heading}</p>
+    </div>
+    {items.map((it, i) => (
+      <div class="why__cell" data-reveal style={`--i:${i + 1}`}>
+        <div class="why__top">
+          <span class="ring ring--sm ring--blue"><Icon name={it.icon ?? icons[i % icons.length]} /></span>
+          <p class="why__text">{it.text}</p>
+        </div>
+        <p class="why__title">{it.title}</p>
+      </div>
+    ))}
+  </div>
+</section>
+
+<style>
+  .why__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .why__dark { position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; min-height: 260px; padding: 26px; border-radius: var(--r-card); background: var(--gradient-dark-card); color: #fff; }
+  .why__rings { position: absolute; left: -60px; top: -60px; width: 260px; height: 260px; border-radius: 50%; background: repeating-radial-gradient(circle at center, rgba(255,255,255,.07) 0 1px, transparent 1px 22px); pointer-events: none; }
+  .why__eyebrow { position: relative; color: rgba(255,255,255,.7); }
+  .why__heading { position: relative; font-family: var(--font-display); font-weight: 500; font-size: 24px; line-height: 1.2; letter-spacing: -0.01em; }
+  .why__cell { display: flex; flex-direction: column; justify-content: space-between; gap: 28px; min-height: 260px; padding: 26px; border-radius: var(--r-card); background: var(--surface-base); }
+  .why__top { display: flex; flex-direction: column; gap: 16px; }
+  .why__text { font-size: 15px; line-height: 1.5; color: var(--slate); max-width: 28ch; }
+  .why__title { font-family: var(--font-display); font-weight: 500; font-size: clamp(26px, 2.6vw, 34px); line-height: 1.05; letter-spacing: -0.02em; color: var(--ink); }
+  @media (max-width: 960px) { .why__grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px) { .why__grid { grid-template-columns: 1fr; } .why__dark, .why__cell { min-height: 0; } }
+</style>

@@ -1,0 +1,105 @@
+---
+/* Home, v4 — rebuilt on the panxo.com page sequence: split hero → pastel panel with live UI → dark + light stat row →
+   scroll-lit statement → sections with left headline / right paragraph headers. Blueprint slide 15 order preserved. */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import DemoPanel from '../components/DemoPanel.astro';
+import WhyGrid from '../components/WhyGrid.astro';
+import ScrollText from '../components/ScrollText.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+import SectorGrid from '../components/SectorGrid.astro';
+import PracticeCard from '../components/PracticeCard.astro';
+import LedgerList from '../components/LedgerList.astro';
+import Timeline from '../components/Timeline.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { Icon } from 'astro-icon/components';
+import { home } from '../content/home';
+import { about } from '../content/about';
+import { insights } from '../content/insights';
+import { practices, site } from '../data/site';
+
+const showProof = home.proof.items.length > 0;
+const problemTag = ['Virtual CFO', 'Finance ops', 'Finance ops', 'Technology', 'ESG'];
+const latest = insights.articles.slice(0, 3);
+const typeLabel = (k: string) => insights.types.find((t) => t.key === k)?.label ?? k;
+---
+<BaseLayout title={site.name}>
+  <!-- 1. Hero -->
+  <PageHero eyebrow={home.hero.eyebrow} title="Smarter finance." titleDim="Better decisions. Sustainable growth." text={home.hero.text} primary={home.hero.primary} secondary={home.hero.secondary} secondaryHref="/services">
+    <div slot="below"><DemoPanel bare /></div>
+  </PageHero>
+
+  <!-- 2. Why / trust: stat row -->
+  <WhyGrid heading="One accountable team for finance, technology and sustainability." items={about.why.items} />
+
+  <!-- Statement -->
+  <ScrollText text="Finance, data, technology and sustainability always overlap. We built one team to cover it all: senior finance leadership when decisions need it, dependable operations every month, systems that connect the numbers, and sustainability reporting your stakeholders can trust." />
+
+  <!-- 3. Four practices -->
+  <section class="section">
+    <div class="container">
+      <SectionHeader eyebrow={home.practices.eyebrow} title="One partner for finance," titleDim="technology and sustainability" text={home.practices.text} action="See all services" actionHref="/services" />
+      <div class="grid grid--4">
+        {practices.map((p, i) => <PracticeCard href={`/services/${p.slug}`} icon={p.icon} title={p.nav} text={p.oneLiner} verbs={p.verbs} accent={p.accent} variant="elevated" index={i} />)}
+      </div>
+    </div>
+  </section>
+
+  <!-- Sectors -->
+  <SectorGrid />
+
+  <!-- 4. Problems -->
+  <section class="section band">
+    <div class="container">
+      <SectionHeader eyebrow="Situations we help with" title="Support for the situations" titleDim="growing businesses face" text="Most engagements start with one of these five. Each links to the practices that resolve it." action="Find your situation" actionHref="/services#selector" />
+      <LedgerList large items={home.problems.items.map((p, i) => ({ title: p.label, text: p.text, href: '/services#selector', tag: problemTag[i] }))} />
+    </div>
+  </section>
+
+  <!-- 5. How we work -->
+  <section class="section">
+    <div class="container">
+      <SectionHeader eyebrow={home.how.eyebrow} title="How we work" titleDim="with you" text="The same four steps on every engagement, whether the subject is a forecast, a month-end close, an ERP or an ESG report." />
+      <Timeline steps={home.how.steps} />
+    </div>
+  </section>
+
+  {showProof && (
+    <section class="section"><div class="container"><SectionHeader eyebrow="Proof" title={home.proof.title} /><div class="grid grid--3">{home.proof.items.map((c) => <div class="card-lite"><h4>{c.title}</h4><p class="small muted">{c.text}</p></div>)}</div></div></section>
+  )}
+
+  <!-- 7. Insights: real pieces -->
+  <section class="section">
+    <div class="container">
+      <SectionHeader eyebrow={home.insights.eyebrow} title="Practical thinking on finance," titleDim="automation and ESG" text="Guides and checklists you can run this month, and short articles on CFO work, automation and ESG." action="Browse insights" actionHref="/insights" />
+      <div class="posts">
+        {latest.map((a, i) => (
+          <a href={`/insights/${a.slug}`} class="post" data-reveal style={`--i:${i}`}>
+            <span class="post__type"><Icon name={insights.types.find((t) => t.key === a.type)?.icon ?? 'ph:file-text-duotone'} />{typeLabel(a.type)}</span>
+            <h3 class="post__title">{a.title}</h3>
+            <p class="post__summary">{a.summary}</p>
+            <span class="post__meta">{a.readTime} read<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. Final CTA -->
+  <CtaBand title={home.finalCta.title} text={home.finalCta.text} primary={home.finalCta.primary} secondary={home.finalCta.secondary} secondaryHref="/services" />
+</BaseLayout>
+
+<style>
+  .card-lite { padding: 24px; border-radius: var(--r-card); background: var(--surface-base); }
+  .posts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .post { display: flex; flex-direction: column; gap: 12px; padding: 24px; border-radius: var(--r-panel); background: var(--surface-elevated); box-shadow: var(--shadow-subtle-2); color: inherit; transition: transform var(--dur) var(--ease-out), box-shadow var(--dur); }
+  .post:hover { transform: translateY(-3px); box-shadow: var(--shadow-float); }
+  .post__type { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 500; letter-spacing: .04em; text-transform: uppercase; color: var(--ink-72); }
+  .post__type :global(svg) { width: 18px; height: 18px; color: var(--blue); }
+  .post__title { font-size: 21px; line-height: 1.25; }
+  .post__summary { font-size: 14.5px; line-height: 1.55; color: var(--slate); flex: 1; }
+  .post__meta { display: inline-flex; align-items: center; justify-content: space-between; font-size: 13px; color: var(--stone); padding-top: 12px; border-top: 1px solid var(--ash); }
+  .post__meta svg { width: 16px; height: 16px; color: var(--ink); transition: transform var(--dur-fast); }
+  .post:hover .post__meta svg { transform: translateX(3px); }
+  @media (max-width: 900px) { .posts { grid-template-columns: 1fr; } }
+</style>

@@ -1,0 +1,39 @@
+---
+/* Dense ledger rows with hairline dividers and large numerals. The data-terminal feel without cards. */
+interface Props { items: { title?: string; text: string; href?: string; tag?: string }[]; numerals?: boolean; large?: boolean }
+const { items, numerals = true, large = false } = Astro.props;
+---
+<ol class:list={['ledger', { 'ledger--large': large }]}>
+  {items.map((it, i) => {
+    const Tag = it.href ? 'a' : 'div';
+    return (
+      <li data-reveal style={`--i:${i}`}>
+        <Tag href={it.href} class:list={['ledger__row', { 'ledger__row--link': !!it.href }]}>
+          {numerals && <span class="ledger__num">{String(i + 1).padStart(2, '0')}</span>}
+          <span class="ledger__body">
+            {it.title && <span class="ledger__title">{it.title}</span>}
+            <span class="ledger__text">{it.text}</span>
+          </span>
+          {it.tag && <span class="ledger__tag">{it.tag}</span>}
+          {it.href && <svg class="ledger__arrow" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>}
+        </Tag>
+      </li>
+    );
+  })}
+</ol>
+
+<style>
+  .ledger { border-top: 1px solid var(--hairline); }
+  .ledger__row { display: grid; grid-template-columns: 64px 1fr auto auto; align-items: baseline; gap: 20px; padding: 22px 4px; border-bottom: 1px solid var(--hairline); color: inherit; transition: background var(--dur-fast), padding var(--dur-fast) var(--ease-out); }
+  .ledger__row--link:hover { background: var(--surface-base); padding-left: 12px; padding-right: 12px; }
+  .ledger__num { font-family: var(--font-display); font-weight: 500; font-size: 22px; letter-spacing: -0.03em; color: var(--blue); line-height: 1; }
+  .ledger--large .ledger__num { font-size: 40px; }
+  .ledger__title { display: block; font-family: var(--font-display); font-weight: 500; font-size: 22px; letter-spacing: -0.02em; color: var(--ink); line-height: 1.15; }
+  .ledger--large .ledger__title { font-size: 28px; }
+  .ledger__text { display: block; color: var(--graphite); max-width: 62ch; }
+  .ledger__title + .ledger__text { margin-top: 6px; }
+  .ledger__tag { font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--stone); white-space: nowrap; }
+  .ledger__arrow { width: 18px; height: 18px; color: var(--ink); opacity: .4; transition: transform var(--dur-fast), opacity var(--dur-fast); align-self: center; }
+  .ledger__row--link:hover .ledger__arrow { opacity: 1; transform: translateX(3px); }
+  @media (max-width: 640px) { .ledger__row { grid-template-columns: 40px 1fr; } .ledger__tag { grid-column: 2; } .ledger__arrow { display: none; } .ledger__num { font-size: 18px; } .ledger--large .ledger__num { font-size: 26px; } }
+</style>

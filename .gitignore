@@ -1,0 +1,8 @@
+node_modules
+dist
+.astro
+.env
+.vercel
+.DS_Store
+# Old-site images kept locally for reference only (~20 MB); not needed to build
+reference/assets-from-old-site/

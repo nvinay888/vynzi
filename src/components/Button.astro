@@ -1,0 +1,38 @@
+---
+/* Panxo buttons (measured): compact 40px pills. Filled primary = 48px radius; white secondary = 999px with a hairline ring.
+   gold = the CTA on dark surfaces only. */
+interface Props {
+  href?: string;
+  variant?: 'primary' | 'gold' | 'ghost' | 'white' | 'link';
+  size?: 'md' | 'lg';
+  icon?: boolean;
+  type?: 'button' | 'submit';
+  class?: string;
+}
+const { href, variant = 'primary', size = 'md', icon = false, type = 'button', class: cls = '' } = Astro.props;
+const Tag = href ? 'a' : 'button';
+---
+<Tag href={href} type={href ? undefined : type} class:list={['btn', `btn--${variant}`, `btn--${size}`, cls]}>
+  <span><slot /></span>
+  {icon && (
+    <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+  )}
+</Tag>
+
+<style>
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-family: var(--font-body); font-weight: 500; line-height: 1; letter-spacing: -0.005em; white-space: nowrap; transition: background var(--dur-fast), color var(--dur-fast), box-shadow var(--dur-fast), transform var(--dur-fast); }
+  .btn--md { height: 40px; padding: 0 16px; font-size: 14px; }
+  .btn--lg { height: 44px; padding: 0 20px; font-size: 15px; }
+  .btn--primary { background: var(--ink-fill); color: #fff; border-radius: var(--r-pill); }
+  .btn--primary:hover { background: #12337f; }
+  .btn--gold { background: var(--gold); color: var(--ink-fill); border-radius: var(--r-pill); }
+  .btn--gold:hover { background: var(--gold-deep); }
+  .btn--white { background: #fff; color: var(--ink); border-radius: var(--r-ghost); box-shadow: rgba(11,31,77,.1) 0 0 0 1px, rgba(11,31,77,.06) 0 1px 2px; }
+  .btn--white:hover { box-shadow: rgba(11,31,77,.22) 0 0 0 1px, rgba(11,31,77,.08) 0 2px 6px; }
+  .btn--ghost { background: transparent; color: var(--ink-72); border-radius: var(--r-ghost); box-shadow: rgba(11,31,77,.14) 0 0 0 1px inset; }
+  .btn--ghost:hover { color: var(--ink); box-shadow: rgba(11,31,77,.35) 0 0 0 1px inset; }
+  .btn--link { height: auto; padding: 0; color: var(--blue); border-radius: 4px; }
+  .btn--link:hover { text-decoration: underline; text-underline-offset: 3px; }
+  .btn svg { transition: transform var(--dur-fast); }
+  .btn:hover svg { transform: translateX(2px); }
+</style>

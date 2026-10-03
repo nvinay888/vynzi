@@ -1,0 +1,52 @@
+---
+import { site, footerColumns } from '../data/site';
+import NetworkGraph from './art/NetworkGraph.astro';
+const year = new Date().getFullYear();
+---
+<footer class="footer">
+  <div class="footer__art" aria-hidden="true"><NetworkGraph variant="footer" /></div>
+  <div class="container">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <img src="/img/logo.png" alt="Vynzi" width="130" height="44" />
+        <p class="footer__tag">Smarter finance.<br />Better decisions.<br />Sustainable growth.</p>
+      </div>
+      {footerColumns.map((col) => (
+        <div class="footer__col">
+          <p class="eyebrow">{col.title}</p>
+          <ul>{col.links.map((l) => <li><a href={l.href} class="footer__link">{l.label}</a></li>)}</ul>
+        </div>
+      ))}
+      <div class="footer__col">
+        <p class="eyebrow">Contact</p>
+        <ul>
+          <li><a href={site.phoneHref} class="footer__link">{site.phone}</a></li>
+          <li><a href={`mailto:${site.email}`} class="footer__link">{site.email}</a></li>
+          <li><a href={site.whatsapp} class="footer__link" rel="noopener" target="_blank">WhatsApp</a></li>
+        </ul>
+        <address class="footer__addr"><strong>{site.legalName}</strong><br />{site.address}</address>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <p>© {year} {site.legalName}. All rights reserved.</p>
+      <p>Hyderabad, India</p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer { position: relative; overflow: hidden; background: var(--surface-base); border-top: 1px solid var(--ash); padding: var(--s-20) 0 var(--s-8); }
+  .footer__art { position: absolute; right: -60px; top: -40px; width: 520px; opacity: .55; pointer-events: none; }
+  .footer .container { position: relative; }
+  .footer__grid { display: grid; grid-template-columns: 1.4fr repeat(3, 0.8fr) 1.3fr; gap: var(--s-8); }
+  .footer__brand img { height: 36px; width: auto; }
+  .footer__tag { margin-top: 18px; font-family: var(--font-display); font-weight: 500; font-size: 22px; line-height: 1.15; letter-spacing: -0.03em; color: var(--ink); }
+  .footer__col ul { margin-top: 14px; display: flex; flex-direction: column; gap: 8px; }
+  .footer__link { font-size: 14px; color: var(--graphite); }
+  .footer__link:hover { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+  .footer__addr { margin-top: 18px; font-style: normal; font-size: 12.5px; line-height: 1.6; color: var(--slate); }
+  .footer__addr strong { color: var(--graphite); font-weight: 600; }
+  .footer__bottom { display: flex; justify-content: space-between; gap: var(--s-4); flex-wrap: wrap; margin-top: var(--s-14); padding-top: var(--s-6); border-top: 1px solid var(--ash); font-size: 13px; color: var(--slate); }
+  @media (max-width: 960px) { .footer__grid { grid-template-columns: 1fr 1fr; } .footer__brand { grid-column: 1 / -1; } .footer__art { width: 380px; opacity: .35; } }
+  @media (max-width: 520px) { .footer__grid { grid-template-columns: 1fr; } }
+</style>

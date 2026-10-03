@@ -1,0 +1,36 @@
+---
+import { Icon } from 'astro-icon/components';
+interface Props { href: string; icon: string; title: string; text: string; verbs?: string; accent?: 'blue' | 'teal'; variant?: 'light' | 'elevated' | 'dark'; index?: number }
+const { href, icon, title, text, verbs, accent = 'blue', variant = 'light', index } = Astro.props;
+---
+<a href={href} class:list={['pcard', `pcard--${variant}`, `pcard--${accent}`]} data-reveal style={index !== undefined ? `--i:${index}` : undefined}>
+  <div class="pcard__top">
+    <span class:list={['ring', accent === 'teal' ? 'ring--teal' : 'ring--blue', variant === 'dark' && 'ring--dark']}><Icon name={icon} /></span>
+  </div>
+  {verbs && <p class="pcard__verbs">{verbs}</p>}
+  <h3 class="pcard__title">{title}</h3>
+  <p class="pcard__text">{text}</p>
+  <span class="pcard__more arrow">Explore
+    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+  </span>
+</a>
+
+<style>
+  .pcard { display: flex; flex-direction: column; padding: 26px; border-radius: var(--r-panel); color: inherit; min-height: 100%; transition: transform var(--dur) var(--ease-out), background var(--dur), box-shadow var(--dur); }
+  .pcard--light { background: var(--surface-base); }
+  .pcard--elevated { background: var(--surface-elevated); box-shadow: var(--shadow-subtle-2); }
+  .pcard--dark { background: var(--gradient-dark-card); color: #fff; }
+  .pcard:hover { transform: translateY(-3px); }
+  .pcard--light:hover { background: #e9eef7; }
+  .pcard--elevated:hover { box-shadow: var(--shadow-float); }
+  .pcard__top { display: flex; justify-content: space-between; align-items: center; }
+  .pcard__verbs { margin-top: 22px; font-size: var(--text-caption); letter-spacing: var(--tracking-caption); text-transform: uppercase; font-weight: 600; color: var(--blue); }
+  .pcard--teal .pcard__verbs { color: var(--teal); }
+  .pcard--dark .pcard__verbs { color: var(--gold); }
+  .pcard__title { margin-top: 8px; font-size: 22px; line-height: 1.15; letter-spacing: -0.02em; }
+  .pcard--dark .pcard__title { color: #fff; }
+  .pcard__text { margin-top: 10px; font-size: 14.5px; line-height: 1.55; color: var(--slate); flex: 1; }
+  .pcard--dark .pcard__text { color: rgba(255,255,255,.72); }
+  .pcard__more { margin-top: 22px; font-size: 14px; }
+  .pcard--dark .pcard__more { color: var(--gold); }
+</style>

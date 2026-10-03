@@ -1,0 +1,106 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import Field from '../components/Field.astro';
+import Button from '../components/Button.astro';
+import { Icon } from 'astro-icon/components';
+import { contact } from '../content/contact';
+import { site } from '../data/site';
+// Web3Forms access key; set PUBLIC_WEB3FORMS_KEY in .env. Without it the form opens the visitor's email client instead.
+const accessKey = import.meta.env.PUBLIC_WEB3FORMS_KEY ?? '';
+---
+<BaseLayout title="Contact" description={contact.hero.text}>
+  <PageHero eyebrow={contact.hero.eyebrow} title="Start with the problem." titleDim="We will help with the rest." text={contact.hero.text} compact>
+    <div slot="below" class="contact">
+      <div class="contact__form">
+        <h2>{contact.form.title}</h2>
+        <form id="enquiry" class="form" method="POST" action="https://api.web3forms.com/submit" data-fallback-email={site.email} novalidate>
+          <input type="hidden" name="access_key" value={accessKey} />
+          <input type="hidden" name="subject" value="Website enquiry — VynziCFO" />
+          <input type="hidden" name="from_name" value="vynzicfo.com" />
+          <input type="checkbox" name="botcheck" class="sr-only" tabindex="-1" autocomplete="off" />
+          <div class="form__grid">
+            <Field label={contact.form.fields.name} name="name" required autocomplete="name" />
+            <Field label={contact.form.fields.email} name="email" type="email" required autocomplete="email" />
+            <Field label={contact.form.fields.company} name="company" autocomplete="organization" />
+            <Field label={contact.form.fields.phone} name="phone" type="tel" autocomplete="tel" />
+            <div class="form__full"><Field label={contact.form.fields.topic} name="topic" type="select" options={contact.form.categories} placeholder="Choose one" required /></div>
+            <div class="form__full"><Field label={contact.form.fields.message} name="message" type="textarea" required placeholder="What are you trying to improve, and by when?" /></div>
+          </div>
+          <div class="form__foot">
+            <Button type="submit" variant="primary" size="lg" icon>{contact.form.submit}</Button>
+            <p class="small muted">{contact.form.privacy}</p>
+          </div>
+          <p class="form__msg" role="status" aria-live="polite" hidden data-success={contact.form.success} data-error={contact.form.error}></p>
+        </form>
+      </div>
+
+      <aside class="contact__side">
+        <div>
+          <p class="eyebrow">{contact.details.title}</p>
+          <ul class="details">
+            <li><Icon name="ph:phone-duotone" /><a href={site.phoneHref}>{site.phone}</a></li>
+            <li><Icon name="ph:whatsapp-logo-duotone" /><a href={site.whatsapp} target="_blank" rel="noopener">WhatsApp us</a></li>
+            <li><Icon name="ph:envelope-simple-duotone" /><a href={`mailto:${site.email}`}>{site.email}</a></li>
+            <li><Icon name="ph:map-pin-duotone" /><address><strong>{site.legalName}</strong><br />{site.address}</address></li>
+          </ul>
+        </div>
+        <div>
+          <p class="eyebrow">{contact.details.expect.title}</p>
+          <ul class="check-list" style="margin-top: 14px">{contact.details.expect.items.map((i) => <li>{i}</li>)}</ul>
+        </div>
+      </aside>
+    </div>
+  </PageHero>
+</BaseLayout>
+
+<script>
+  const form = document.getElementById('enquiry') as HTMLFormElement | null;
+  const msg = form?.querySelector<HTMLElement>('.form__msg');
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!form.reportValidity()) return;
+    const data = new FormData(form);
+    const key = String(data.get('access_key') || '');
+    const show = (text: string, ok: boolean) => { if (msg) { msg.hidden = false; msg.textContent = text; msg.dataset.state = ok ? 'ok' : 'err'; } };
+    if (!key) {
+      // No form service configured: hand off to the visitor's email client with the message prefilled.
+      const to = form.dataset.fallbackEmail;
+      const body = ['Name: ' + data.get('name'), 'Email: ' + data.get('email'), 'Company: ' + data.get('company'), 'Phone: ' + data.get('phone'), 'Topic: ' + data.get('topic'), '', String(data.get('message'))].join('\n');
+      window.location.href = `mailto:${to}?subject=${encodeURIComponent('Website enquiry: ' + data.get('topic'))}&body=${encodeURIComponent(body)}`;
+      return;
+    }
+    const btn = form.querySelector<HTMLButtonElement>('button[type=submit]');
+    if (btn) btn.disabled = true;
+    try {
+      const res = await fetch(form.action, { method: 'POST', body: data, headers: { Accept: 'application/json' } });
+      const json = await res.json();
+      if (res.ok && json.success) { show(msg?.dataset.success ?? 'Sent.', true); form.reset(); }
+      else show(msg?.dataset.error ?? 'Error.', false);
+    } catch { show(msg?.dataset.error ?? 'Error.', false); }
+    finally { if (btn) btn.disabled = false; }
+  });
+</script>
+
+<style>
+  .contact { display: grid; grid-template-columns: 0.8fr 1.4fr; gap: 16px; align-items: stretch; }
+  .contact__form { order: 2; padding: clamp(24px, 3vw, 36px); border-radius: 16px; background: #fff; box-shadow: var(--shadow-float); }
+  .contact__form h2 { font-size: 24px; }
+  .form { margin-top: 20px; }
+  .form__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .form__full { grid-column: 1 / -1; }
+  .form__foot { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; margin-top: 20px; }
+  .form__msg { margin-top: 16px; padding: 12px 14px; border-radius: 10px; font-size: 14px; }
+  .form__msg[data-state="ok"] { background: var(--teal-soft); color: #0b7a6b; }
+  .form__msg[data-state="err"] { background: #fdecec; color: #a12626; }
+  .contact__side { order: 1; display: flex; flex-direction: column; gap: 28px; padding: clamp(24px, 3vw, 32px); border-radius: 16px; background: rgba(255,255,255,.72); backdrop-filter: blur(6px); box-shadow: var(--shadow-subtle-2); }
+  .details { margin-top: 14px; display: flex; flex-direction: column; gap: 14px; }
+  .details li { display: flex; gap: 12px; align-items: flex-start; color: var(--graphite); }
+  .details li :global(svg) { flex: none; width: 22px; height: 22px; color: var(--blue); margin-top: 1px; }
+  .details a { font-weight: 600; color: var(--ink); }
+  .details a:hover { text-decoration: underline; text-underline-offset: 3px; }
+  .details address { font-style: normal; font-size: 14px; line-height: 1.6; color: var(--slate); }
+  .details address strong { color: var(--ink); font-weight: 600; }
+  @media (max-width: 900px) { .contact { grid-template-columns: 1fr; } .contact__form { order: 1; } .contact__side { order: 2; } }
+  @media (max-width: 560px) { .form__grid { grid-template-columns: 1fr; } }
+</style>

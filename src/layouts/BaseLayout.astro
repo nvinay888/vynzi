@@ -1,0 +1,61 @@
+---
+import '../styles/base.css';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import AnnouncementBar from '../components/AnnouncementBar.astro';
+import MobileCta from '../components/MobileCta.astro';
+import { site } from '../data/site';
+
+interface Props { title: string; description?: string; noindex?: boolean; announcement?: boolean }
+const { title, description = site.description, noindex = false, announcement = true } = Astro.props;
+const fullTitle = title === site.name ? `${site.name} — ${site.tagline}` : `${title} | ${site.name}`;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <link rel="icon" href="/favicon.png" type="image/png" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta name="theme-color" content="#002058" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Mona+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
+    <script is:inline>document.documentElement.classList.add('js');</script>
+  </head>
+  <body>
+    <a href="#main" class="skip">Skip to content</a>
+    {announcement && <AnnouncementBar />}
+    <Nav />
+    <main id="main"><slot /></main>
+    <Footer />
+    <MobileCta />
+    <script>
+      // Scroll reveal with stagger. Elements carry data-reveal; siblings get --i for delay.
+      const els = document.querySelectorAll<HTMLElement>('[data-reveal]');
+      if (!('IntersectionObserver' in window) || matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        els.forEach((e) => e.classList.add('is-in'));
+      } else {
+        const io = new IntersectionObserver((entries) => {
+          entries.forEach((en) => { if (en.isIntersecting) { en.target.classList.add('is-in'); io.unobserve(en.target); } });
+        }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+        const vh = window.innerHeight;
+        els.forEach((e) => { if (e.getBoundingClientRect().top < vh * 0.9) e.classList.add('is-in'); else io.observe(e); });
+      }
+    </script>
+  </body>
+</html>
+
+<style is:global>
+  .skip { position: absolute; left: 8px; top: -48px; padding: 8px 12px; background: var(--ink-fill); color: #fff; border-radius: 8px; z-index: 100; }
+  .skip:focus { top: 8px; }
+  body.nav-open { overflow: hidden; }
+</style>

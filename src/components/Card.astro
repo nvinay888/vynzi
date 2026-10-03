@@ -1,0 +1,25 @@
+---
+/* Panxo cards: light (#fafafa, no border, no shadow), elevated (white + subtle-2), dark (navy radial gradient). */
+interface Props { variant?: 'light' | 'elevated' | 'dark' | 'outline'; href?: string; pad?: 'md' | 'lg'; class?: string }
+const { variant = 'light', href, pad = 'md', class: cls = '' } = Astro.props;
+const Tag = href ? 'a' : 'div';
+---
+<Tag href={href} class:list={['card', `card--${variant}`, `card--pad-${pad}`, { 'card--link': !!href }, cls]}>
+  <slot />
+</Tag>
+
+<style>
+  .card { display: block; border-radius: var(--r-card); color: inherit; }
+  .card--pad-md { padding: var(--card-pad); }
+  .card--pad-lg { padding: 32px; }
+  .card--light { background: var(--surface-base); }
+  .card--elevated { background: var(--surface-elevated); box-shadow: var(--shadow-subtle-2); }
+  .card--outline { background: var(--surface-elevated); border: 1px solid var(--ash); }
+  .card--dark { background: var(--gradient-dark-card); color: #fff; }
+  .card--dark :global(h2), .card--dark :global(h3), .card--dark :global(h4) { color: #fff; }
+  .card--dark :global(p) { color: rgba(255, 255, 255, 0.72); }
+  .card--link { transition: transform .18s ease, box-shadow .18s ease, background .18s ease; }
+  .card--link:hover { transform: translateY(-2px); }
+  .card--link.card--light:hover { background: #eaeef6; }
+  .card--link.card--elevated:hover, .card--link.card--outline:hover { box-shadow: var(--shadow-subtle-2), 0 8px 24px -12px rgba(11, 31, 77, 0.18); }
+</style>

@@ -1,0 +1,11 @@
+---
+import ProseLayout from '../layouts/ProseLayout.astro';
+import { nav, footerColumns } from '../data/site';
+const groups = [
+  { title: 'Main', links: [{ label: 'Home', href: '/' }, ...nav.filter((n) => !n.children).map((n) => ({ label: n.label, href: n.href }))] },
+  ...footerColumns,
+];
+---
+<ProseLayout title="Sitemap" eyebrow="Index" text="Every page on this site.">
+  {groups.map((g) => <><h2>{g.title}</h2><ul>{g.links.map((l) => <li><a href={l.href}>{l.label}</a></li>)}</ul></>)}
+</ProseLayout>

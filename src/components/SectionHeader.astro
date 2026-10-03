@@ -1,0 +1,27 @@
+---
+/* Panxo section header (measured): eyebrow + 40px headline on the left, a short paragraph and optional action on the right. */
+import Button from './Button.astro';
+interface Props { eyebrow?: string; title: string; titleDim?: string; text?: string; action?: string; actionHref?: string }
+const { eyebrow, title, titleDim, text, action, actionHref } = Astro.props;
+---
+<div class="sh">
+  <div class="sh__main" data-reveal>
+    {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+    <h2 class="sh__title">{title}{titleDim && <span class="dim"> {titleDim}</span>}</h2>
+  </div>
+  {(text || action) && (
+    <div class="sh__side" data-reveal style="--i:1">
+      {text && <p class="sh__text">{text}</p>}
+      {action && <Button href={actionHref} variant="white">{action}</Button>}
+    </div>
+  )}
+</div>
+
+<style>
+  .sh { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: clamp(24px, 6vw, 96px); align-items: end; margin-bottom: clamp(32px, 4vw, 48px); }
+  .eyebrow + .sh__title { margin-top: 16px; }
+  .sh__title { max-width: 18ch; }
+  .sh__side { display: flex; flex-direction: column; align-items: flex-start; gap: 16px; }
+  .sh__text { font-size: 16px; line-height: 1.55; font-weight: 500; color: var(--ink-72); max-width: 44ch; }
+  @media (max-width: 860px) { .sh { grid-template-columns: 1fr; gap: 14px; } }
+</style>

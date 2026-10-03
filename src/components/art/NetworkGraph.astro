@@ -1,0 +1,29 @@
+---
+/* Abstract "systems / networks" illustration (blueprint slide 14). Nodes and edges on a dot grid; subtle pulse. */
+interface Props { variant?: 'default' | 'footer' | 'dark'; class?: string }
+const { variant = 'default', class: cls = '' } = Astro.props;
+const nodes = [[60, 80], [180, 40], [300, 90], [420, 50], [120, 200], [260, 190], [400, 180], [200, 300], [340, 290], [470, 260], [80, 330]];
+const edges = [[0, 1], [1, 2], [2, 3], [0, 4], [1, 5], [2, 5], [3, 6], [4, 5], [5, 6], [4, 7], [5, 8], [6, 9], [7, 8], [8, 9], [7, 10], [4, 10]];
+const dark = variant === 'dark';
+---
+<svg class:list={['net', `net--${variant}`, cls]} viewBox="0 0 520 380" fill="none" aria-hidden="true">
+  <defs>
+    <linearGradient id={`ng-${variant}`} x1="0" x2="1"><stop offset="0" stop-color={dark ? '#7fa3ff' : '#2f6fed'}/><stop offset="1" stop-color="#14b8a0"/></linearGradient>
+  </defs>
+  {edges.map(([a, b], i) => <line x1={nodes[a][0]} y1={nodes[a][1]} x2={nodes[b][0]} y2={nodes[b][1]} stroke={`url(#ng-${variant})`} stroke-width="1.2" opacity=".55" class="net__edge" style={`--i:${i}`}/>)}
+  {nodes.map(([x, y], i) => (
+    <g class="net__node" style={`--i:${i}`}>
+      <circle cx={x} cy={y} r={i % 3 === 0 ? 14 : 8} fill={dark ? 'rgba(255,255,255,.06)' : '#fff'} stroke={i % 3 === 0 ? '#2f6fed' : '#14b8a0'} stroke-width="1.5"/>
+      <circle cx={x} cy={y} r="3" fill={i % 3 === 0 ? '#2f6fed' : '#14b8a0'}/>
+    </g>
+  ))}
+</svg>
+
+<style>
+  .net { width: 100%; height: auto; }
+  .net__edge { stroke-dasharray: 600; stroke-dashoffset: 600; animation: ndraw 2.4s var(--ease-out) forwards; animation-delay: calc(var(--i) * 90ms); }
+  .net__node { transform-box: fill-box; transform-origin: center; animation: npulse 6s ease-in-out infinite; animation-delay: calc(var(--i) * 300ms); }
+  .net--footer { opacity: .9; }
+  @keyframes ndraw { to { stroke-dashoffset: 0; } }
+  @keyframes npulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.12); } }
+</style>

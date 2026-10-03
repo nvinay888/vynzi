@@ -1,0 +1,26 @@
+---
+/* Persistent CTA (blueprint slide 14) on small screens; the desktop nav already carries it. */
+---
+<div class="mcta" data-mcta>
+  <a href="/contact" class="mcta__btn">Book a consultation
+    <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+  </a>
+</div>
+<script>
+  // Hide while the hero (first section) is on screen so it does not double up with the hero CTA.
+  const bar = document.querySelector<HTMLElement>('[data-mcta]');
+  // Watch the hero's own CTA row; once it scrolls out of view the sticky bar appears.
+  const hero = document.querySelector('main .hero__actions') ?? document.querySelector('main > *:first-child');
+  if (bar && hero && 'IntersectionObserver' in window) {
+    new IntersectionObserver(([e]) => bar.classList.toggle('is-visible', !e.isIntersecting), { threshold: 0 }).observe(hero);
+  }
+</script>
+<style>
+  .mcta { display: none; }
+  @media (max-width: 960px) {
+    .mcta { display: block; position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); background: rgba(255,255,255,.9); backdrop-filter: blur(10px); border-top: 1px solid var(--ash); transform: translateY(110%); transition: transform var(--dur) var(--ease-out); }
+    .mcta.is-visible { transform: none; }
+    .mcta__btn { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 13px 18px; border-radius: var(--r-pill); background: var(--ink-fill); color: #fff; font-weight: 500; font-size: 15px; }
+    body.nav-open .mcta { display: none; }
+  }
+</style>

@@ -1,0 +1,17 @@
+---
+interface Props { eyebrow?: string; title: string; lede?: string; align?: 'left' | 'center'; tone?: 'neutral' | 'blue' | 'teal'; as?: 'h1' | 'h2' | 'h3'; narrow?: boolean }
+const { eyebrow, title, lede, align = 'left', tone = 'neutral', as: Tag = 'h2', narrow = true } = Astro.props;
+---
+<div class:list={['section-head', `section-head--${align}`, { 'section-head--narrow': narrow }]}>
+  {eyebrow && <p class:list={['eyebrow', tone === 'blue' && 'eyebrow--blue', tone === 'teal' && 'eyebrow--teal']}>{eyebrow}</p>}
+  <Tag class="section-head__title">{title}</Tag>
+  {lede && <p class="lede">{lede}</p>}
+</div>
+
+<style>
+  .section-head { margin-bottom: var(--s-10); }
+  .section-head--narrow { max-width: 720px; }
+  .section-head--center { text-align: center; margin-left: auto; margin-right: auto; }
+  .eyebrow + .section-head__title { margin-top: var(--s-3); }
+  .section-head__title + .lede { margin-top: var(--s-4); }
+</style>

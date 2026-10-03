@@ -1,0 +1,30 @@
+---
+/* Panxo image panel: a large 24px-radius pastel panel (sky blue into warm sand) with soft glows and a faint dot grid,
+   holding a white UI card. Every hero visual sits in one of these. */
+interface Props { tone?: 'blush' | 'teal'; pad?: 'md' | 'lg'; class?: string }
+const { tone = 'blush', pad = 'lg', class: cls = '' } = Astro.props;
+---
+<div class:list={['panel', `panel--${tone}`, `panel--${pad}`, cls]}>
+  <div class="panel__bg" aria-hidden="true">
+    <span class="panel__glow panel__glow--a"></span>
+    <span class="panel__glow panel__glow--b"></span>
+    <span class="panel__glow panel__glow--c"></span>
+    <span class="panel__dots"></span>
+  </div>
+  <div class="panel__inner"><slot /></div>
+</div>
+
+<style>
+  .panel { position: relative; overflow: hidden; border-radius: var(--r-hero); isolation: isolate; }
+  .panel--lg { padding: clamp(20px, 4vw, 56px); }
+  .panel--md { padding: clamp(16px, 3vw, 32px); }
+  .panel__bg { position: absolute; inset: 0; z-index: -1; background: var(--gradient-blush); }
+  .panel--teal .panel__bg { background: linear-gradient(180deg, #cdeee6 0%, #e7f1ee 45%, #f5eedf 100%); }
+  .panel__glow { position: absolute; border-radius: 50%; filter: blur(70px); opacity: .55; }
+  .panel__glow--a { width: 40%; height: 70%; left: -8%; top: -20%; background: #9dbdff; animation: drift 16s ease-in-out infinite alternate; }
+  .panel__glow--b { width: 36%; height: 60%; right: -6%; bottom: -24%; background: #ffd9a6; animation: drift 20s ease-in-out infinite alternate-reverse; }
+  .panel__glow--c { width: 30%; height: 50%; right: 22%; top: -18%; background: #b9ece0; opacity: .45; animation: drift 24s ease-in-out infinite alternate; }
+  .panel__dots { position: absolute; inset: 0; background-image: radial-gradient(rgba(11,31,77,.12) 1px, transparent 1.2px); background-size: 18px 18px; mask-image: linear-gradient(180deg, rgba(0,0,0,.6), transparent 70%); }
+  .panel__inner { position: relative; }
+  @keyframes drift { to { transform: translate(8%, 10%) scale(1.1); } }
+</style>

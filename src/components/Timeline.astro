@@ -1,0 +1,53 @@
+---
+/* Process timeline: icon nodes on a line that draws in, a card per step with its description and the concrete outputs. */
+import { Icon } from 'astro-icon/components';
+interface Props { steps: { title: string; text: string; icon?: string; outputs?: string[] }[]; tone?: 'blue' | 'teal' }
+const { steps, tone = 'blue' } = Astro.props;
+---
+<div class:list={['tl', `tl--${tone}`]} data-reveal style={`--n:${steps.length}`}>
+  <div class="tl__line" aria-hidden="true"><span class="tl__progress"></span></div>
+  <ol class="tl__steps">
+    {steps.map((s, i) => (
+      <li class="tl__step" style={`--i:${i}`}>
+        <span class="tl__node" aria-hidden="true">
+          {s.icon ? <Icon name={s.icon} /> : <b>{i + 1}</b>}
+        </span>
+        <div class="tl__card">
+          <span class="tl__count">Step {i + 1}</span>
+          <h3 class="tl__title">{s.title}</h3>
+          <p class="tl__text">{s.text}</p>
+          {s.outputs && s.outputs.length > 0 && (
+            <ul class="tl__out">
+              {s.outputs.map((o) => <li><Icon name="ph:check-bold" />{o}</li>)}
+            </ul>
+          )}
+        </div>
+      </li>
+    ))}
+  </ol>
+</div>
+
+<style>
+  .tl { position: relative; }
+  .tl__line { position: absolute; left: 28px; right: 28px; top: 28px; height: 2px; background: var(--ash); border-radius: 2px; overflow: hidden; }
+  .tl__progress { display: block; height: 100%; width: 0; background: var(--blue); transition: width 1.6s var(--ease-out) .2s; }
+  .tl--teal .tl__progress { background: var(--teal); }
+  .tl.is-in .tl__progress { width: 100%; }
+  .tl__steps { display: grid; grid-template-columns: repeat(var(--n), 1fr); gap: 18px; }
+  .tl__step { position: relative; display: flex; flex-direction: column; }
+  .tl__node { position: relative; z-index: 1; display: inline-flex; width: 56px; height: 56px; align-items: center; justify-content: center; border-radius: 50%; background: var(--surface-elevated); border: 2px solid var(--blue); color: var(--blue); box-shadow: 0 0 0 6px var(--surface); transform: scale(0); transition: transform var(--dur) var(--ease-out); transition-delay: calc(0.25s + var(--i) * 0.3s); }
+  .tl--teal .tl__node { border-color: var(--teal); color: var(--teal); }
+  .tl__node :global(svg) { width: 26px; height: 26px; }
+  .tl__node b { font-family: var(--font-display); font-weight: 500; font-size: 18px; }
+  .tl.is-in .tl__node { transform: scale(1); }
+  .tl__card { margin-top: 18px; padding: 22px; border-radius: var(--r-panel); background: var(--surface-elevated); box-shadow: var(--shadow-subtle-2); flex: 1; display: flex; flex-direction: column; opacity: 0; transform: translateY(10px); transition: all .5s var(--ease-out); transition-delay: calc(0.4s + var(--i) * 0.3s); }
+  .tl.is-in .tl__card { opacity: 1; transform: none; }
+  .tl__count { font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--stone); }
+  .tl__title { margin-top: 6px; font-size: 22px; }
+  .tl__text { margin-top: 8px; font-size: 14.5px; line-height: 1.55; color: var(--slate); }
+  .tl__out { margin-top: 16px; padding-top: 14px; border-top: 1px dashed var(--ash); display: flex; flex-direction: column; gap: 8px; }
+  .tl__out li { display: flex; align-items: center; gap: 8px; font-size: 13.5px; font-weight: 500; color: var(--ink); }
+  .tl__out :global(svg) { width: 14px; height: 14px; color: var(--teal); flex: none; }
+  @media (max-width: 960px) { .tl__steps { grid-template-columns: repeat(2, 1fr); } .tl__line { display: none; } .tl__node { box-shadow: none; } }
+  @media (max-width: 560px) { .tl__steps { grid-template-columns: 1fr; } }
+</style>

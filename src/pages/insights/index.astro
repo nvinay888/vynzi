@@ -1,0 +1,132 @@
+---
+/* Insights hub (blueprint slide 12). Centered compact hero; a clickable index of the four types; one section per type with real pieces or an honest empty state. */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import SectionIntro from '../../components/SectionIntro.astro';
+import SectionHeader from '../../components/SectionHeader.astro';
+import Badge from '../../components/Badge.astro';
+import Button from '../../components/Button.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import { Icon } from 'astro-icon/components';
+import { insights } from '../../content/insights';
+import { practices } from '../../content/services';
+const byType = (k: string) => insights.articles.filter((a) => a.type === k);
+const practiceName = (slug: string) => practices.find((p) => p.slug === slug)?.name ?? '';
+const practiceTone = (slug: string) => practices.find((p) => p.slug === slug)?.accent ?? 'blue';
+const featured = insights.articles[0];
+const more = insights.articles.filter((a) => a.slug !== featured.slug).slice(0, 3);
+---
+<BaseLayout title="Insights" description={insights.hero.text}>
+  <PageHero eyebrow={insights.hero.eyebrow} title="Practical thinking on finance," titleDim="automation and ESG" text={insights.hero.text} primary="Read the latest guide" primaryHref={`/insights/${featured.slug}`} secondary="Browse by type" secondaryHref="#types">
+    <div slot="below" class="feat">
+      <a href={`/insights/${featured.slug}`} class="feat__main">
+        <span class="feat__label"><Icon name="ph:star-four-duotone" />Featured guide</span>
+        <h2 class="feat__title">{featured.title}</h2>
+        <p class="feat__summary">{featured.summary}</p>
+        <span class="feat__meta"><Badge tone={practiceTone(featured.practice)}>{practiceName(featured.practice)}</Badge><span>{featured.readTime} read</span><span class="feat__go">Read the guide<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span></span>
+      </a>
+      <ul class="feat__list">
+        <li class="feat__head">Also new</li>
+        {more.map((a) => (
+          <li><a href={`/insights/${a.slug}`} class="feat__item">
+            <span class="feat__type">{insights.types.find((t) => t.key === a.type)?.label}</span>
+            <strong>{a.title}</strong>
+            <span class="feat__rt">{a.readTime} read</span>
+          </a></li>
+        ))}
+      </ul>
+    </div>
+  </PageHero>
+
+  <!-- Index of types: each is a link to its section -->
+  <section class="section section--tight">
+    <div class="container">
+      <nav class="index-grid" id="types" aria-label="Content types">
+        {insights.types.map((t, i) => { const n = byType(t.key).length; return (
+          <a href={`#${t.key}`} class="ix" data-reveal style={`--i:${i}`}>
+            <span class="ring ring--blue"><Icon name={t.icon} /></span>
+            <span class="ix__body">
+              <strong>{t.label}</strong>
+              <span class="small muted">{n > 0 ? `${n} ${n === 1 ? 'piece' : 'pieces'}` : 'Coming'}</span>
+            </span>
+            <svg class="ix__arrow" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>
+          </a>
+        ); })}
+      </nav>
+    </div>
+  </section>
+
+  {insights.types.map((t, ti) => { const items = byType(t.key); const empty = insights.emptyByType[t.key]; return (
+    <section class:list={['section', ti % 2 === 0 && 'band']} id={t.key}>
+      <div class="container">
+        <SectionHeader eyebrow={`${items.length > 0 ? items.length + (items.length === 1 ? ' piece' : ' pieces') : 'Coming soon'}`} title={t.label} text={t.text} />
+        {items.length > 0 ? (
+          <div class="posts">
+            {items.map((a, i) => (
+              <a href={`/insights/${a.slug}`} class="post" data-reveal style={`--i:${i}`}>
+                <div class="post__meta"><Badge tone={practiceTone(a.practice)}>{practiceName(a.practice)}</Badge><span class="small muted">{a.readTime}</span></div>
+                <h3 class="post__title">{a.title}</h3>
+                <p class="post__summary">{a.summary}</p>
+                <span class="arrow arrow--blue post__more">Read<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+              </a>
+            ))}
+          </div>
+        ) : (
+          <div class="empty" data-reveal>
+            <span class="ring ring--blue"><Icon name={t.icon} /></span>
+            <div>
+              <h3>{empty?.title}</h3>
+              <p class="muted">{empty?.text}</p>
+            </div>
+            <Button href="/contact" variant="primary" icon>{empty?.cta}</Button>
+          </div>
+        )}
+      </div>
+    </section>
+  ); })}
+
+  <CtaBand />
+</BaseLayout>
+
+<style>
+  .feat { display: grid; grid-template-columns: 1.5fr 1fr; gap: 16px; }
+  .feat__main { display: flex; flex-direction: column; gap: 14px; padding: clamp(24px, 3vw, 40px); border-radius: 16px; background: #fff; box-shadow: var(--shadow-float); color: inherit; transition: transform var(--dur) var(--ease-out); }
+  .feat__main:hover { transform: translateY(-3px); }
+  .feat__label { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 500; letter-spacing: .04em; text-transform: uppercase; color: var(--ink-72); }
+  .feat__label :global(svg) { width: 18px; height: 18px; color: var(--gold-deep); }
+  .feat__title { font-size: clamp(26px, 2.6vw, 34px); max-width: 22ch; }
+  .feat__summary { font-size: 16px; line-height: 1.55; color: var(--slate); max-width: 56ch; flex: 1; }
+  .feat__meta { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; padding-top: 16px; border-top: 1px solid var(--ash); font-size: 13px; color: var(--stone); }
+  .feat__go { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 500; color: var(--ink); }
+  .feat__go svg { width: 16px; height: 16px; transition: transform var(--dur-fast); }
+  .feat__main:hover .feat__go svg { transform: translateX(3px); }
+  .feat__list { display: flex; flex-direction: column; padding: 8px 20px; border-radius: 16px; background: rgba(255,255,255,.75); backdrop-filter: blur(6px); box-shadow: var(--shadow-subtle-2); }
+  .feat__head { padding: 14px 0 6px; font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--stone); }
+  .feat__item { display: flex; flex-direction: column; gap: 4px; padding: 14px 0; border-top: 1px solid var(--ash); color: inherit; }
+  .feat__item strong { font-weight: 600; font-size: 15px; line-height: 1.35; color: var(--ink); }
+  .feat__item:hover strong { color: var(--blue); }
+  .feat__type, .feat__rt { font-size: 12px; color: var(--stone); }
+  @media (max-width: 860px) { .feat { grid-template-columns: 1fr; } }
+  .index-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .ix { display: flex; align-items: center; gap: 14px; padding: 18px 20px; border-radius: var(--r-panel); background: var(--surface-elevated); box-shadow: var(--shadow-subtle-2); color: var(--ink); transition: transform var(--dur) var(--ease-out), box-shadow var(--dur); }
+  .ix:hover { transform: translateY(-2px); box-shadow: var(--shadow-float); }
+  .ix__body { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+  .ix__body strong { font-weight: 600; font-size: 15px; }
+  .ix__arrow { width: 18px; height: 18px; color: var(--stone); transition: transform var(--dur-fast), color var(--dur-fast); }
+  .ix:hover .ix__arrow { color: var(--blue); transform: translateY(3px); }
+  section[id] { scroll-margin-top: 90px; }
+  .type-head { margin-bottom: 36px; }
+  .posts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .post { display: flex; flex-direction: column; padding: 26px; border-radius: var(--r-panel); background: var(--surface-elevated); box-shadow: var(--shadow-subtle-2); color: inherit; transition: transform var(--dur) var(--ease-out), box-shadow var(--dur); }
+  .post:hover { transform: translateY(-3px); box-shadow: var(--shadow-float); }
+  .post__meta { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+  .post__title { margin-top: 16px; font-size: 21px; line-height: 1.2; }
+  .post__summary { margin-top: 10px; font-size: 14.5px; line-height: 1.55; color: var(--slate); flex: 1; }
+  .post__more { margin-top: 18px; font-size: 14px; }
+  .empty { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 24px; padding: 28px 32px; border-radius: var(--r-panel); background: var(--surface-elevated); box-shadow: var(--shadow-subtle); }
+  .empty h3 { font-size: 22px; }
+  .empty .muted { margin-top: 6px; max-width: 60ch; }
+  @media (max-width: 960px) { .index-grid { grid-template-columns: repeat(2, 1fr); } .posts { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 760px) { .empty { grid-template-columns: 1fr; gap: 16px; padding: 24px; } }
+  @media (max-width: 600px) { .index-grid, .posts { grid-template-columns: 1fr; } }
+</style>

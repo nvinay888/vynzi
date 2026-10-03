@@ -1,0 +1,46 @@
+---
+/* Reporting-calendar / close-process visual for the Accounting page (blueprint slide 7: "reporting calendar • close process"). Day numbers are calendar days, not data. */
+const days = Array.from({ length: 35 }, (_, i) => i - 2); // leading blanks
+const marks: Record<number, string> = { 1: 'Cut-off', 3: 'Bank recs', 5: 'AP/AR close', 7: 'Review', 8: 'Pack issued', 15: 'KPI review', 25: 'Payroll' };
+const checklist = ['Sub-ledgers closed', 'Reconciliations signed off', 'Accruals and provisions posted', 'Variance commentary written', 'Management pack issued'];
+---
+<div class="cal" data-reveal aria-hidden="true">
+  <div class="cal__month">
+    <div class="cal__head"><span class="cal__title">Reporting calendar</span><span class="cal__sub">Working days after month-end</span></div>
+    <div class="cal__grid">
+      {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((d) => <span class="cal__dow">{d}</span>)}
+      {days.map((d, i) => d < 1 || d > 30 ? <span class="cal__blank"></span> : (
+        <span class:list={['cal__day', { 'is-marked': !!marks[d], 'is-weekend': i % 7 >= 5 }]} style={`--i:${i}`}>
+          <b>{d}</b>{marks[d] && <small>{marks[d]}</small>}
+        </span>
+      ))}
+    </div>
+  </div>
+  <ul class="cal__list">
+    <li class="cal__listhead">Close checklist</li>
+    {checklist.map((c, i) => <li style={`--i:${i}`}><span class="cal__tick"></span>{c}</li>)}
+  </ul>
+</div>
+
+<style>
+  .cal { display: grid; grid-template-columns: 1.4fr 1fr; gap: 16px; padding: 18px; border-radius: var(--r-panel); background: var(--surface-elevated); box-shadow: var(--shadow-float); }
+  .cal__head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding-bottom: 10px; border-bottom: 1px solid var(--ash); }
+  .cal__title { font-weight: 600; font-size: 13.5px; color: var(--ink); }
+  .cal__sub { font-size: 11px; color: var(--stone); }
+  .cal__grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-top: 10px; }
+  .cal__dow { font-size: 10px; font-weight: 600; color: var(--stone); text-align: center; padding: 4px 0; }
+  .cal__blank { aspect-ratio: 1; }
+  .cal__day { aspect-ratio: 1; border-radius: 7px; background: var(--surface-base); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; font-size: 11px; color: var(--graphite); opacity: 0; transform: scale(.85); transition: all .4s var(--ease-out); transition-delay: calc(var(--i) * 18ms); }
+  .cal.is-in .cal__day { opacity: 1; transform: none; }
+  .cal__day b { font-weight: 600; }
+  .cal__day.is-weekend { background: transparent; color: var(--fossil); }
+  .cal__day.is-marked { background: var(--ink-fill); color: #fff; }
+  .cal__day.is-marked small { font-size: 7.5px; line-height: 1; color: var(--gold); text-align: center; }
+  .cal__list { padding: 6px 4px; display: flex; flex-direction: column; gap: 10px; }
+  .cal__listhead { font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--stone); }
+  .cal__list li:not(.cal__listhead) { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--ink); opacity: 0; transform: translateX(8px); transition: all .5s var(--ease-out); transition-delay: calc(.4s + var(--i) * 140ms); }
+  .cal.is-in .cal__list li { opacity: 1; transform: none; }
+  .cal__tick { width: 18px; height: 18px; border-radius: 50%; background: var(--teal); position: relative; flex: none; }
+  .cal__tick::after { content: ''; position: absolute; left: 6px; top: 3px; width: 4px; height: 8px; border: solid #fff; border-width: 0 2px 2px 0; transform: rotate(45deg); }
+  @media (max-width: 600px) { .cal { grid-template-columns: 1fr; } }
+</style>

@@ -1,0 +1,66 @@
+---
+/* Panxo hero (measured on panxo.com): eyebrow + 56px headline on the left; lede and a filled + white button pair on the
+   right, bottom-aligned; hairline column lines behind; the page's visual in a pastel Panel below.
+   `titleDim` renders a second, 50%-ink phrase after the title (Panxo two-tone headline). */
+import Button from './Button.astro';
+import Panel from './Panel.astro';
+interface Props {
+  eyebrow?: string; title: string; titleDim?: string; text?: string; tone?: 'neutral' | 'blue' | 'teal';
+  primary?: string; primaryHref?: string; secondary?: string; secondaryHref?: string;
+  compact?: boolean; panel?: boolean; panelTone?: 'blush' | 'teal';
+  /* kept for call-site compatibility; heroes are never centered now */
+  center?: boolean; primaryVariant?: string;
+}
+const { eyebrow, title, titleDim, text, primary, primaryHref = '/contact', secondary, secondaryHref, compact = false, panel = true, panelTone = 'blush' } = Astro.props;
+const hasAside = Astro.slots.has('aside');
+const hasBelow = Astro.slots.has('below');
+---
+<section class:list={['hero', { 'hero--compact': compact }]}>
+  <div class="container hero__lines" aria-hidden="true"><div><i></i><i></i><i></i><i></i></div></div>
+  <div class="container hero__wrap">
+    <div class="hero__grid">
+      <div class="hero__main">
+        {eyebrow && <p class="eyebrow" data-reveal>{eyebrow}</p>}
+        <h1 class="hero__title" data-reveal style="--i:1"><slot name="title">{title}</slot>{titleDim && <span class="dim"> {titleDim}</span>}</h1>
+      </div>
+      <div class="hero__side" data-reveal style="--i:2">
+        {text && <p class="lede">{text}</p>}
+        {(primary || secondary) && (
+          <div class="hero__actions">
+            {primary && <Button href={primaryHref} variant="primary">{primary}</Button>}
+            {secondary && <Button href={secondaryHref} variant="white">{secondary}</Button>}
+          </div>
+        )}
+        {hasAside && <div class="hero__aside"><slot name="aside" /></div>}
+      </div>
+    </div>
+    {hasBelow && (
+      <div class="hero__below" data-reveal style="--i:3">
+        {panel ? <Panel tone={panelTone}><slot name="below" /></Panel> : <slot name="below" />}
+      </div>
+    )}
+  </div>
+</section>
+
+<style>
+  .hero { position: relative; background: var(--gradient-hero); padding: clamp(56px, 8vw, 104px) 0 clamp(48px, 6vw, 80px); overflow: hidden; }
+  .hero--compact { padding: clamp(48px, 6vw, 80px) 0 clamp(40px, 5vw, 64px); }
+  .hero__lines { position: absolute; top: 0; bottom: 0; left: 0; right: 0; pointer-events: none; }
+  .hero__lines > div { height: 100%; display: grid; grid-template-columns: repeat(4, 1fr); border-right: 1px solid var(--grid); }
+  .hero__lines i { border-left: 1px solid var(--grid); }
+  .hero__wrap { position: relative; }
+  .hero__grid { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: clamp(32px, 6vw, 96px); align-items: end; }
+  .hero__title { font-size: var(--text-display); line-height: 1.02; letter-spacing: -0.01em; max-width: 17ch; }
+  .hero--compact .hero__title { font-size: var(--text-h1); line-height: 1.08; max-width: 20ch; }
+  .eyebrow + .hero__title { margin-top: 20px; }
+  .hero__side { display: flex; flex-direction: column; gap: 20px; padding-bottom: 4px; }
+  .hero__side .lede { max-width: 42ch; }
+  .hero__actions { display: flex; flex-wrap: wrap; gap: 10px; }
+  .hero__aside { padding-top: 16px; border-top: 1px solid var(--hairline); }
+  .hero__below { margin-top: clamp(40px, 5vw, 64px); }
+  @media (max-width: 900px) {
+    .hero__grid { grid-template-columns: 1fr; gap: 20px; }
+    .hero__title { max-width: none; }
+    .hero__lines { display: none; }
+  }
+</style>

@@ -1,0 +1,70 @@
+/* VynziCFO design tokens — v3, calibrated against panxo.com measurements (3 Oct 2026):
+   headings Mona Sans 500 at -0.01em, hero 56/56, h2 40/48, eyebrow Inter 500 12px +0.04em at 72% ink,
+   lede Inter 500 18/24 at 72% ink, compact 40px pill buttons, hairline column grid. Colours = VynziCFO brand. */
+:root {
+  --ink: #0b1f4d;
+  --ink-fill: #002058;
+  --ink-72: rgba(11, 31, 77, 0.72);
+  --ink-56: rgba(11, 31, 77, 0.5);
+  --surface: #fafafa;
+  --surface-base: #f1f2f5;
+  --surface-warm: #f6f2ea;
+  --surface-elevated: #ffffff;
+  --graphite: #4f5668;
+  --slate: #5f6678;
+  --stone: #7f8694;
+  --fossil: #bdc2cc;
+  --ash: #eceef2;
+  --hairline: rgba(11, 31, 77, 0.1);
+  --grid: rgba(11, 31, 77, 0.07);
+
+  --gold: #f0c030;
+  --gold-deep: #d9a920;
+  --gold-soft: #fdf3cf;
+  --blue: #2457d6;
+  --blue-bright: #2f6fed;
+  --blue-soft: #e8effd;
+  --teal: #0a7a69;
+  --teal-bright: #14b8a0;
+  --teal-soft: #e3f5f2;
+
+  --gradient-dark-card: radial-gradient(81% 66% at 1.8% 1.1%, #24427f 0%, #002058 100%);
+  --gradient-hero: linear-gradient(180deg, #edf2fb 0%, #f7f4ee 100%);
+  --gradient-blush: linear-gradient(180deg, #c8dbff 0%, #e6e9f7 45%, #f6ead9 100%);
+  --gradient-panel: linear-gradient(135deg, #0b1f4d 0%, #1c3f93 45%, #0f8f7c 100%);
+  --gradient-spectrum: linear-gradient(90deg, #002058 0%, #2f6fed 55%, #14b8a0 100%);
+
+  --font-display: 'Mona Sans', 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-body: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+  --text-caption: 12px;
+  --text-body-sm: 14px;
+  --text-body: 16px;
+  --text-lede: 18px;
+  --text-h4: 18px;
+  --text-h3: 22px;
+  --text-h2: clamp(30px, 3.2vw, 40px);
+  --text-h1: clamp(34px, 4vw, 48px);
+  --text-display: clamp(38px, 4.6vw, 56px);
+  --text-statement: clamp(26px, 2.8vw, 36px);
+  --tracking-caption: 0.04em;
+
+  --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 20px; --s-6: 24px;
+  --s-8: 32px; --s-10: 40px; --s-12: 48px; --s-14: 56px; --s-16: 64px;
+  --s-20: 80px; --s-24: 96px; --s-30: 120px;
+  --section-gap: clamp(72px, 8vw, 112px);
+  --card-pad: 24px;
+  --page-max: 1200px;
+  --gutter: 24px;
+
+  --r-badge: 6px; --r-img: 8px; --r-card: 10px; --r-input: 12px; --r-panel: 16px; --r-hero: 24px; --r-chip: 20px; --r-pill: 48px; --r-ghost: 999px;
+
+  --shadow-subtle: rgba(95, 99, 106, 0.08) 0 0 0 1px, rgba(43, 43, 48, 0.1) 0 1px 1px 0;
+  --shadow-subtle-2: rgba(95, 99, 106, 0.12) 0 0 0 1px, rgba(43, 43, 48, 0.1) 0 1px 4px 0;
+  --shadow-float: rgba(95, 99, 106, 0.12) 0 0 0 1px, rgba(11, 31, 77, 0.16) 0 24px 48px -24px;
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 160ms; --dur: 320ms; --dur-slow: 700ms;
+}
+@media (max-width: 720px) { :root { --text-lede: 17px; --gutter: 16px; } }

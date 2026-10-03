@@ -1,0 +1,55 @@
+---
+/* System architecture illustration (blueprint slide 8): sources connected through an integration hub to reporting outputs.
+   Generic system categories only; no vendor logos (slide 8: "rather than a wall of software logos"). */
+import { Icon } from 'astro-icon/components';
+const sources = [['ERP / accounting', 'ph:database-duotone'], ['Banking', 'ph:bank-duotone'], ['Payroll', 'ph:users-three-duotone'], ['Sales & inventory', 'ph:shopping-bag-duotone'], ['ESG data sources', 'ph:leaf-duotone']];
+const outputs = [['Management pack', 'ph:file-text-duotone'], ['KPI dashboards', 'ph:chart-line-up-duotone'], ['Board & investor reports', 'ph:presentation-chart-duotone'], ['BRSR / GRI disclosures', 'ph:recycle-duotone']];
+---
+<div class="arch" data-reveal aria-label="System architecture: sources, integration hub, outputs">
+  <div class="arch__col">
+    <p class="arch__label">Sources</p>
+    {sources.map(([t, i], k) => <div class="arch__node" style={`--i:${k}`}><Icon name={i} /><span>{t}</span></div>)}
+  </div>
+  <div class="arch__links" aria-hidden="true">
+    <svg viewBox="0 0 120 400" preserveAspectRatio="none">
+      {[0, 1, 2, 3, 4].map((k) => <path d={`M0 ${40 + k * 80} C60 ${40 + k * 80} 60 200 120 200`} fill="none" stroke="#2f6fed" stroke-width="1.5" opacity=".5" class="arch__path" style={`--i:${k}`}/>)}
+    </svg>
+  </div>
+  <div class="arch__hub">
+    <span class="arch__pulse"></span>
+    <Icon name="ph:plugs-connected-duotone" />
+    <strong>Integration &amp; automation layer</strong>
+    <small>Validation · reconciliation · controls · scheduling</small>
+  </div>
+  <div class="arch__links aria-hidden" aria-hidden="true">
+    <svg viewBox="0 0 120 400" preserveAspectRatio="none">
+      {[0, 1, 2, 3].map((k) => <path d={`M0 200 C60 200 60 ${60 + k * 93} 120 ${60 + k * 93}`} fill="none" stroke="#14b8a0" stroke-width="1.5" opacity=".6" class="arch__path arch__path--out" style={`--i:${k}`}/>)}
+    </svg>
+  </div>
+  <div class="arch__col">
+    <p class="arch__label">Outputs</p>
+    {outputs.map(([t, i], k) => <div class="arch__node arch__node--out" style={`--i:${k}`}><Icon name={i} /><span>{t}</span></div>)}
+  </div>
+</div>
+
+<style>
+  .arch { display: grid; grid-template-columns: 1fr 72px 1.2fr 72px 1fr; align-items: center; gap: 0; padding: 28px; border-radius: var(--r-panel); background: var(--surface-elevated); box-shadow: var(--shadow-subtle-2); }
+  .arch__col { display: flex; flex-direction: column; gap: 10px; }
+  .arch__label { font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--stone); margin-bottom: 4px; }
+  .arch__node { display: flex; align-items: center; gap: 10px; padding: 11px 12px; border-radius: 10px; background: var(--surface-base); font-size: 13.5px; font-weight: 500; color: var(--ink); opacity: 0; transform: translateX(-10px); transition: all .5s var(--ease-out); transition-delay: calc(var(--i) * 90ms); }
+  .arch__node--out { transform: translateX(10px); transition-delay: calc(.9s + var(--i) * 90ms); }
+  .arch.is-in .arch__node { opacity: 1; transform: none; }
+  .arch__node :global(svg) { width: 20px; height: 20px; color: var(--blue); flex: none; }
+  .arch__node--out :global(svg) { color: var(--teal); }
+  .arch__links svg { width: 100%; height: 100%; min-height: 320px; }
+  .arch__path { stroke-dasharray: 400; stroke-dashoffset: 400; transition: stroke-dashoffset 1.2s var(--ease-out); transition-delay: calc(.3s + var(--i) * 100ms); }
+  .arch__path--out { transition-delay: calc(1s + var(--i) * 100ms); }
+  .arch.is-in .arch__path { stroke-dashoffset: 0; }
+  .arch__hub { position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 8px; padding: 28px 18px; border-radius: 14px; background: var(--gradient-dark-card); color: #fff; }
+  .arch__hub :global(svg) { width: 34px; height: 34px; color: var(--gold); }
+  .arch__hub strong { font-family: var(--font-display); font-weight: 500; font-size: 16px; letter-spacing: -0.01em; }
+  .arch__hub small { font-size: 12px; color: rgba(255,255,255,.7); }
+  .arch__pulse { position: absolute; inset: -6px; border-radius: 18px; border: 1px solid rgba(47,111,237,.5); animation: hubpulse 2.6s ease-out infinite; pointer-events: none; }
+  @keyframes hubpulse { 0% { transform: scale(.98); opacity: .8; } 100% { transform: scale(1.06); opacity: 0; } }
+  @media (max-width: 860px) { .arch { grid-template-columns: 1fr; gap: 16px; padding: 20px; } .arch__links { display: none; } .arch__node, .arch__node--out { transform: translateY(8px); } }
+</style>

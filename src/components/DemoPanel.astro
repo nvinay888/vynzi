@@ -1,0 +1,221 @@
+---
+/* Panxo "product demo UI card" over a gradient panel. v2: four views that rotate on a timer with a visible progress bar
+   (Heuristic 1, visibility of system status). Pauses on hover/focus; static under reduced-motion.
+   Labels and shapes only, no figures, so nothing reads as a claim. */
+interface Props { compact?: boolean; bare?: boolean }
+const { compact = false, bare = false } = Astro.props;
+const views = [
+  { key: 'pack', label: 'Management pack' },
+  { key: 'forecast', label: 'Forecast' },
+  { key: 'controls', label: 'Controls' },
+  { key: 'esg', label: 'ESG' },
+];
+const packRows = [['Month-end close', 'Complete', 'ok'], ['Rolling forecast', 'Updated', 'ok'], ['Working capital review', 'In progress', 'blue'], ['Board pack', 'Scheduled', 'gold']];
+const controlRows = [['Bank reconciliations', 'Signed off', 'ok'], ['Vendor master changes', 'Approved', 'ok'], ['Payment run approval', 'Awaiting review', 'gold'], ['Inter-company balances', 'Matched', 'ok'], ['Access review', 'Due this week', 'blue']];
+const esgRows = [['Scope 1 and 2 emissions', 'Validated', 'ok'], ['Scope 3 supplier data', 'Collecting', 'blue'], ['BRSR Section C', 'Drafted', 'gold'], ['Materiality assessment', 'Complete', 'ok']];
+const bars = [42, 58, 50, 66, 61, 74, 70, 82, 78, 88, 84, 94];
+---
+<div class:list={['demo', { 'demo--compact': compact, 'demo--bare': bare }]} data-demo data-reveal aria-label="Illustration of a finance management pack" role="img">
+  <div class="demo__bg" aria-hidden="true">
+    <span class="demo__glow demo__glow--a"></span><span class="demo__glow demo__glow--b"></span>
+    <svg class="demo__grid" viewBox="0 0 100 100" preserveAspectRatio="none"><defs><pattern id="dots" width="6" height="6" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r=".45" fill="#fff" opacity=".35"/></pattern></defs><rect width="100" height="100" fill="url(#dots)"/></svg>
+  </div>
+  <div class="demo__card">
+    <div class="demo__top">
+      <div class="demo__tabs" aria-hidden="true">
+        {views.map((v, i) => <span class:list={['demo__tab', { 'is-on': i === 0 }]} data-tab={v.key}>{v.label}<i class="demo__prog"></i></span>)}
+      </div>
+      <span class="demo__live"><i></i>Live view</span>
+    </div>
+
+    <!-- View 1: management pack -->
+    <div class="demo__view is-on" data-view="pack" aria-hidden="true">
+      <div class="demo__chart">
+        <div class="demo__label">Cash position · 12-month view</div>
+        <svg viewBox="0 0 400 140" class="demo__svg">
+          <defs>
+            <linearGradient id="lg1" x1="0" x2="1"><stop offset="0" stop-color="#2f6fed"/><stop offset="1" stop-color="#14b8a0"/></linearGradient>
+            <linearGradient id="fill1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2f6fed" stop-opacity=".18"/><stop offset="1" stop-color="#2f6fed" stop-opacity="0"/></linearGradient>
+          </defs>
+          {[30, 60, 90, 120].map((y) => <line x1="0" x2="400" y1={y} y2={y} stroke="#eceef2"/>)}
+          <path class="demo__area" d="M0 110 C40 100 60 96 90 92 S140 86 170 70 S230 62 260 48 S320 40 350 28 L400 22 L400 140 L0 140 Z" fill="url(#fill1)"/>
+          <path class="demo__line" d="M0 110 C40 100 60 96 90 92 S140 86 170 70 S230 62 260 48 S320 40 350 28 L400 22" fill="none" stroke="url(#lg1)" stroke-width="2.5" stroke-linecap="round"/>
+          <circle class="demo__pt" cx="400" cy="22" r="4" fill="#14b8a0"/>
+        </svg>
+        <div class="demo__bars">{bars.map((h, i) => <span style={`--h:${h}%; --i:${i}`}></span>)}</div>
+      </div>
+      <div class="demo__side">
+        <div class="demo__label">Workflow</div>
+        <ul class="demo__rows">{packRows.map(([t, s, k], i) => <li style={`--i:${i}`}><span>{t}</span><span class:list={['demo__status', `demo__status--${k}`]}>{s}</span></li>)}</ul>
+        <div class="demo__ring-wrap"><span class="demo__ring"><i></i></span><span><b>ESG data readiness</b><small>Value-chain sources mapped</small></span></div>
+      </div>
+    </div>
+
+    <!-- View 2: forecast scenarios -->
+    <div class="demo__view" data-view="forecast" aria-hidden="true">
+      <div class="demo__chart">
+        <div class="demo__label">Rolling forecast · three scenarios</div>
+        <svg viewBox="0 0 400 140" class="demo__svg">
+          {[30, 60, 90, 120].map((y) => <line x1="0" x2="400" y1={y} y2={y} stroke="#eceef2"/>)}
+          <path class="demo__line demo__line--d1" d="M0 100 C60 96 120 90 180 84 S300 70 400 58" fill="none" stroke="#14b8a0" stroke-width="2.5" stroke-linecap="round"/>
+          <path class="demo__line demo__line--d2" d="M0 100 C60 98 120 94 180 92 S300 86 400 80" fill="none" stroke="#2f6fed" stroke-width="2.5" stroke-linecap="round"/>
+          <path class="demo__line demo__line--d3" d="M0 100 C60 100 120 100 180 102 S300 108 400 112" fill="none" stroke="#bdc2cc" stroke-width="2" stroke-dasharray="4 5" stroke-linecap="round"/>
+          <line x1="180" x2="180" y1="0" y2="140" stroke="#0b1f4d" stroke-width="1" stroke-dasharray="3 4" opacity=".5"/>
+          <text x="186" y="14" font-family="Inter, sans-serif" font-size="9" fill="#5f6678">actuals · forecast</text>
+        </svg>
+        <div class="demo__legend"><span><i style="background:#14b8a0"></i>Upside</span><span><i style="background:#2f6fed"></i>Base case</span><span><i style="background:#bdc2cc"></i>Downside</span></div>
+      </div>
+      <div class="demo__side">
+        <div class="demo__label">Key assumptions</div>
+        <ul class="demo__rows">
+          {[['Revenue growth', 'Reviewed', 'ok'], ['Gross margin', 'Reviewed', 'ok'], ['Hiring plan', 'Updated', 'blue'], ['Capex timing', 'Open', 'gold'], ['Collections cycle', 'Reviewed', 'ok']].map(([t, s, k], i) => <li style={`--i:${i}`}><span>{t}</span><span class:list={['demo__status', `demo__status--${k}`]}>{s}</span></li>)}
+        </ul>
+      </div>
+    </div>
+
+    <!-- View 3: controls -->
+    <div class="demo__view" data-view="controls" aria-hidden="true">
+      <div class="demo__chart">
+        <div class="demo__label">Control checklist · this cycle</div>
+        <ul class="demo__checks">
+          {controlRows.map(([t, s, k], i) => <li style={`--i:${i}`}><span class:list={['demo__box', `demo__box--${k}`]}></span><span class="demo__check-t">{t}</span><span class:list={['demo__status', `demo__status--${k}`]}>{s}</span></li>)}
+        </ul>
+      </div>
+      <div class="demo__side">
+        <div class="demo__label">Reconciliation coverage</div>
+        <ul class="demo__meters">
+          {[['Bank', 100], ['Customers', 92], ['Vendors', 86], ['Inter-company', 100], ['Fixed assets', 70]].map(([t, w], i) => <li style={`--i:${i}; --w:${w}%`}><span>{t}</span><i><b></b></i></li>)}
+        </ul>
+      </div>
+    </div>
+
+    <!-- View 4: ESG -->
+    <div class="demo__view" data-view="esg" aria-hidden="true">
+      <div class="demo__chart">
+        <div class="demo__label">ESG data points · by source</div>
+        <div class="demo__heat">
+          {['Energy', 'Water', 'Waste', 'Workforce', 'Suppliers', 'Governance'].map((row, r) => (
+            <div class="demo__heat-row" style={`--i:${r}`}><span>{row}</span>{[0, 1, 2, 3, 4, 5].map((c) => <i style={`--o:${((r * 7 + c * 3) % 5) / 5 + 0.15}`}></i>)}</div>
+          ))}
+        </div>
+      </div>
+      <div class="demo__side">
+        <div class="demo__label">Disclosure status</div>
+        <ul class="demo__rows">{esgRows.map(([t, s, k], i) => <li style={`--i:${i}`}><span>{t}</span><span class:list={['demo__status', `demo__status--${k}`]}>{s}</span></li>)}</ul>
+        <div class="demo__ring-wrap"><span class="demo__ring demo__ring--b"><i></i></span><span><b>Assurance readiness</b><small>Evidence linked to each data point</small></span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-demo]').forEach((root) => {
+    const tabs = [...root.querySelectorAll<HTMLElement>('.demo__tab')];
+    const views = [...root.querySelectorAll<HTMLElement>('.demo__view')];
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce || tabs.length < 2) return;
+    let i = 0, timer: number | undefined, paused = false;
+    const PERIOD = 5200;
+    const show = (n: number) => {
+      i = n;
+      tabs.forEach((t, j) => t.classList.toggle('is-on', j === n));
+      views.forEach((v, j) => {
+        const on = j === n;
+        v.classList.toggle('is-on', on);
+        if (on) { v.classList.remove('is-in'); void v.offsetWidth; v.classList.add('is-in'); } // restart draw animations
+      });
+      root.style.setProperty('--period', `${PERIOD}ms`);
+      root.classList.remove('is-ticking'); void root.offsetWidth; root.classList.add('is-ticking');
+    };
+    const start = () => { stop(); timer = window.setInterval(() => { if (!paused) show((i + 1) % views.length); }, PERIOD); };
+    const stop = () => { if (timer) clearInterval(timer); };
+    tabs.forEach((t, j) => t.addEventListener('click', () => { show(j); start(); }));
+    root.addEventListener('mouseenter', () => { paused = true; root.classList.add('is-paused'); });
+    root.addEventListener('mouseleave', () => { paused = false; root.classList.remove('is-paused'); });
+    // Start only once the panel is on screen (it also carries data-reveal).
+    const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { show(0); start(); io.disconnect(); } }, { threshold: 0.3 });
+    io.observe(root);
+  });
+</script>
+
+<style>
+  .demo { position: relative; border-radius: 22px; padding: clamp(18px, 3vw, 40px); overflow: hidden; isolation: isolate; --period: 5200ms; }
+  .demo--compact { padding: clamp(16px, 2vw, 28px); }
+  .demo--bare { padding: 0; border-radius: 16px; overflow: visible; }
+  .demo--bare .demo__bg { display: none; }
+  .demo--compact .demo__view { grid-template-columns: 1fr; min-height: 0; }
+  .demo--compact .demo__side { display: none; }
+  .demo--compact .demo__chart { border-right: 0; padding: 18px 18px 16px; }
+  .demo--compact .demo__tab:nth-child(n+4) { display: none; }
+  .demo__bg { position: absolute; inset: 0; z-index: -1; background: var(--gradient-panel); }
+  .demo__glow { position: absolute; border-radius: 50%; filter: blur(60px); opacity: .55; }
+  .demo__glow--a { width: 50%; height: 80%; left: -10%; top: -20%; background: #2f6fed; animation: drift 14s ease-in-out infinite alternate; }
+  .demo__glow--b { width: 45%; height: 80%; right: -10%; bottom: -30%; background: #14b8a0; animation: drift 18s ease-in-out infinite alternate-reverse; }
+  .demo__grid { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .demo__card { background: var(--surface-elevated); border-radius: 16px; box-shadow: var(--shadow-float); overflow: hidden; }
+  .demo__top { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 16px; border-bottom: 1px solid var(--ash); }
+  .demo__tabs { display: flex; gap: 4px; }
+  .demo__tab { position: relative; overflow: hidden; padding: 7px 11px; border-radius: 8px; font-size: 12.5px; font-weight: 500; color: var(--slate); cursor: pointer; transition: background var(--dur-fast), color var(--dur-fast); }
+  .demo__tab.is-on { background: var(--surface-base); color: var(--ink); font-weight: 600; }
+  .demo__prog { position: absolute; left: 0; bottom: 0; height: 2px; width: 100%; background: var(--blue); transform: scaleX(0); transform-origin: left; }
+  .demo.is-ticking .demo__tab.is-on .demo__prog { animation: prog var(--period) linear forwards; }
+  .demo.is-paused .demo__tab.is-on .demo__prog { animation-play-state: paused; }
+  .demo__live { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; color: var(--teal); }
+  .demo__live i { width: 7px; height: 7px; border-radius: 50%; background: var(--teal-bright); animation: blink 1.8s infinite; }
+  .demo__view { display: none; grid-template-columns: 1.5fr 1fr; min-height: 268px; }
+  .demo__view.is-on { display: grid; animation: fade var(--dur) var(--ease-out); }
+  .demo__chart { padding: 18px 20px 16px; border-right: 1px solid var(--ash); }
+  .demo__side { padding: 18px 20px; display: flex; flex-direction: column; gap: 14px; }
+  .demo__label { font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--stone); margin-bottom: 10px; }
+  .demo__svg { width: 100%; height: auto; }
+  .demo__line { stroke-dasharray: 600; stroke-dashoffset: 600; }
+  .demo__view.is-in .demo__line { animation: draw 1.8s var(--ease-out) .2s forwards; }
+  .demo__view.is-in .demo__line--d2 { animation-delay: .5s; }
+  .demo__view.is-in .demo__line--d3 { animation-delay: .8s; }
+  .demo__area, .demo__pt { opacity: 0; transition: opacity .8s ease 1.2s; }
+  .demo__view.is-in .demo__area, .demo__view.is-in .demo__pt { opacity: 1; }
+  .demo__bars { display: flex; align-items: flex-end; gap: 6px; height: 54px; margin-top: 14px; }
+  .demo__bars span { flex: 1; height: var(--h); border-radius: 4px 4px 0 0; background: var(--ink-fill); opacity: .18; transform: scaleY(0); transform-origin: bottom; transition: transform .6s var(--ease-out); transition-delay: calc(.3s + var(--i) * 60ms); }
+  .demo__bars span:nth-child(3n) { background: var(--blue); opacity: .55; }
+  .demo__bars span:last-child { background: var(--teal); opacity: .8; }
+  .demo__view.is-in .demo__bars span { transform: scaleY(1); }
+  .demo__legend { display: flex; gap: 16px; margin-top: 12px; font-size: 12px; color: var(--slate); }
+  .demo__legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .demo__legend i { width: 14px; height: 3px; border-radius: 2px; }
+  .demo__rows li { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px dashed var(--ash); font-size: 13px; color: var(--ink); opacity: 0; transform: translateX(8px); transition: all .5s var(--ease-out); transition-delay: calc(.4s + var(--i) * 120ms); }
+  .demo__view.is-in .demo__rows li { opacity: 1; transform: none; }
+  .demo__status { font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 6px; background: var(--surface-base); color: var(--slate); white-space: nowrap; }
+  .demo__status--ok { background: var(--teal-soft); color: var(--teal); }
+  .demo__status--blue { background: var(--blue-soft); color: var(--blue); }
+  .demo__status--gold { background: var(--gold-soft); color: #7a5a00; }
+  .demo__checks li { display: grid; grid-template-columns: 18px 1fr auto; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px dashed var(--ash); font-size: 13.5px; color: var(--ink); opacity: 0; transform: translateY(6px); transition: all .5s var(--ease-out); transition-delay: calc(.2s + var(--i) * 110ms); }
+  .demo__view.is-in .demo__checks li { opacity: 1; transform: none; }
+  .demo__box { width: 18px; height: 18px; border-radius: 5px; border: 1.5px solid var(--fossil); position: relative; }
+  .demo__box--ok { background: var(--teal); border-color: var(--teal); }
+  .demo__box--ok::after { content: ''; position: absolute; left: 5px; top: 2px; width: 5px; height: 9px; border: solid #fff; border-width: 0 2px 2px 0; transform: rotate(45deg); }
+  .demo__meters li { display: grid; grid-template-columns: 96px 1fr; align-items: center; gap: 10px; padding: 7px 0; font-size: 13px; color: var(--ink); }
+  .demo__meters i { display: block; height: 8px; border-radius: 4px; background: var(--surface-base); overflow: hidden; }
+  .demo__meters b { display: block; height: 100%; width: var(--w); border-radius: 4px; background: linear-gradient(90deg, var(--blue), var(--teal-bright)); transform: scaleX(0); transform-origin: left; transition: transform .9s var(--ease-out); transition-delay: calc(.3s + var(--i) * 120ms); }
+  .demo__view.is-in .demo__meters b { transform: scaleX(1); }
+  .demo__heat { display: flex; flex-direction: column; gap: 6px; }
+  .demo__heat-row { display: grid; grid-template-columns: 84px repeat(6, 1fr); gap: 6px; align-items: center; font-size: 12px; color: var(--graphite); opacity: 0; transition: opacity .5s ease; transition-delay: calc(.2s + var(--i) * 90ms); }
+  .demo__view.is-in .demo__heat-row { opacity: 1; }
+  .demo__heat-row i { height: 22px; border-radius: 5px; background: var(--teal); opacity: var(--o); }
+  .demo__ring-wrap { display: flex; align-items: center; gap: 12px; margin-top: auto; padding-top: 6px; }
+  .demo__ring { position: relative; width: 44px; height: 44px; border-radius: 50%; background: conic-gradient(var(--teal) var(--p, 0%), #e3eeeb 0); flex: none; }
+  .demo__ring i { position: absolute; inset: 7px; border-radius: 50%; background: #fff; }
+  .demo__view.is-in .demo__ring { animation: ring 1.6s var(--ease-out) .6s forwards; }
+  .demo__view.is-in .demo__ring--b { animation-name: ringb; }
+  .demo__ring-wrap b { display: block; font-size: 13px; font-weight: 600; color: var(--ink); }
+  .demo__ring-wrap small { display: block; font-size: 12px; color: var(--slate); }
+  @keyframes draw { to { stroke-dashoffset: 0; } }
+  @keyframes blink { 50% { opacity: .3; } }
+  @keyframes drift { to { transform: translate(8%, 10%) scale(1.1); } }
+  @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  @keyframes prog { to { transform: scaleX(1); } }
+  @property --p { syntax: '<percentage>'; inherits: false; initial-value: 0%; }
+  @keyframes ring { to { --p: 72%; } }
+  @keyframes ringb { to { --p: 58%; } }
+  @media (max-width: 760px) { .demo__view { grid-template-columns: 1fr; } .demo__chart { border-right: 0; border-bottom: 1px solid var(--ash); } .demo__tab { white-space: nowrap; font-size: 12px; padding: 7px 9px; } .demo__tab:nth-child(n+3) { display: none; } .demo__live { font-size: 0; gap: 0; } .demo__live i { width: 8px; height: 8px; } }
+  @media (prefers-reduced-motion: reduce) { .demo__line { stroke-dashoffset: 0; } .demo__area, .demo__pt, .demo__rows li, .demo__checks li, .demo__heat-row { opacity: 1; transform: none; } .demo__bars span, .demo__meters b { transform: none; } .demo__ring { --p: 72%; } }
+</style>

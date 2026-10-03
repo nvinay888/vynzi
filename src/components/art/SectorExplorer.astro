@@ -1,0 +1,86 @@
+---
+/* Industries hero visual: a white UI card with the seven sectors on the left and the selected sector's detail on the
+   right. Cycles automatically (with a progress bar), pauses on hover; clicking a sector selects it. All copy comes from
+   content/industries.ts. */
+import { Icon } from 'astro-icon/components';
+import { industries } from '../../content/industries';
+import { sectors as meta, practices as pmeta } from '../../data/site';
+const list = industries.sectors.filter((s) => s.slug !== 'other');
+const iconFor = (slug: string) => meta.find((m) => m.slug === slug)?.icon ?? 'ph:buildings-duotone';
+const pname = (slug: string) => pmeta.find((p) => p.slug === slug)?.short ?? slug;
+---
+<div class="sx" data-sx>
+  <ul class="sx__list" role="tablist" aria-label="Sectors">
+    {list.map((s, i) => (
+      <li><button type="button" role="tab" class:list={['sx__item', { 'is-on': i === 0 }]} aria-selected={i === 0 ? 'true' : 'false'} data-i={i}>
+        <Icon name={iconFor(s.slug)} /><span>{s.name}</span><i class="sx__prog"></i>
+      </button></li>
+    ))}
+  </ul>
+  <div class="sx__detail">
+    {list.map((s, i) => (
+      <article class:list={['sx__pane', { 'is-on': i === 0 }]} role="tabpanel">
+        <div class="sx__head"><span class="ring ring--blue"><Icon name={iconFor(s.slug)} /></span><h3>{s.name}</h3></div>
+        <p class="sx__ctx">{s.context}</p>
+        <div class="sx__label">What we provide</div>
+        <p class="sx__provide">{s.provide}</p>
+        <ul class="sx__services">{s.services.slice(0, 4).map((x) => <li><Icon name="ph:check-bold" />{x.title}</li>)}</ul>
+        <div class="sx__foot">
+          <span class="sx__practices">{s.practices.map((p) => <span class="sx__chip">{pname(p)}</span>)}</span>
+          <a href={`#${s.slug}`} class="arrow arrow--blue">Read more<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg></a>
+        </div>
+      </article>
+    ))}
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-sx]').forEach((root) => {
+    const items = [...root.querySelectorAll<HTMLElement>('.sx__item')];
+    const panes = [...root.querySelectorAll<HTMLElement>('.sx__pane')];
+    let i = 0, timer: number | undefined, paused = false;
+    const PERIOD = 5000;
+    const show = (n: number) => {
+      i = n;
+      items.forEach((b, j) => { b.classList.toggle('is-on', j === n); b.setAttribute('aria-selected', String(j === n)); });
+      panes.forEach((p, j) => p.classList.toggle('is-on', j === n));
+      root.classList.remove('is-ticking'); void root.offsetWidth; root.classList.add('is-ticking');
+    };
+    const start = () => { if (timer) clearInterval(timer); if (matchMedia('(prefers-reduced-motion: reduce)').matches) return; timer = window.setInterval(() => { if (!paused) show((i + 1) % items.length); }, PERIOD); };
+    items.forEach((b, j) => b.addEventListener('click', () => { show(j); start(); }));
+    root.addEventListener('mouseenter', () => { paused = true; root.classList.add('is-paused'); });
+    root.addEventListener('mouseleave', () => { paused = false; root.classList.remove('is-paused'); });
+    show(0); start();
+  });
+</script>
+
+<style>
+  .sx { display: grid; grid-template-columns: 280px 1fr; background: #fff; border-radius: 16px; box-shadow: var(--shadow-float); overflow: hidden; --period: 5000ms; }
+  .sx__list { padding: 12px; border-right: 1px solid var(--ash); display: flex; flex-direction: column; gap: 2px; }
+  .sx__item { position: relative; overflow: hidden; width: 100%; display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 10px; font-size: 14px; font-weight: 500; color: var(--slate); text-align: left; transition: background var(--dur-fast), color var(--dur-fast); }
+  .sx__item :global(svg) { width: 20px; height: 20px; color: var(--stone); flex: none; }
+  .sx__item:hover { background: var(--surface); color: var(--ink); }
+  .sx__item.is-on { background: var(--surface-base); color: var(--ink); }
+  .sx__item.is-on :global(svg) { color: var(--blue); }
+  .sx__prog { position: absolute; left: 0; bottom: 0; height: 2px; width: 100%; background: var(--blue); transform: scaleX(0); transform-origin: left; }
+  .sx.is-ticking .sx__item.is-on .sx__prog { animation: prog var(--period) linear forwards; }
+  .sx.is-paused .sx__item.is-on .sx__prog { animation-play-state: paused; }
+  .sx__detail { position: relative; padding: 28px 32px; min-height: 360px; }
+  .sx__pane { display: none; }
+  .sx__pane.is-on { display: block; animation: fade .4s var(--ease-out); }
+  .sx__head { display: flex; align-items: center; gap: 14px; }
+  .sx__head h3 { font-size: 26px; }
+  .sx__ctx { margin-top: 16px; font-size: 15px; line-height: 1.6; color: var(--graphite); max-width: 62ch; }
+  .sx__label { margin-top: 20px; font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--stone); }
+  .sx__provide { margin-top: 6px; font-size: 15px; font-weight: 500; color: var(--ink); }
+  .sx__services { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px 20px; margin-top: 16px; }
+  .sx__services li { display: flex; align-items: center; gap: 8px; padding: 8px 0; border-bottom: 1px dashed var(--ash); font-size: 13.5px; color: var(--ink); }
+  .sx__services :global(svg) { width: 14px; height: 14px; color: var(--teal); flex: none; }
+  .sx__foot { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin-top: 22px; }
+  .sx__practices { display: flex; flex-wrap: wrap; gap: 6px; }
+  .sx__chip { font-size: 12px; font-weight: 500; padding: 4px 10px; border-radius: 6px; background: var(--blue-soft); color: #1f4fb8; }
+  .sx__foot .arrow { font-size: 14px; }
+  @keyframes prog { to { transform: scaleX(1); } }
+  @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  @media (max-width: 860px) { .sx { grid-template-columns: 1fr; } .sx__list { flex-direction: row; overflow-x: auto; border-right: 0; border-bottom: 1px solid var(--ash); } .sx__item { white-space: nowrap; } .sx__detail { padding: 22px; min-height: 0; } .sx__services { grid-template-columns: 1fr; } }
+</style>

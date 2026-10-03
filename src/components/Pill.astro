@@ -1,0 +1,22 @@
+---
+/* Panxo filter pill: transparent, hairline border, 999px radius; active = filled ink. */
+interface Props { href?: string; active?: boolean; count?: string | number; class?: string }
+const { href, active = false, count, class: cls = '' } = Astro.props;
+const Tag = href ? 'a' : 'button';
+---
+<Tag href={href} type={href ? undefined : 'button'} class:list={['pill', { 'is-active': active }, cls]} aria-pressed={href ? undefined : active}>
+  <slot />{count !== undefined && <span class="pill__count">{count}</span>}
+</Tag>
+
+<style>
+  .pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 7px 14px; border-radius: var(--r-ghost);
+    border: 1px solid rgba(11, 31, 77, 0.14); background: transparent;
+    font-size: 14px; font-weight: 500; color: rgba(11, 31, 77, 0.78); line-height: 1.2;
+    transition: all .15s ease;
+  }
+  .pill:hover { border-color: rgba(11, 31, 77, 0.4); color: var(--ink); }
+  .pill.is-active { background: var(--ink-fill); color: #fff; border-color: var(--ink-fill); }
+  .pill__count { font-size: 12px; opacity: .7; }
+</style>

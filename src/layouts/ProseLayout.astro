@@ -1,0 +1,27 @@
+---
+/* Utility pages: compact hero + narrow prose column. */
+import BaseLayout from './BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+interface Props { title: string; eyebrow?: string; text?: string; description?: string; noindex?: boolean }
+const { title, eyebrow, text, description, noindex = false } = Astro.props;
+---
+<BaseLayout title={title} description={description ?? text} noindex={noindex}>
+  <PageHero eyebrow={eyebrow} title={title} text={text} compact center />
+  <section class="section">
+    <div class="container prose-col">
+      <slot />
+    </div>
+  </section>
+</BaseLayout>
+
+<style is:global>
+  .prose-col { max-width: 720px; }
+  .prose-col h2 { font-size: 22px; margin-top: 36px; }
+  .prose-col h2:first-child { margin-top: 0; }
+  .prose-col p { margin-top: 10px; color: var(--graphite); line-height: 1.7; }
+  .prose-col ul { margin-top: 10px; padding-left: 20px; list-style: disc; color: var(--graphite); }
+  .prose-col li + li { margin-top: 6px; }
+  .prose-col a { color: var(--blue); font-weight: 500; }
+  .prose-col a:hover { text-decoration: underline; text-underline-offset: 3px; }
+  .notice { margin-top: 32px; padding: 14px 16px; border-radius: 10px; background: #fdf3cf; color: #7a5a00; font-size: 14px; }
+</style>

@@ -1,0 +1,21 @@
+{
+  "name": "vynzicfo-website",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build && node scripts/check-placeholders.mjs",
+    "preview": "astro preview",
+    "check": "astro check"
+  },
+  "dependencies": {
+    "@iconify-json/lucide": "^1.2.138",
+    "@iconify-json/ph": "^1.2.2",
+    "astro": "^7.3.5",
+    "astro-icon": "^1.2.0"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  }
+}

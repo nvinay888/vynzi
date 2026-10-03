@@ -1,0 +1,33 @@
+---
+/* Process pipeline diagram (blueprint slide 8: "process diagrams"). Nodes flow left→right with an animated dash. */
+interface Props { stages: string[]; tone?: 'blue' | 'teal' }
+const { stages, tone = 'blue' } = Astro.props;
+const n = stages.length;
+const W = 720, H = 150, pad = 40;
+const step = (W - 2 * pad) / (n - 1);
+const xs = stages.map((_, i) => pad + i * step);
+const col = tone === 'teal' ? '#14b8a0' : '#2f6fed';
+---
+<svg class="flow" viewBox={`0 0 ${W} ${H}`} aria-hidden="true" data-reveal>
+  <defs>
+    <linearGradient id={`fg-${tone}`} x1="0" x2="1"><stop offset="0" stop-color="#002058"/><stop offset="1" stop-color={col}/></linearGradient>
+  </defs>
+  <path d={`M${xs[0]} 70 H${xs[n - 1]}`} stroke="#eceef2" stroke-width="2"/>
+  <path class="flow__dash" d={`M${xs[0]} 70 H${xs[n - 1]}`} stroke={`url(#fg-${tone})`} stroke-width="2" stroke-dasharray="8 10" stroke-linecap="round"/>
+  {stages.map((s, i) => (
+    <g class="flow__node" style={`--i:${i}`}>
+      <circle cx={xs[i]} cy="70" r="26" fill="#fff" stroke="#eceef2" stroke-width="1.5"/>
+      <circle cx={xs[i]} cy="70" r="26" fill="none" stroke={col} stroke-width="2" stroke-dasharray="164" stroke-dashoffset="164" class="flow__ring"/>
+      <text x={xs[i]} y="75" text-anchor="middle" font-family="Mona Sans, Inter, sans-serif" font-weight="700" font-size="13" fill="#0b1f4d">{String(i + 1).padStart(2, '0')}</text>
+      <text x={xs[i]} y="122" text-anchor="middle" font-family="Inter, sans-serif" font-weight="600" font-size="13" fill="#0b1f4d">{s}</text>
+    </g>
+  ))}
+</svg>
+
+<style>
+  .flow { width: 100%; height: auto; }
+  .flow__dash { animation: march 1.6s linear infinite; }
+  .flow__ring { transition: stroke-dashoffset 1s var(--ease-out); transition-delay: calc(var(--i) * 220ms); }
+  .flow.is-in .flow__ring { stroke-dashoffset: 0; }
+  @keyframes march { to { stroke-dashoffset: -18; } }
+</style>

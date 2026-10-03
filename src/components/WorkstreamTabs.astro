@@ -1,0 +1,68 @@
+---
+/* Panxo demo-UI pattern: white chip tabs switching a panel. Lists modules per workstream. Works without JS (all panels shown). */
+import { Icon } from 'astro-icon/components';
+interface Props { workstreams: { title: string; modules: string[] }[]; tone?: 'blue' | 'teal'; id?: string }
+const { workstreams, tone = 'blue', id = 'ws' } = Astro.props;
+---
+<div class:list={['tabs', `tabs--${tone}`]} data-tabs>
+  <div class="tabs__bar" role="tablist" aria-label="Workstreams">
+    {workstreams.map((w, i) => (
+      <button type="button" role="tab" id={`${id}-tab-${i}`} aria-controls={`${id}-panel-${i}`} aria-selected={i === 0 ? 'true' : 'false'} class:list={['tabs__tab', { 'is-active': i === 0 }]}>
+        {w.title}
+        <span class="tabs__count">{w.modules.length}</span>
+      </button>
+    ))}
+  </div>
+  <div class="tabs__panels">
+    {workstreams.map((w, i) => (
+      <div role="tabpanel" id={`${id}-panel-${i}`} aria-labelledby={`${id}-tab-${i}`} class:list={['tabs__panel', { 'is-active': i === 0 }]}>
+        <div class="tabs__head"><h3>{w.title}</h3><span class="small muted">{w.modules.length} service modules</span></div>
+        <ul class="tabs__list">
+          {w.modules.map((m, j) => <li style={`--i:${j}`}><span class="tabs__check"><Icon name="ph:check-bold" /></span>{m}</li>)}
+        </ul>
+      </div>
+    ))}
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-tabs]').forEach((root) => {
+    const tabs = [...root.querySelectorAll<HTMLButtonElement>('[role=tab]')];
+    const panels = [...root.querySelectorAll<HTMLElement>('[role=tabpanel]')];
+    root.classList.add('js');
+    const select = (i: number) => {
+      tabs.forEach((t, j) => { t.classList.toggle('is-active', i === j); t.setAttribute('aria-selected', String(i === j)); t.tabIndex = i === j ? 0 : -1; });
+      panels.forEach((p, j) => p.classList.toggle('is-active', i === j));
+    };
+    tabs.forEach((t, i) => {
+      t.addEventListener('click', () => select(i));
+      t.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { e.preventDefault(); const n = (i + (e.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length; select(n); tabs[n].focus(); }
+      });
+    });
+  });
+</script>
+
+<style>
+  .tabs { display: grid; grid-template-columns: 300px 1fr; gap: 20px; }
+  .tabs__bar { display: flex; flex-direction: column; gap: 6px; }
+  .tabs__tab { display: flex; align-items: center; gap: 12px; text-align: left; padding: 16px 18px; border-radius: 12px; border: 1px solid var(--ash); background: var(--surface-elevated); font-weight: 600; font-size: 15px; color: var(--graphite); transition: all var(--dur-fast) var(--ease-out); }
+  .tabs__tab:hover { border-color: var(--hairline); color: var(--ink); transform: translateX(2px); }
+  .tabs__tab.is-active { background: var(--ink-fill); color: #fff; border-color: var(--ink-fill); }
+  .tabs__count { margin-left: auto; font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 999px; background: var(--surface-base); color: var(--slate); }
+  .tabs__tab.is-active .tabs__count { background: rgba(255,255,255,.14); color: #fff; }
+  .tabs__panels { position: relative; min-height: 100%; }
+  .tabs__panel { padding: 28px; border-radius: var(--r-panel); background: var(--surface-elevated); box-shadow: var(--shadow-subtle-2); }
+  .tabs__panel + .tabs__panel { margin-top: 20px; }
+  .tabs.js .tabs__panel { display: none; margin: 0; }
+  .tabs.js .tabs__panel.is-active { display: block; animation: fade var(--dur) var(--ease-out); }
+  .tabs__head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--ash); }
+  .tabs__list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px 24px; margin-top: 18px; }
+  .tabs__list li { display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; font-size: 15px; color: var(--ink); border-bottom: 1px dashed var(--ash); }
+  .tabs__check { display: inline-flex; width: 22px; height: 22px; align-items: center; justify-content: center; border-radius: 50%; background: var(--teal-soft); color: var(--teal); flex: none; margin-top: 1px; }
+  .tabs__check :global(svg) { width: 12px; height: 12px; }
+  .tabs--teal .tabs__tab.is-active { background: var(--teal); border-color: var(--teal); }
+  @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  @media (max-width: 900px) { .tabs { grid-template-columns: 1fr; } .tabs__bar { flex-direction: row; flex-wrap: wrap; } .tabs__tab { padding: 10px 14px; font-size: 14px; } }
+  @media (max-width: 600px) { .tabs__list { grid-template-columns: 1fr; } }
+</style>

@@ -1,0 +1,18 @@
+---
+/* Left column of a split section: index, headline, lede, optional action. Used inside `.split__aside`. */
+interface Props { eyebrow?: string; title: string; lede?: string; tone?: 'blue' | 'teal' | 'neutral'; as?: 'h1' | 'h2' | 'h3' }
+const { eyebrow, title, lede, tone = 'neutral', as: Tag = 'h2' } = Astro.props;
+---
+<div class="intro" data-reveal>
+  {eyebrow && <p class:list={['eyebrow', tone === 'blue' && 'eyebrow--blue', tone === 'teal' && 'eyebrow--teal']}>{eyebrow}</p>}
+  <Tag class="intro__title">{title}</Tag>
+  {lede && <p class="lede intro__lede">{lede}</p>}
+  {Astro.slots.has('default') && <div class="intro__slot"><slot /></div>}
+</div>
+
+<style>
+  .eyebrow + .intro__title { margin-top: 14px; }
+  .intro__title { max-width: 16ch; }
+  .intro__lede { margin-top: 16px; max-width: 42ch; }
+  .intro__slot { margin-top: 24px; }
+</style>

@@ -1,0 +1,178 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from '../components/Button.astro';
+import Pill from '../components/Pill.astro';
+import Badge from '../components/Badge.astro';
+import Card from '../components/Card.astro';
+import LedgerList from '../components/LedgerList.astro';
+import Timeline from '../components/Timeline.astro';
+import WorkstreamTabs from '../components/WorkstreamTabs.astro';
+import DemoPanel from '../components/DemoPanel.astro';
+import SectorGrid from '../components/SectorGrid.astro';
+import NetworkGraph from '../components/art/NetworkGraph.astro';
+import FlowDiagram from '../components/art/FlowDiagram.astro';
+import EsgLoop from '../components/art/EsgLoop.astro';
+import SectionHead from '../components/SectionHead.astro';
+import Steps from '../components/Steps.astro';
+import Field from '../components/Field.astro';
+import PracticeCard from '../components/PracticeCard.astro';
+import CtaBand from '../components/CtaBand.astro';
+import { Icon } from 'astro-icon/components';
+import { practices } from '../data/site';
+
+const colors = [
+  ['--ink', 'Ink'], ['--ink-fill', 'Ink fill'], ['--surface', 'Surface'], ['--surface-base', 'Surface base'], ['--surface-elevated', 'Elevated'],
+  ['--graphite', 'Graphite'], ['--slate', 'Slate'], ['--stone', 'Stone'], ['--fossil', 'Fossil'], ['--ash', 'Ash'],
+  ['--gold', 'Gold (CTA)'], ['--blue', 'Blue (data)'], ['--teal', 'Teal (ESG)'],
+];
+---
+<BaseLayout title="Styleguide" noindex>
+  <section class="section">
+    <div class="container stack--lg">
+      <SectionHead eyebrow="Internal" title="Styleguide" lede="Every shared component, rendered once, before any page uses it. Not linked from the site." as="h1" />
+
+      <div>
+        <h3>Colour</h3>
+        <div class="swatches">
+          {colors.map(([v, n]) => <div class="swatch"><span class="swatch__chip" style={`background: var(${v})`}></span><span class="swatch__name">{n}</span><code>{v}</code></div>)}
+          <div class="swatch"><span class="swatch__chip" style="background: var(--gradient-spectrum)"></span><span class="swatch__name">Spectrum</span><code>--gradient-spectrum</code></div>
+          <div class="swatch"><span class="swatch__chip" style="background: var(--gradient-dark-card)"></span><span class="swatch__name">Dark card</span><code>--gradient-dark-card</code></div>
+          <div class="swatch"><span class="swatch__chip" style="background: var(--gradient-hero)"></span><span class="swatch__name">Hero wash</span><code>--gradient-hero</code></div>
+        </div>
+      </div>
+
+      <div>
+        <h3>Type</h3>
+        <div class="stack" style="margin-top: 16px">
+          <p class="display">Smarter finance. Better decisions. Sustainable growth.</p>
+          <h1>Heading one at 48px, Mona Sans 700</h1>
+          <h2>Heading two at 32px, used for section titles</h2>
+          <h3>Heading three at 24px for card titles</h3>
+          <h4>Heading four at 20px, weight 600</h4>
+          <p class="lede">Lede paragraph at 18px in slate. Finance, technology and sustainability expertise for growing businesses.</p>
+          <p>Body at 16px in ink. Vynzi CFO is a strategic and technology driven consulting and accounting firm, dedicated to delivering results.</p>
+          <p class="small muted">Small at 14px, muted.</p>
+          <p class="eyebrow">Eyebrow label</p>
+          <p class="eyebrow eyebrow--blue">Eyebrow blue</p>
+          <p class="eyebrow eyebrow--teal">Eyebrow teal</p>
+        </div>
+      </div>
+
+      <div>
+        <h3>Buttons</h3>
+        <div class="cluster" style="margin-top: 16px">
+          <Button variant="primary">Book a consultation</Button>
+          <Button variant="gold" icon>Talk to a CFO</Button>
+          <Button variant="ghost">Explore services</Button>
+          <Button variant="link" icon>Read the guide</Button>
+          <Button variant="primary" size="lg" icon>Large primary</Button>
+          <Button variant="ghost" size="lg">Large ghost</Button>
+        </div>
+      </div>
+
+      <div>
+        <h3>Pills and badges</h3>
+        <div class="cluster" style="margin-top: 16px">
+          <Pill active>All</Pill><Pill>Growth</Pill><Pill>Visibility</Pill><Pill>Control</Pill><Pill>Automation</Pill><Pill>ESG readiness</Pill>
+        </div>
+        <div class="cluster" style="margin-top: 12px">
+          <Badge>Guide</Badge><Badge tone="blue">Virtual CFO</Badge><Badge tone="teal">Sustainability</Badge><Badge tone="gold">Case study</Badge>
+        </div>
+      </div>
+
+      <div>
+        <h3>Cards</h3>
+        <div class="grid grid--3" style="margin-top: 16px">
+          <Card variant="light"><h4>Light card</h4><p class="small muted" style="margin-top:8px">Surface-base fill, no border, no shadow. The default card.</p></Card>
+          <Card variant="elevated"><h4>Elevated card</h4><p class="small muted" style="margin-top:8px">White with the subtle-2 ring shadow. For interactive panels.</p></Card>
+          <Card variant="dark"><h4>Dark card</h4><p class="small" style="margin-top:8px">Navy radial gradient. One per section at most.</p></Card>
+        </div>
+      </div>
+
+      <div>
+        <h3>Demo panel</h3>
+        <div style="margin-top: 16px"><DemoPanel /></div>
+      </div>
+
+      <div>
+        <h3>Ledger list</h3>
+        <div style="margin-top: 16px"><LedgerList large items={[{ title: 'Growth', text: 'Plan, forecast and fund the next stage.', href: '/services', tag: 'Virtual CFO' }, { title: 'Visibility', text: 'Reports that arrive on time and agree with each other.', href: '/services', tag: 'Finance ops' }]} /></div>
+      </div>
+
+      <div>
+        <h3>Timeline</h3>
+        <div style="margin-top: 16px"><Timeline steps={[{ title: 'Assess', text: 'Understand the business and systems.' }, { title: 'Design', text: 'Agree what good looks like.' }, { title: 'Implement', text: 'Put people, process and tech in place.' }, { title: 'Improve', text: 'Review and refine monthly.' }]} /></div>
+      </div>
+
+      <div>
+        <h3>Workstream tabs</h3>
+        <div style="margin-top: 16px"><WorkstreamTabs id="sg" workstreams={[{ title: 'Plan', modules: ['Strategic planning', 'Budgeting and forecasting', 'FP&A'] }, { title: 'Optimise', modules: ['Profitability', 'Working capital', 'Controls'] }, { title: 'Report', modules: ['Management reporting', 'Board presentations'] }]} /></div>
+      </div>
+
+      <div>
+        <h3>Abstract art</h3>
+        <div class="grid grid--3" style="margin-top: 16px"><NetworkGraph /><EsgLoop /><div><FlowDiagram stages={['Assess', 'Select', 'Integrate', 'Automate', 'Visualise']} /></div></div>
+      </div>
+
+      <div>
+        <h3>Practice cards</h3>
+        <div class="grid grid--4" style="margin-top: 16px">
+          {practices.map((p) => <PracticeCard href={`/services/${p.slug}`} icon={p.icon} title={p.nav} text={p.oneLiner} verbs={p.verbs} accent={p.accent} />)}
+        </div>
+      </div>
+
+      <div>
+        <h3>Steps</h3>
+        <div style="margin-top: 16px">
+          <Steps steps={[
+            { title: 'Assess', text: 'Map finance processes, systems and pain points.' },
+            { title: 'Design', text: 'Agree the target operating model and controls.' },
+            { title: 'Implement', text: 'Connect systems, automate routine work, build reporting.' },
+            { title: 'Improve', text: 'Review outputs with management and refine.' },
+          ]} />
+        </div>
+      </div>
+
+      <div>
+        <h3>Icons</h3>
+        <div class="cluster icons" style="margin-top: 16px">
+          {['ph:compass-duotone','ph:stack-duotone','ph:flow-arrow-duotone','ph:leaf-duotone','ph:chart-line-up-duotone','ph:shield-check-duotone','ph:trend-up-duotone','ph:database-duotone','ph:file-text-duotone','ph:users-three-duotone','ph:phone-duotone','ph:envelope-simple-duotone','ph:map-pin-duotone','ph:plugs-connected-duotone'].map((n) => <span class="ring ring--blue"><Icon name={n} /></span>)}
+        </div>
+      </div>
+
+      <div>
+        <h3>Form fields</h3>
+        <form class="grid grid--2" style="margin-top: 16px" onsubmit="return false">
+          <Field label="Name" name="name" required placeholder="Your name" />
+          <Field label="Business email" name="email" type="email" required placeholder="you@company.com" />
+          <Field label="Enquiry" name="topic" type="select" options={['Virtual CFO', 'Accounting', 'Technology', 'Sustainability', 'Other']} placeholder="What is this about?" />
+          <Field label="Phone" name="phone" type="tel" placeholder="+91" />
+          <div style="grid-column: 1 / -1"><Field label="How can we help?" name="message" type="textarea" placeholder="Tell us what you are trying to improve." /></div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <section class="band section">
+    <div class="container">
+      <SectionHead eyebrow="Band" title="Section on the surface-base band" lede="Sections alternate between the surface and the surface-base band with no hard dividers." />
+      <ul class="check-list">
+        <li>Check-list item one</li>
+        <li>Check-list item two</li>
+      </ul>
+    </div>
+  </section>
+
+  <SectorGrid />
+  <CtaBand secondary="Explore services" secondaryHref="/services" />
+</BaseLayout>
+
+<style>
+  .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; margin-top: 16px; }
+  .swatch { display: flex; flex-direction: column; gap: 6px; font-size: 12px; }
+  .swatch__chip { display: block; height: 56px; border-radius: 8px; box-shadow: var(--shadow-subtle); }
+  .swatch__name { font-weight: 600; color: var(--ink); }
+  .swatch code { color: var(--slate); font-size: 11px; }
+  .icons .icon { display: inline-flex; width: 44px; height: 44px; align-items: center; justify-content: center; border-radius: 12px; background: var(--surface-base); color: var(--graphite); }
+  .icons .icon :global(svg) { width: 22px; height: 22px; stroke-width: 1.8; }
+</style>

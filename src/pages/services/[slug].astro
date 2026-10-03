@@ -1,0 +1,156 @@
+---
+/* The one service-page template (blueprint slide 10): Hero → Challenge → What we do → How we work → Deliverables → Who it is for → (Proof) → Why VynziCFO → CTA.
+   Each practice gets its own hero visual: demo panel, close calendar, architecture diagram, ESG loop. */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import SectionIntro from '../../components/SectionIntro.astro';
+import LedgerList from '../../components/LedgerList.astro';
+import WorkstreamTabs from '../../components/WorkstreamTabs.astro';
+import Timeline from '../../components/Timeline.astro';
+import WhyGrid from '../../components/WhyGrid.astro';
+import SectionHeader from '../../components/SectionHeader.astro';
+import Badge from '../../components/Badge.astro';
+import Button from '../../components/Button.astro';
+import PracticeCard from '../../components/PracticeCard.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import DemoPanel from '../../components/DemoPanel.astro';
+import CloseCalendar from '../../components/art/CloseCalendar.astro';
+import ArchitectureDiagram from '../../components/art/ArchitectureDiagram.astro';
+import FlowDiagram from '../../components/art/FlowDiagram.astro';
+import EsgLoop from '../../components/art/EsgLoop.astro';
+import { Icon } from 'astro-icon/components';
+import { practices } from '../../content/services';
+import { about } from '../../content/about';
+import { practices as practiceMeta } from '../../data/site';
+
+export function getStaticPaths() {
+  return practices.map((p) => ({ params: { slug: p.slug }, props: { practice: p } }));
+}
+const { practice: p } = Astro.props;
+const others = practices.filter((o) => o.slug !== p.slug);
+const oneLiner = (slug: string) => practiceMeta.find((m) => m.slug === slug)?.oneLiner ?? '';
+const tone = p.accent;
+const isTech = p.slug === 'technology-automation';
+const isEsg = p.slug === 'sustainability-esg';
+const isAcc = p.slug === 'accounting-finance-operations';
+const whoIcons = ['ph:buildings-duotone', 'ph:rocket-launch-duotone', 'ph:users-three-duotone'];
+const whyItems = about.why.items.map((w, i) => ({ ...w, icon: ['ph:trend-up-duotone', 'ph:eye-duotone', 'ph:shield-check-duotone'][i] }));
+---
+<BaseLayout title={p.name} description={p.hero.text}>
+  <PageHero eyebrow={p.name} title={p.hero.title} text={p.hero.text} tone={tone} primary={p.hero.cta} secondary="All services" secondaryHref="/services" panelTone={isEsg ? 'teal' : 'blush'}>
+    <div slot="below">
+      {isTech && <ArchitectureDiagram />}
+      {isAcc && <CloseCalendar />}
+      {isEsg && <div class="esg-hero"><EsgLoop /><div class="esg-hero__text"><p class="eyebrow">The loop</p><p class="statement esg-hero__stmt">Disclosure is the output. <em>Management</em> is the work.</p><p class="muted">Govern, measure, report, improve: the same cycle every reporting period, with data your auditors and rating agencies can trace.</p></div></div>}
+      {!isTech && !isAcc && !isEsg && <DemoPanel bare />}
+    </div>
+  </PageHero>
+
+  <!-- The challenge -->
+  <section class="section">
+    <div class="container split">
+      <div class="split__aside"><SectionIntro eyebrow="The challenge" title={p.challenge.title} lede={p.challenge.intro} tone={tone} /></div>
+      <LedgerList items={p.challenge.situations.map((s) => ({ text: s }))} />
+    </div>
+  </section>
+
+  <!-- What we do -->
+  <section class="section band">
+    <div class="container">
+      <SectionHeader eyebrow="What we do" title={p.work.title} text={p.work.intro} />
+      <WorkstreamTabs workstreams={p.work.workstreams} tone={tone} id={`ws-${p.slug}`} />
+    </div>
+  </section>
+
+  <!-- How we work -->
+  <section class="section">
+    <div class="container">
+      <SectionHeader eyebrow="How we work" title={p.how.title} text={p.how.intro} />
+      {isTech && <div class="flow-wrap"><FlowDiagram stages={p.how.steps.map((s) => s.title)} /></div>}
+      <Timeline steps={p.how.steps} tone={tone} />
+    </div>
+  </section>
+
+  <!-- Deliverables -->
+  <section class="section band">
+    <div class="container split">
+      <div class="split__aside">
+        <SectionIntro eyebrow="Deliverables" title={p.deliverables.title} tone={tone}>
+          <div class="dcard">
+            <p class="eyebrow dcard__eyebrow">In one line</p>
+            <p class="dcard__text">{p.deliverables.items.map((d) => d.title.toLowerCase()).join(' · ')}</p>
+            <Button href="/contact" variant="gold" icon>{p.hero.cta}</Button>
+          </div>
+        </SectionIntro>
+      </div>
+      <ul class="deliv">
+        {p.deliverables.items.map((d, i) => (
+          <li data-reveal style={`--i:${i}`}>
+            <span class:list={['ring', 'ring--sm', tone === 'teal' ? 'ring--teal' : 'ring--blue']}><Icon name="ph:check-bold" /></span>
+            <div><h4>{d.title}</h4>{d.text && <p class="small muted">{d.text}</p>}</div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- Who it is for -->
+  <section class="section">
+    <div class="container">
+      <SectionHeader eyebrow="Who it is for" title={p.who.title} text="Typical situations and profiles of the businesses we work with in this practice." action="See it by sector" actionHref="/industries" />
+      <div class="who">
+        {p.who.items.map((w, i) => (
+          <div class="who__item" data-reveal style={`--i:${i}`}>
+            <span class:list={['ring', tone === 'teal' ? 'ring--teal' : 'ring--blue']}><Icon name={whoIcons[i % whoIcons.length]} /></span>
+            <p>{w}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Proof: rendered only when real content exists -->
+  {p.proof.items.length > 0 && (
+    <section class="section band"><div class="container"><SectionIntro eyebrow="Proof" title={p.proof.title} tone={tone} /><div class="grid grid--3">{p.proof.items.map((c) => <div class="pcardlite"><h4>{c.title}</h4><p class="small muted">{c.text}</p></div>)}</div></div></section>
+  )}
+
+  <!-- Why VynziCFO (blueprint slide 2) -->
+  <WhyGrid heading={isEsg ? 'The same discipline we bring to financial reporting, applied to sustainability.' : 'Senior capability, practical delivery, one accountable team.'} items={whyItems} />
+
+  <!-- Other practices -->
+  <section class="section">
+    <div class="container">
+      <SectionHeader eyebrow="Also from VynziCFO" title="Practices that often work" titleDim="alongside this one" action="All services" actionHref="/services" />
+      <div class="grid grid--3">
+        {others.map((o, i) => <PracticeCard href={`/services/${o.slug}`} icon={o.icon} title={o.name} text={oneLiner(o.slug)} verbs={o.eyebrow} accent={o.accent} variant="elevated" index={i} />)}
+      </div>
+    </div>
+  </section>
+
+  <CtaBand title={p.cta.title} text={p.cta.text} primary={p.cta.primary} secondary="All services" secondaryHref="/services" />
+</BaseLayout>
+
+<style>
+  .wd__head { margin-bottom: 40px; }
+  .flow-wrap { margin: 0 0 40px; padding: 20px 24px; border-radius: var(--r-panel); background: var(--surface-elevated); box-shadow: var(--shadow-subtle); }
+  .esg-hero { display: grid; grid-template-columns: 1fr 1.2fr; gap: 40px; align-items: center; padding: 32px; border-radius: 16px; background: var(--surface-elevated); box-shadow: var(--shadow-float); }
+  .esg-hero__stmt { margin-top: 12px; font-size: clamp(24px, 3vw, 36px); }
+  .esg-hero__stmt em { font-style: normal; color: var(--teal); }
+  .esg-hero__text .muted { margin-top: 14px; max-width: 48ch; }
+  .dcard { padding: 24px; border-radius: var(--r-panel); background: var(--gradient-dark-card); color: #fff; }
+  .dcard__eyebrow { color: var(--gold); }
+  .dcard__text { margin: 12px 0 20px; font-size: 14.5px; line-height: 1.6; color: rgba(255,255,255,.78); }
+  .deliv { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0 32px; }
+  .deliv li { display: flex; gap: 14px; align-items: flex-start; padding: 20px 0; border-bottom: 1px solid var(--hairline); }
+  .deliv li:nth-child(-n+2) { border-top: 1px solid var(--hairline); }
+  .deliv p { margin-top: 4px; }
+  .who { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .who__item { display: flex; flex-direction: column; gap: 18px; padding: 26px; border-radius: var(--r-panel); background: var(--surface-base); color: var(--graphite); }
+  .who__item--link { background: var(--gradient-dark-card); color: rgba(255,255,255,.78); transition: transform var(--dur) var(--ease-out); }
+  .who__item--link:hover { transform: translateY(-3px); }
+  .who__item--link strong { color: #fff; font-family: var(--font-display); font-size: 18px; letter-spacing: -0.015em; }
+  .who__item--link .arrow { margin-top: auto; font-size: 14px; }
+  .pcardlite { padding: 24px; border-radius: var(--r-card); background: var(--surface-elevated); box-shadow: var(--shadow-subtle); }
+  @media (max-width: 960px) { .who { grid-template-columns: repeat(2, 1fr); } .esg-hero { grid-template-columns: 1fr; padding: 24px; } }
+  @media (max-width: 640px) { .deliv { grid-template-columns: 1fr; } .deliv li:nth-child(2) { border-top: 0; } .who { grid-template-columns: 1fr; } }
+</style>

@@ -1,0 +1,20 @@
+---
+import ProseLayout from '../layouts/ProseLayout.astro';
+import Button from '../components/Button.astro';
+import Card from '../components/Card.astro';
+import { careers } from '../content/utility';
+import { site } from '../data/site';
+---
+<ProseLayout title={careers.title} eyebrow={careers.eyebrow} text={careers.text}>
+  {careers.roles.length > 0 ? (
+    <div class="grid grid--2">
+      {careers.roles.map((r) => <Card variant="elevated"><h4>{r.title}</h4><p class="small" style="color: var(--blue); font-weight: 600">{r.location}</p><p class="small muted" style="margin-top: 8px">{r.text}</p></Card>)}
+    </div>
+  ) : (
+    <Card variant="light" pad="lg">
+      <h2 style="margin-top: 0">No open roles right now</h2>
+      <p>Send a short note about what you do and the kind of work you want to do more of. We read every one.</p>
+      <div style="margin-top: 20px"><Button href={`mailto:${site.email}?subject=${encodeURIComponent('Careers at VynziCFO')}`} variant="primary" icon>{careers.cta}</Button></div>
+    </Card>
+  )}
+</ProseLayout>
