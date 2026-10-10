@@ -50,6 +50,47 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
         const vh = window.innerHeight;
         els.forEach((e) => { if (e.getBoundingClientRect().top < vh * 0.9) e.classList.add('is-in'); else io.observe(e); });
       }
+
+      // Two-tone headings fill as you scroll: the dim phrase of every heading lights up word by word in the heading's
+      // own colour. Headings below the fold fill while they travel from 85% to 35% of the viewport; headings already
+      // on screen at load (heroes) fill over the first stretch of scrolling. Static and fully lit under reduced motion.
+      const dims = [...document.querySelectorAll<HTMLElement>(':is(h1, h2, h3) .dim')];
+      const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const fills = dims.map((dim) => {
+        const head = dim.closest<HTMLElement>('h1, h2, h3')!;
+        const words = (dim.textContent || '').split(/(\s+)/);
+        dim.textContent = '';
+        const spans: HTMLElement[] = [];
+        words.forEach((w) => {
+          if (!w.trim()) { dim.append(w); return; }
+          const sp = document.createElement('span'); sp.className = 'fillw'; sp.textContent = w; dim.append(sp); spans.push(sp);
+        });
+        dim.style.setProperty('--lit', getComputedStyle(head).color);
+        if (reduce) spans.forEach((sp) => sp.classList.add('on'));
+        return { head, spans };
+      });
+      if (!reduce && fills.length) {
+        let ticking = false;
+        const update = () => {
+          ticking = false;
+          const vh = innerHeight;
+          fills.forEach(({ head, spans }) => {
+            if (!head.offsetParent) return;
+            const top = head.getBoundingClientRect().top + scrollY;
+            const start = Math.max(0, top - vh * 0.85);
+            const end = Math.max(start + Math.min(260, vh * 0.3), top - vh * 0.35);
+            const p = Math.min(1, Math.max(0, (scrollY - start) / (end - start)));
+            const lit = Math.round(p * spans.length);
+            spans.forEach((sp, i) => sp.classList.toggle('on', i < lit));
+          });
+        };
+        const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } };
+        addEventListener('scroll', onScroll, { passive: true });
+        addEventListener('resize', onScroll);
+        // Tab panels reveal headings without scrolling.
+        document.addEventListener('click', () => setTimeout(onScroll, 30));
+        update();
+      }
     </script>
   </body>
 </html>
@@ -58,4 +99,6 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
   .skip { position: absolute; left: 8px; top: -48px; padding: 8px 12px; background: var(--ink-fill); color: #fff; border-radius: 8px; z-index: 100; }
   .skip:focus { top: 8px; }
   body.nav-open { overflow: hidden; }
+  .dim .fillw { transition: color .35s ease; }
+  .dim .fillw.on { color: var(--lit, var(--ink)); }
 </style>
