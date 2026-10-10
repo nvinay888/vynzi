@@ -4,7 +4,7 @@
    shows one tab per workstream). Layout ideas per tab follow the blueprint deck: module chips (slides 6–7), page-flow
    stack (slide 6), step cards (slide 8), grouped cards (slide 9). */
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import PageHero from '../../components/PageHero.astro';
+import Panel from '../../components/Panel.astro';
 import SectionHeader from '../../components/SectionHeader.astro';
 import SideTabs from '../../components/SideTabs.astro';
 import Carousel from '../../components/Carousel.astro';
@@ -48,24 +48,34 @@ const tabs: T[] = isEsg
     ].filter(Boolean) as T[];
 ---
 <BaseLayout title={p.name} description={p.hero.text}>
-  <PageHero eyebrow={p.name} title={p.hero.title} text={p.hero.text} tone={tone} primary={p.hero.cta} secondary="Explore the details" secondaryHref="#explore" panelTone={isEsg ? 'teal' : 'blush'}>
-    <div slot="below">
-      {isTech && <ArchitectureDiagram />}
-      {isAcc && <CloseCalendar />}
-      {isEsg && (
-        <div class="esg-hero">
-          <EsgLoop />
-          <div class="esg-hero__side">
-            <p class="eyebrow">Five areas of work</p>
-            <ul class="esg-hero__list">
-              {p.work.workstreams.map((w, i) => <li><a href={`#${slugify(w.title)}`}><span class="ring ring--sm ring--teal"><Icon name={wsIcons[i]} /></span><span>{w.title}</span><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a></li>)}
-            </ul>
-          </div>
-        </div>
-      )}
-      {!isTech && !isAcc && !isEsg && <DemoPanel bare />}
+  <!-- Hero: visual on the left; heading with the sub-head under it on the right. No buttons (the sticky CTA and the CTA band carry them). -->
+  <section class="phero">
+    <div class="container phero__grid">
+      <div class="phero__text" data-reveal>
+        <p class="eyebrow">{p.name}</p>
+        <h1 class="phero__title">{p.hero.title}</h1>
+        <p class="lede phero__lede">{p.hero.text}</p>
+      </div>
+      <div class="phero__visual" data-reveal style="--i:1">
+        <Panel tone={isEsg ? 'teal' : 'blush'} pad="md">
+          {isTech && <ArchitectureDiagram />}
+          {isAcc && <CloseCalendar />}
+          {isEsg && (
+            <div class="esg-hero">
+              <EsgLoop />
+              <div class="esg-hero__side">
+                <p class="eyebrow">Five areas of work</p>
+                <ul class="esg-hero__list">
+                  {p.work.workstreams.map((w, i) => <li><a href={`#${slugify(w.title)}`}><span class="ring ring--sm ring--teal"><Icon name={wsIcons[i]} /></span><span>{w.title}</span><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a></li>)}
+                </ul>
+              </div>
+            </div>
+          )}
+          {!isTech && !isAcc && !isEsg && <DemoPanel bare compact />}
+        </Panel>
+      </div>
     </div>
-  </PageHero>
+  </section>
 
   <!-- One explorer replaces the stack of long sections -->
   <section class="section" id="explore">
@@ -151,7 +161,18 @@ const tabs: T[] = isEsg
 </BaseLayout>
 
 <style>
-  .esg-hero { display: grid; grid-template-columns: 1fr 1.1fr; gap: 32px; align-items: center; padding: clamp(20px, 3vw, 36px); border-radius: 16px; background: var(--surface-elevated); box-shadow: var(--shadow-float); }
+  .phero { position: relative; background: var(--gradient-hero); padding: clamp(40px, 6vw, 80px) 0 clamp(48px, 6vw, 80px); }
+  .phero__grid { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: clamp(32px, 5vw, 72px); align-items: center; }
+  .phero__text { order: 2; }
+  .phero__visual { order: 1; }
+  .phero__title { margin-top: 18px; font-size: var(--text-h1); line-height: 1.08; letter-spacing: -0.01em; }
+  .phero__lede { margin-top: 18px; max-width: 44ch; }
+  @media (max-width: 900px) {
+    .phero__grid { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+    .phero__text { order: 1; }
+    .phero__visual { order: 2; }
+  }
+  .esg-hero { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 32px; align-items: center; padding: clamp(20px, 3vw, 36px); border-radius: 16px; background: var(--surface-elevated); box-shadow: var(--shadow-float); }
   .esg-hero__list { margin-top: 12px; }
   .esg-hero__list a { display: grid; grid-template-columns: auto 1fr 16px; align-items: center; gap: 12px; padding: 12px 4px; border-bottom: 1px dashed var(--ash); font-weight: 500; color: var(--ink); transition: padding var(--dur-fast), color var(--dur-fast); }
   .esg-hero__list li:last-child a { border-bottom: 0; }
