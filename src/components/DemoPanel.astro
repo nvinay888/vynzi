@@ -12,7 +12,12 @@ const views = [
 ];
 const packRows = [['Month-end close', 'Complete', 'ok'], ['Rolling forecast', 'Updated', 'ok'], ['Working capital review', 'In progress', 'blue'], ['Board pack', 'Scheduled', 'gold']];
 const controlRows = [['Bank reconciliations', 'Signed off', 'ok'], ['Vendor master changes', 'Approved', 'ok'], ['Payment run approval', 'Awaiting review', 'gold'], ['Inter-company balances', 'Matched', 'ok'], ['Access review', 'Due this week', 'blue']];
-const esgRows = [['Scope 1 and 2 emissions', 'Validated', 'ok'], ['Scope 3 supplier data', 'Collecting', 'blue'], ['BRSR Section C', 'Drafted', 'gold'], ['Materiality assessment', 'Complete', 'ok']];
+// ESG view uses only the deck's ESG content (slides 2 and 9): source data → data-point mapping and validation → BRSR / GRI,
+// the five workstreams, and Govern · Measure · Improve. Statuses are illustrative labels, never figures.
+const esgSources = ['Operations', 'HR and payroll', 'Finance and ERP', 'Value chain'];
+const esgOutputs = [['BRSR', 'Ready for review', 'gold'], ['GRI', 'Mapped', 'ok']];
+const esgRows = [['Strategy and GRC', 'In place', 'ok'], ['Data and reporting', 'Validated', 'ok'], ['Automation and technology', 'Connecting', 'blue'], ['Implementation and capability', 'Training', 'gold'], ['Ratings and assurance', 'Gap assessment', 'blue']];
+const esgLoop = ['Govern', 'Measure', 'Improve'];
 const bars = [42, 58, 50, 66, 61, 74, 70, 82, 78, 88, 84, 94];
 ---
 <div class:list={['demo', { 'demo--compact': compact, 'demo--bare': bare }]} data-demo data-reveal aria-label="Illustration of a finance management pack" role="img">
@@ -89,20 +94,35 @@ const bars = [42, 58, 50, 66, 61, 74, 70, 82, 78, 88, 84, 94];
       </div>
     </div>
 
-    <!-- View 4: ESG -->
+    <!-- View 4: ESG: where the data comes from, how it becomes a disclosure, and the programme around it -->
     <div class="demo__view" data-view="esg" aria-hidden="true">
       <div class="demo__chart">
-        <div class="demo__label">ESG data points · by source</div>
-        <div class="demo__heat">
-          {['Energy', 'Water', 'Waste', 'Workforce', 'Suppliers', 'Governance'].map((row, r) => (
-            <div class="demo__heat-row" style={`--i:${r}`}><span>{row}</span>{[0, 1, 2, 3, 4, 5].map((c) => <i style={`--o:${((r * 7 + c * 3) % 5) / 5 + 0.15}`}></i>)}</div>
-          ))}
+        <div class="demo__label">ESG data · source to disclosure</div>
+        <div class="demo__flow">
+          <ul class="demo__src">{esgSources.map((t, i) => <li style={`--i:${i}`}>{t}</li>)}</ul>
+          <svg class="demo__wire" viewBox="0 0 40 100" preserveAspectRatio="none">
+            {[12.5, 37.5, 62.5, 87.5].map((y) => <path d={`M0 ${y} C22 ${y} 18 50 40 50`} />)}
+          </svg>
+          <div class="demo__hub">
+            <span><i></i>Data-point mapping</span>
+            <span><i></i>Validation</span>
+          </div>
+          <svg class="demo__wire" viewBox="0 0 40 100" preserveAspectRatio="none">
+            {[25, 75].map((y) => <path d={`M0 50 C22 50 18 ${y} 40 ${y}`} />)}
+          </svg>
+          <ul class="demo__out">{esgOutputs.map(([t, st, k], i) => <li style={`--i:${i}`}><b>{t}</b><span class:list={['demo__status', `demo__status--${k}`]}>{st}</span></li>)}</ul>
         </div>
+        <p class="demo__note">One set of validated data behind every report.</p>
       </div>
       <div class="demo__side">
-        <div class="demo__label">Disclosure status</div>
-        <ul class="demo__rows">{esgRows.map(([t, s, k], i) => <li style={`--i:${i}`}><span>{t}</span><span class:list={['demo__status', `demo__status--${k}`]}>{s}</span></li>)}</ul>
-        <div class="demo__ring-wrap"><span class="demo__ring demo__ring--b"><i></i></span><span><b>Assurance readiness</b><small>Evidence linked to each data point</small></span></div>
+        <div class="demo__label">ESG programme · five workstreams</div>
+        <ul class="demo__rows">{esgRows.map(([t, st, k], i) => <li style={`--i:${i}`}><span>{t}</span><span class:list={['demo__status', `demo__status--${k}`]}>{st}</span></li>)}</ul>
+        <div class="demo__loop-wrap">
+          <div class="demo__label">From disclosure to management</div>
+          <div class="demo__loop">
+            {esgLoop.map((t, i) => <><span class:list={['demo__loop-step', { 'is-now': i === 2 }]}>{t}</span>{i < esgLoop.length - 1 && <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>}</>)}
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -197,10 +217,30 @@ const bars = [42, 58, 50, 66, 61, 74, 70, 82, 78, 88, 84, 94];
   .demo__meters i { display: block; height: 8px; border-radius: 4px; background: var(--surface-base); overflow: hidden; }
   .demo__meters b { display: block; height: 100%; width: var(--w); border-radius: 4px; background: linear-gradient(90deg, var(--blue), var(--teal-bright)); transform: scaleX(0); transform-origin: left; transition: transform .9s var(--ease-out); transition-delay: calc(.3s + var(--i) * 120ms); }
   .demo__view.is-in .demo__meters b { transform: scaleX(1); }
-  .demo__heat { display: flex; flex-direction: column; gap: 6px; }
-  .demo__heat-row { display: grid; grid-template-columns: 84px repeat(6, 1fr); gap: 6px; align-items: center; font-size: 12px; color: var(--graphite); opacity: 0; transition: opacity .5s ease; transition-delay: calc(.2s + var(--i) * 90ms); }
-  .demo__view.is-in .demo__heat-row { opacity: 1; }
-  .demo__heat-row i { height: 22px; border-radius: 5px; background: var(--teal); opacity: var(--o); }
+  .demo__flow { display: grid; grid-template-columns: minmax(0, 1fr) 30px auto 30px minmax(0, .85fr); align-items: stretch; margin-top: 6px; min-height: 176px; }
+  .demo__src, .demo__out { display: grid; align-items: center; }
+  .demo__src { grid-template-rows: repeat(4, 1fr); }
+  .demo__out { grid-template-rows: repeat(2, 1fr); }
+  .demo__src li { justify-self: stretch; padding: 7px 10px; border-radius: 8px; background: var(--surface-base); font-size: 12px; font-weight: 500; color: var(--graphite); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; opacity: 0; transform: translateX(-6px); transition: all .5s var(--ease-out); transition-delay: calc(.15s + var(--i) * 90ms); }
+  .demo__wire { width: 100%; height: 100%; overflow: visible; }
+  .demo__wire path { fill: none; stroke: var(--teal); stroke-width: 1.5; vector-effect: non-scaling-stroke; stroke-dasharray: 4 5; opacity: 0; transition: opacity .5s ease .6s; }
+  .demo__view.is-in .demo__wire path { opacity: .7; animation: flow 1.2s linear infinite; }
+  .demo__hub { align-self: center; display: flex; flex-direction: column; gap: 8px; padding: 12px; border-radius: 12px; background: var(--teal-soft); box-shadow: 0 0 0 1px rgba(10,122,105,.18); opacity: 0; transform: scale(.94); transition: all .5s var(--ease-out) .5s; }
+  .demo__hub span { display: flex; align-items: center; gap: 7px; font-size: 12px; font-weight: 600; color: var(--teal); white-space: nowrap; }
+  .demo__hub i { width: 14px; height: 14px; border-radius: 50%; background: var(--teal); position: relative; flex: none; }
+  .demo__hub i::after { content: ''; position: absolute; left: 4.5px; top: 2px; width: 4px; height: 7px; border: solid #fff; border-width: 0 1.6px 1.6px 0; transform: rotate(45deg); }
+  .demo__out li { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; padding: 10px 12px; border-radius: 10px; background: var(--surface-elevated); box-shadow: rgba(11,31,77,.1) 0 0 0 1px; opacity: 0; transform: translateX(6px); transition: all .5s var(--ease-out); transition-delay: calc(.9s + var(--i) * 140ms); }
+  .demo__out b { font-family: var(--font-display); font-weight: 500; font-size: 16px; color: var(--ink); }
+  .demo__view.is-in .demo__src li, .demo__view.is-in .demo__out li { opacity: 1; transform: none; }
+  .demo__view.is-in .demo__hub { opacity: 1; transform: none; }
+  .demo__note { margin-top: 14px; font-size: 12.5px; color: var(--slate); }
+  .demo__loop-wrap { margin-top: auto; padding-top: 4px; }
+  .demo__loop-wrap .demo__label { margin-bottom: 8px; }
+  .demo__loop { display: flex; align-items: center; gap: 4px; }
+  .demo__loop svg { width: 14px; height: 14px; color: var(--fossil); flex: none; }
+  .demo__loop-step { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 600; color: var(--teal); }
+  .demo__loop-step::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--teal); opacity: .35; }
+  .demo__loop-step.is-now::before { opacity: 1; box-shadow: 0 0 0 4px var(--teal-soft); animation: blink 1.8s infinite; }
   .demo__ring-wrap { display: flex; align-items: center; gap: 12px; margin-top: auto; padding-top: 6px; }
   .demo__ring { position: relative; width: 44px; height: 44px; border-radius: 50%; background: conic-gradient(var(--teal) var(--p, 0%), #e3eeeb 0); flex: none; }
   .demo__ring i { position: absolute; inset: 7px; border-radius: 50%; background: #fff; }
@@ -210,6 +250,7 @@ const bars = [42, 58, 50, 66, 61, 74, 70, 82, 78, 88, 84, 94];
   .demo__ring-wrap small { display: block; font-size: 12px; color: var(--slate); }
   @keyframes draw { to { stroke-dashoffset: 0; } }
   @keyframes blink { 50% { opacity: .3; } }
+  @keyframes flow { to { stroke-dashoffset: -18; } }
   @keyframes drift { to { transform: translate(8%, 10%) scale(1.1); } }
   @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
   @keyframes prog { to { transform: scaleX(1); } }
@@ -217,5 +258,14 @@ const bars = [42, 58, 50, 66, 61, 74, 70, 82, 78, 88, 84, 94];
   @keyframes ring { to { --p: 72%; } }
   @keyframes ringb { to { --p: 58%; } }
   @media (max-width: 760px) { .demo__view { grid-template-columns: 1fr; } .demo__chart { border-right: 0; border-bottom: 1px solid var(--ash); } .demo__tab { white-space: nowrap; font-size: 12px; padding: 7px 9px; } .demo__tab:nth-child(n+3) { display: none; } .demo__live { font-size: 0; gap: 0; } .demo__live i { width: 8px; height: 8px; } }
-  @media (prefers-reduced-motion: reduce) { .demo__line { stroke-dashoffset: 0; } .demo__area, .demo__pt, .demo__rows li, .demo__checks li, .demo__heat-row { opacity: 1; transform: none; } .demo__bars span, .demo__meters b { transform: none; } .demo__ring { --p: 72%; } }
+  @media (max-width: 760px) {
+    .demo__flow { grid-template-columns: minmax(0, 1fr); gap: 18px; min-height: 0; }
+    .demo__src { grid-template-rows: none; grid-template-columns: 1fr 1fr; gap: 6px; }
+    .demo__wire { display: none; }
+    .demo__hub, .demo__out { position: relative; }
+    .demo__hub::before, .demo__out::before { content: ''; position: absolute; left: 50%; top: -16px; height: 14px; border-left: 1.5px dashed var(--teal); opacity: .7; }
+    .demo__hub { flex-direction: row; justify-content: center; flex-wrap: wrap; gap: 8px 14px; padding: 10px; }
+    .demo__out { grid-template-rows: none; grid-template-columns: 1fr 1fr; gap: 8px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .demo__line { stroke-dashoffset: 0; } .demo__area, .demo__pt, .demo__rows li, .demo__checks li, .demo__src li, .demo__out li, .demo__hub { opacity: 1; transform: none; } .demo__wire path { opacity: .7; } .demo__bars span, .demo__meters b { transform: none; } .demo__ring { --p: 72%; } }
 </style>
