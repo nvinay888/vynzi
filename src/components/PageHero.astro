@@ -6,14 +6,14 @@ import Panel from './Panel.astro';
 interface Props {
   eyebrow?: string; title: string; titleDim?: string; text?: string; tone?: 'neutral' | 'blue' | 'teal';
   compact?: boolean; panel?: boolean; panelTone?: 'blush' | 'teal';
-  /* kept for call-site compatibility; heroes are never centered now */
+  /* `center` stacks eyebrow, headline and text in the middle of the page (About). */
   center?: boolean; primaryVariant?: string;
 }
-const { eyebrow, title, titleDim, text, compact = false, panel = true, panelTone = 'blush' } = Astro.props;
+const { eyebrow, title, titleDim, text, center = false, compact = false, panel = true, panelTone = 'blush' } = Astro.props;
 const hasAside = Astro.slots.has('aside');
 const hasBelow = Astro.slots.has('below');
 ---
-<section class:list={['hero', { 'hero--compact': compact }]}>
+<section class:list={['hero', { 'hero--compact': compact, 'hero--center': center }]}>
   <div class="container hero__lines" aria-hidden="true"><div><i></i><i></i><i></i><i></i></div></div>
   <div class="container hero__wrap">
     <div class="hero__grid">
@@ -21,10 +21,10 @@ const hasBelow = Astro.slots.has('below');
         {eyebrow && <p class="eyebrow" data-reveal>{eyebrow}</p>}
         <h1 class="hero__title" data-reveal style="--i:1"><slot name="title">{title}</slot>{titleDim && <span class="dim"> {titleDim}</span>}</h1>
       </div>
-      <div class="hero__side" data-reveal style="--i:2">
+      {(text || hasAside) && <div class="hero__side" data-reveal style="--i:2">
         {text && <p class="lede">{text}</p>}
         {hasAside && <div class="hero__aside"><slot name="aside" /></div>}
-      </div>
+      </div>}
     </div>
     {hasBelow && (
       <div class="hero__below" data-reveal style="--i:3">
@@ -45,6 +45,9 @@ const hasBelow = Astro.slots.has('below');
   .hero__title { font-size: var(--text-display); line-height: 1.02; letter-spacing: -0.01em; max-width: 17ch; }
   .hero--compact .hero__title { font-size: var(--text-h1); line-height: 1.08; max-width: 20ch; }
   .eyebrow + .hero__title { margin-top: 20px; }
+  .hero--center .hero__grid { grid-template-columns: minmax(0, 1fr); justify-items: center; text-align: center; }
+  .hero--center .hero__title { max-width: 22ch; margin-left: auto; margin-right: auto; }
+  .hero--center .hero__side { align-items: center; }
   .hero__side { display: flex; flex-direction: column; gap: 20px; padding-bottom: 4px; }
   .hero__side .lede { max-width: 42ch; }
   .hero__aside { padding-top: 16px; border-top: 1px solid var(--hairline); }
