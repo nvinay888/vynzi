@@ -3,7 +3,7 @@ import type { SourceMap } from './types';
 export const about = {
   hero: {
     eyebrow: 'About Vynzi',
-    title: 'A finance partner designed around the way modern businesses operate',
+    title: 'A partner designed around the way modern businesses operate (Financially and Sustainably)',
     text: 'Finance, data, technology and sustainability always overlap. We built Vynzi so that one team can cover it all.',
   },
   story: {
