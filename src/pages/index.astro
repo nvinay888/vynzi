@@ -2,7 +2,7 @@
 /* Home, v4 — rebuilt on the panxo.com page sequence: split hero → pastel panel with live UI → dark + light stat row →
    scroll-lit statement → sections with left headline / right paragraph headers. Blueprint slide 15 order preserved. */
 import BaseLayout from '../layouts/BaseLayout.astro';
-import PageHero from '../components/PageHero.astro';
+import SplitHero from '../components/SplitHero.astro';
 import DemoPanel from '../components/DemoPanel.astro';
 import WhyGrid from '../components/WhyGrid.astro';
 import ScrollText from '../components/ScrollText.astro';
@@ -33,9 +33,9 @@ const typeLabel = (k: string) => insights.types.find((t) => t.key === k)?.label 
 ---
 <BaseLayout title={site.name}>
   <!-- 1. Hero -->
-  <PageHero eyebrow={home.hero.eyebrow} title="Smarter finance." titleDim="Better decisions. Sustainable growth." text={home.hero.text}>
-    <div slot="below"><DemoPanel bare /></div>
-  </PageHero>
+  <SplitHero eyebrow={home.hero.eyebrow} title="Smarter finance." titleDim="Better decisions. Sustainable growth." text={home.hero.text}>
+    <DemoPanel bare />
+  </SplitHero>
 
   <!-- 2. Why / trust: stat row -->
   <WhyGrid heading="One accountable team for finance, technology and sustainability." items={about.why.items} />

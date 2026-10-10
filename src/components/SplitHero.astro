@@ -1,0 +1,35 @@
+---
+/* Split hero used on Home and the practice pages: heading with the sub-head under it on the left, the page's visual in a
+   pastel Panel on the right. No buttons: the header CTA, sticky mobile CTA and the CTA band carry the actions.
+   On phones the text comes first, then the visual. */
+import Panel from './Panel.astro';
+interface Props { eyebrow?: string; title: string; titleDim?: string; text?: string; panelTone?: 'blush' | 'teal' }
+const { eyebrow, title, titleDim, text, panelTone = 'blush' } = Astro.props;
+---
+<section class="phero">
+  <div class="container phero__lines" aria-hidden="true"><div><i></i><i></i><i></i><i></i></div></div>
+  <div class="container phero__grid">
+    <div class="phero__text" data-reveal>
+      {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+      <h1 class="phero__title">{title}{titleDim && <span class="dim"> {titleDim}</span>}</h1>
+      {text && <p class="lede phero__lede">{text}</p>}
+    </div>
+    <div class="phero__visual" data-reveal style="--i:1">
+      <Panel tone={panelTone} pad="md"><slot /></Panel>
+    </div>
+  </div>
+</section>
+
+<style>
+  .phero { position: relative; overflow: hidden; background: var(--gradient-hero); padding: clamp(40px, 6vw, 88px) 0 clamp(48px, 6vw, 88px); }
+  .phero__lines { position: absolute; inset: 0; pointer-events: none; }
+  .phero__lines > div { height: 100%; display: grid; grid-template-columns: repeat(4, 1fr); border-right: 1px solid var(--grid); }
+  .phero__lines i { border-left: 1px solid var(--grid); }
+  .phero__grid { position: relative; display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(32px, 5vw, 72px); align-items: center; }
+  .phero__title { margin-top: 18px; font-size: var(--text-h1); line-height: 1.08; letter-spacing: -0.01em; }
+  .phero__lede { margin-top: 20px; max-width: 44ch; }
+  @media (max-width: 900px) {
+    .phero__grid { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+    .phero__lines { display: none; }
+  }
+</style>

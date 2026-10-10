@@ -258,7 +258,9 @@ const bars = [42, 58, 50, 66, 61, 74, 70, 82, 78, 88, 84, 94];
   @keyframes ring { to { --p: 72%; } }
   @keyframes ringb { to { --p: 58%; } }
   @media (max-width: 760px) { .demo__view { grid-template-columns: 1fr; } .demo__chart { border-right: 0; border-bottom: 1px solid var(--ash); } .demo__tab { white-space: nowrap; font-size: 12px; padding: 7px 9px; } .demo__tab:nth-child(n+3) { display: none; } .demo__live { font-size: 0; gap: 0; } .demo__live i { width: 8px; height: 8px; } }
-  @media (max-width: 760px) {
+  /* The ESG flow stacks whenever its column is narrow (split hero, phones), whatever the viewport. */
+  .demo__chart { container-type: inline-size; }
+  @container (max-width: 480px) {
     .demo__flow { grid-template-columns: minmax(0, 1fr); gap: 18px; min-height: 0; }
     .demo__src { grid-template-rows: none; grid-template-columns: 1fr 1fr; gap: 6px; }
     .demo__wire { display: none; }
