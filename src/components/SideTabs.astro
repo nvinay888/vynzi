@@ -55,7 +55,12 @@ const { tabs, id, label = 'Sections', tone = 'blue', aside = false } = Astro.pro
       (prev.querySelector('span') as HTMLElement).textContent = labels[cur - 1] ?? '';
       (next.querySelector('span') as HTMLElement).textContent = labels[cur + 1] ?? '';
       count.textContent = `${cur + 1} / ${tabs.length}`;
-      tabs[cur].scrollIntoView({ block: 'nearest', inline: 'nearest' });
+      // Keep the active tab visible inside the (mobile, horizontal) tab bar only; never scroll the page itself.
+      const list = tabs[cur].parentElement!;
+      if (list.scrollWidth > list.clientWidth) {
+        const lr = list.getBoundingClientRect(), tr = tabs[cur].getBoundingClientRect();
+        if (tr.left < lr.left || tr.right > lr.right) list.scrollBy({ left: tr.left - lr.left - 8, behavior: 'smooth' });
+      }
       if (focus) tabs[cur].focus();
       if (scroll && root.getBoundingClientRect().top < 0) root.scrollIntoView({ behavior: 'smooth', block: 'start' });
     };
