@@ -1,11 +1,12 @@
 ---
 /* Side-tab explorer: replaces stacks of long sections with one compact panel.
    Desktop: vertical tab list left, panel right. Mobile: a swipeable tab bar on top, panel below.
+   A tab's `short` label replaces the full label in the mobile pill bar.
    Panels are the direct children of the default slot (`<div data-panel>…</div>`), in the same order as `tabs`.
    Each panel ends with previous / next links so the sequence still reads as a story on a phone.
    Without JavaScript every panel is shown in order. */
 import { Icon } from 'astro-icon/components';
-interface Tab { label: string; sub?: string; icon?: string }
+interface Tab { label: string; sub?: string; icon?: string; short?: string }
 interface Props { tabs: Tab[]; id: string; label?: string; tone?: 'blue' | 'teal'; aside?: boolean }
 const { tabs, id, label = 'Sections', tone = 'blue', aside = false } = Astro.props;
 ---
@@ -16,7 +17,7 @@ const { tabs, id, label = 'Sections', tone = 'blue', aside = false } = Astro.pro
       {tabs.map((t, i) => (
         <button type="button" role="tab" id={`${id}-tab-${i}`} aria-controls={`${id}-panel-${i}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1} class:list={['st__tab', { 'is-on': i === 0 }]}>
           {t.icon && <span class="st__icon"><Icon name={t.icon} /></span>}
-          <span class="st__text"><strong>{t.label}</strong>{t.sub && <small>{t.sub}</small>}</span>
+          <span class="st__text"><strong class:list={{ 'st__full': t.short }}>{t.label}</strong>{t.short && <strong class="st__short">{t.short}</strong>}{t.sub && <small>{t.sub}</small>}</span>
           <svg class="st__chev" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
         </button>
       ))}
@@ -97,6 +98,7 @@ const { tabs, id, label = 'Sections', tone = 'blue', aside = false } = Astro.pro
   .st--teal .st__tab.is-on .st__icon { background: var(--teal-soft); color: var(--teal); }
   .st__text strong { display: block; font-size: 14.5px; font-weight: 600; line-height: 1.3; }
   .st__text small { display: block; margin-top: 2px; font-size: 12.5px; line-height: 1.35; color: var(--stone); }
+  .st__short { display: none !important; }
   .st__chev { width: 16px; height: 16px; opacity: 0; transition: opacity var(--dur-fast), transform var(--dur-fast); }
   .st__tab.is-on .st__chev { opacity: .6; }
   .st__panels { position: relative; min-width: 0; padding: clamp(24px, 3.4vw, 44px); display: flex; flex-direction: column; }
@@ -124,7 +126,8 @@ const { tabs, id, label = 'Sections', tone = 'blue', aside = false } = Astro.pro
     .st__tab:not(:has(.st__icon)) { grid-template-columns: auto; padding: 9px 16px; }
     .st__icon { width: 26px; height: 26px; border-radius: 8px; }
     .st__icon :global(svg) { width: 16px; height: 16px; }
-    .st__text small, .st__chev { display: none; }
+    .st__text small, .st__chev, .st__full { display: none !important; }
+    .st__short { display: block !important; }
     .st__text strong { font-size: 14px; }
     .st__panels { padding: 22px 18px; }
   }

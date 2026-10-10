@@ -7,10 +7,8 @@ import DemoPanel from '../components/DemoPanel.astro';
 import WhyGrid from '../components/WhyGrid.astro';
 import ScrollText from '../components/ScrollText.astro';
 import SectionHeader from '../components/SectionHeader.astro';
-import SectorGrid from '../components/SectorGrid.astro';
 import PracticeCard from '../components/PracticeCard.astro';
 import SideTabs from '../components/SideTabs.astro';
-import Timeline from '../components/Timeline.astro';
 import CtaBand from '../components/CtaBand.astro';
 import { Icon } from 'astro-icon/components';
 import { home } from '../content/home';
@@ -18,10 +16,18 @@ import { about } from '../content/about';
 import { insights } from '../content/insights';
 import { practices, site } from '../data/site';
 import { overview } from '../content/services';
+import { industries } from '../content/industries';
+import { sectors } from '../data/site';
 
 const showProof = home.proof.items.length > 0;
 const probIcons: Record<string, string> = { Growth: 'ph:trend-up-duotone', Visibility: 'ph:eye-duotone', Control: 'ph:shield-check-duotone', Automation: 'ph:lightning-duotone', 'ESG readiness': 'ph:leaf-duotone' };
-const problemTabs = overview.selector.problems.map((p) => ({ label: p.label, sub: p.practices.map((s) => practices.find((x) => x.slug === s)!.short).join(' · '), icon: probIcons[p.label] }));
+const sectorIcon = (slug: string) => sectors.find((s) => s.slug === slug)?.icon ?? 'ph:buildings-duotone';
+const exploreTabs = [
+  { label: 'One partner for finance, technology and sustainability', short: 'Services', sub: 'Four practices, one team', icon: 'ph:squares-four-duotone' },
+  { label: 'Cross-sector experience, applied to the right solution', short: 'Industries', sub: 'Seven sectors we know well', icon: 'ph:buildings-duotone' },
+  { label: 'Support for the situations growing businesses face', short: 'Situations', sub: 'Growth · Visibility · Control · Automation · ESG', icon: 'ph:compass-duotone' },
+  { label: 'How we work with you', short: 'How we work', sub: 'Assess · Design · Implement · Improve', icon: 'ph:path-duotone' },
+];
 const latest = insights.articles.slice(0, 3);
 const typeLabel = (k: string) => insights.types.find((t) => t.key === k)?.label ?? k;
 ---
@@ -37,44 +43,79 @@ const typeLabel = (k: string) => insights.types.find((t) => t.key === k)?.label 
   <!-- Statement -->
   <ScrollText dark accent="Finance, data, technology and sustainability" text="Finance, data, technology and sustainability always overlap. We built one team to cover it all: senior finance leadership when decisions need it, dependable operations every month, systems that connect the numbers, and sustainability reporting your stakeholders can trust." />
 
-  <!-- 3. Four practices -->
-  <section class="section">
+  <!-- 3–5. Practices, sectors, situations, process: one side-tab explorer instead of four stacked sections -->
+  <section class="section" id="explore">
     <div class="container">
-      <SectionHeader eyebrow={home.practices.eyebrow} title="One partner for finance," titleDim="technology and sustainability" text={home.practices.text} action="See all services" actionHref="/services" />
-      <div class="grid grid--4 m-swipe">
-        {practices.map((p, i) => <PracticeCard href={`/services/${p.slug}`} icon={p.icon} title={p.nav} text={p.oneLiner} verbs={p.verbs} accent={p.accent} variant="elevated" index={i} />)}
-      </div>
-    </div>
-  </section>
-
-  <!-- Sectors -->
-  <SectorGrid />
-
-  <!-- 4. Problems: one explorer -->
-  <section class="section band">
-    <div class="container">
-      <SectionHeader eyebrow="Situations we help with" title="Support for the situations" titleDim="growing businesses face" text="Most engagements start with one of these five. Pick yours to see which practices resolve it." action="All services" actionHref="/services" />
-      <SideTabs tabs={problemTabs} id="home-problems" label="Situations">
-        {overview.selector.problems.map((p) => (
-          <div data-panel data-slug={`problem-${p.key}`}>
-            <div class="pb"><span class="ring ring--blue"><Icon name={probIcons[p.label]} /></span><h3>{p.label}</h3></div>
-            <p class="pb__lead">{p.text}</p>
-            <div class="pb__res">
-              {p.practices.map((slug) => { const pr = practices.find((x) => x.slug === slug)!; return (
-                <a href={`/services/${slug}`} class="pb__card"><span class:list={['ring', 'ring--sm', pr.accent === 'teal' ? 'ring--teal' : 'ring--blue']}><Icon name={pr.icon} /></span><span><strong>{pr.nav}</strong><small>{pr.oneLiner}</small></span><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
-              ); })}
-            </div>
+      <SideTabs tabs={exploreTabs} id="home-explore" label="About our work">
+        <div data-panel data-slug="practices">
+          <div class="hp__head">
+            <h2 class="hp__title">One partner for finance, <span class="dim">technology and sustainability</span></h2>
+            <p class="hp__text">{home.practices.text}</p>
           </div>
-        ))}
-      </SideTabs>
-    </div>
-  </section>
+          <div class="hp__grid2 m-swipe">
+            {practices.map((p) => <PracticeCard href={`/services/${p.slug}`} icon={p.icon} title={p.nav} text={p.oneLiner} verbs={p.verbs} accent={p.accent} />)}
+          </div>
+          <a href="/services" class="arrow arrow--blue hp__more">See all services<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+        </div>
 
-  <!-- 5. How we work -->
-  <section class="section">
-    <div class="container">
-      <SectionHeader eyebrow={home.how.eyebrow} title="How we work" titleDim="with you" text="The same four steps on every engagement, whether the subject is a forecast, a month-end close, an ERP or an ESG report." />
-      <Timeline steps={home.how.steps} />
+        <div data-panel data-slug="sectors">
+          <div class="hp__head">
+            <h2 class="hp__title">Cross-sector experience, <span class="dim">applied to the right solution for your business</span></h2>
+            <p class="hp__text">Seven industries where we already know the leading practices, the regulations and the numbers that matter, and the lessons that carry across them.</p>
+          </div>
+          <div class="hp__grid2">
+            {industries.sectors.map((s) => (
+              <a href={`/industries#${s.slug}`} class="hp__row">
+                <span class="ring ring--sm ring--blue"><Icon name={sectorIcon(s.slug)} /></span>
+                <span><strong>{s.name}</strong><small>{s.provide}</small></span>
+                <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </a>
+            ))}
+          </div>
+          <a href="/industries" class="arrow arrow--blue hp__more">All industries<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+        </div>
+
+        <div data-panel data-slug="situations">
+          <div class="hp__head">
+            <h2 class="hp__title">Support for the situations <span class="dim">growing businesses face</span></h2>
+            <p class="hp__text">Most engagements start with one of these five. Each one links to the practices that resolve it.</p>
+          </div>
+          <ul class="hp__sits">
+            {overview.selector.problems.map((p) => (
+              <li class="hp__sit">
+                <span class="ring ring--sm ring--blue"><Icon name={probIcons[p.label]} /></span>
+                <div>
+                  <strong>{p.label}</strong>
+                  <p>{p.text}</p>
+                  <div class="hp__chips">
+                    {p.practices.map((slug) => { const pr = practices.find((x) => x.slug === slug)!; return <a href={`/services/${slug}`} class="hp__chip"><Icon name={pr.icon} />{pr.nav}</a>; })}
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div data-panel data-slug="how-we-work">
+          <div class="hp__head">
+            <h2 class="hp__title">How we work <span class="dim">with you</span></h2>
+            <p class="hp__text">The same four steps on every engagement, whether the subject is a forecast, a month-end close, an ERP or an ESG report.</p>
+          </div>
+          <ol class="hp__steps">
+            {home.how.steps.map((st, i) => (
+              <li class="hp__step">
+                <span class="hp__node"><Icon name={st.icon} /></span>
+                <div>
+                  <span class="hp__count">Step {i + 1}</span>
+                  <strong>{st.title}</strong>
+                  <p>{st.text}</p>
+                  <div class="hp__outs">{st.outputs.map((o) => <span><Icon name="ph:check-bold" />{o}</span>)}</div>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </SideTabs>
     </div>
   </section>
 
@@ -104,16 +145,38 @@ const typeLabel = (k: string) => insights.types.find((t) => t.key === k)?.label 
 </BaseLayout>
 
 <style>
-  .pb { display: flex; align-items: center; gap: 14px; }
-  .pb h3 { font-size: clamp(24px, 2.4vw, 30px); }
-  .pb__lead { margin-top: 16px; font-size: 18px; line-height: 1.55; font-weight: 500; color: var(--ink-72); max-width: 52ch; }
-  .pb__res { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 24px; }
-  .pb__card { display: grid; grid-template-columns: auto 1fr 16px; gap: 14px; align-items: center; padding: 18px; border-radius: 14px; background: var(--surface); box-shadow: rgba(11,31,77,.08) 0 0 0 1px; color: inherit; transition: transform var(--dur) var(--ease-out), box-shadow var(--dur); }
-  .pb__card:hover { transform: translateY(-2px); box-shadow: var(--shadow-float); }
-  .pb__card strong { display: block; font-weight: 600; color: var(--ink); }
-  .pb__card small { display: block; margin-top: 2px; font-size: 13px; color: var(--slate); }
-  .pb__card svg { width: 16px; height: 16px; color: var(--stone); }
-  @media (max-width: 700px) { .pb__res { grid-template-columns: 1fr; } }
+  .hp__head { display: flex; flex-direction: column; gap: 12px; max-width: 62ch; }
+  .hp__title { font-size: clamp(26px, 2.6vw, 34px); line-height: 1.15; }
+  .hp__text { font-size: 16px; line-height: 1.55; color: var(--slate); }
+  .hp__more { margin-top: 24px; font-size: 15px; }
+  .hp__grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 28px; }
+  .hp__row { display: grid; grid-template-columns: auto 1fr 16px; gap: 14px; align-items: center; padding: 16px 18px; border-radius: 14px; background: var(--surface); box-shadow: rgba(11,31,77,.08) 0 0 0 1px; color: inherit; transition: transform var(--dur) var(--ease-out), box-shadow var(--dur); }
+  .hp__row:hover { transform: translateY(-2px); box-shadow: var(--shadow-float); }
+  .hp__row strong { display: block; font-weight: 600; color: var(--ink); }
+  .hp__row small { display: block; margin-top: 2px; font-size: 13px; line-height: 1.45; color: var(--slate); }
+  .hp__row > svg { width: 16px; height: 16px; color: var(--stone); transition: transform var(--dur-fast), color var(--dur-fast); }
+  .hp__row:hover > svg { color: var(--blue); transform: translateX(3px); }
+  .hp__sits { margin-top: 24px; display: flex; flex-direction: column; }
+  .hp__sit { display: grid; grid-template-columns: auto 1fr; gap: 16px; padding: 18px 0; border-top: 1px solid var(--ash); }
+  .hp__sit:last-child { padding-bottom: 0; }
+  .hp__sit strong { display: block; font-family: var(--font-display); font-weight: 500; font-size: 19px; letter-spacing: -0.01em; color: var(--ink); }
+  .hp__sit p { margin-top: 4px; font-size: 15px; line-height: 1.5; color: var(--slate); }
+  .hp__chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .hp__chip { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px 6px 9px; border-radius: 999px; background: var(--surface); box-shadow: rgba(11,31,77,.1) 0 0 0 1px; font-size: 13px; font-weight: 500; color: var(--ink); transition: background var(--dur-fast), color var(--dur-fast); }
+  .hp__chip :global(svg) { width: 15px; height: 15px; color: var(--blue); }
+  .hp__chip:hover { background: var(--blue-soft); color: var(--blue); }
+  .hp__steps { position: relative; margin-top: 28px; display: flex; flex-direction: column; gap: 22px; }
+  .hp__steps::before { content: ''; position: absolute; left: 21px; top: 22px; bottom: 22px; width: 2px; background: var(--ash); }
+  .hp__step { position: relative; display: grid; grid-template-columns: 44px 1fr; gap: 18px; }
+  .hp__node { position: relative; display: inline-flex; width: 44px; height: 44px; align-items: center; justify-content: center; border-radius: 50%; background: var(--surface-elevated); border: 2px solid var(--blue); color: var(--blue); }
+  .hp__node :global(svg) { width: 20px; height: 20px; }
+  .hp__count { display: block; font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--stone); }
+  .hp__step strong { display: block; margin-top: 2px; font-family: var(--font-display); font-weight: 500; font-size: 20px; letter-spacing: -0.01em; color: var(--ink); }
+  .hp__step p { margin-top: 4px; font-size: 15px; line-height: 1.5; color: var(--slate); }
+  .hp__outs { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 10px; }
+  .hp__outs span { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 500; color: var(--ink); }
+  .hp__outs :global(svg) { width: 13px; height: 13px; color: var(--teal); }
+  @media (max-width: 700px) { .hp__grid2 { grid-template-columns: minmax(0, 1fr); } }
   .card-lite { padding: 24px; border-radius: var(--r-card); background: var(--surface-base); }
   .posts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
   .post { display: flex; flex-direction: column; gap: 12px; padding: 24px; border-radius: var(--r-panel); background: var(--surface-elevated); box-shadow: var(--shadow-subtle-2); color: inherit; transition: transform var(--dur) var(--ease-out), box-shadow var(--dur); }
