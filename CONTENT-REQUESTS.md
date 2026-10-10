@@ -20,7 +20,6 @@ Everything the site has a slot for but no source for. Nothing here is invented; 
 | 7 | Home hero / service heroes | Preferred imagery: real team or office photos, or keep the abstract system illustration built in code |
 | 8 | Technology & Automation | Confirm whether cyber security solutions and IT audit compliance (mentioned on the old site) are still offered; if yes they are added as modules |
 | 9 | About → story | Confirm taxation and forensic accounting (mentioned on the old site) are still offered; otherwise the sentence is trimmed |
-| 10 | Contact | Confirm the "reply within one business day" promise, or give the wording you prefer |
 | 11 | Contact form | Web3Forms access key (free account at web3forms.com using srikanth@vynzicfo.com); until then the form falls back to a mailto link |
 | 12 | Careers | Any open roles (title, location, 2–3 lines) |
 | 13 | Privacy / Terms | Legal review of the drafts before launch |

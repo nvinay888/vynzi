@@ -1,16 +1,13 @@
 ---
-/* The one service-page template (blueprint slide 10): Hero → Challenge → What we do → How we work → Deliverables → Who it is for → (Proof) → Why VynziCFO → CTA.
-   Each practice gets its own hero visual: demo panel, close calendar, architecture diagram, ESG loop. */
+/* Practice page, v5 — short page: hero with visual → one side-tab explorer holding the whole service story → related
+   practices carousel → CTA. Tabs render only when their content exists (the ESG page carries deck content only, so it
+   shows one tab per workstream). Layout ideas per tab follow the blueprint deck: module chips (slides 6–7), page-flow
+   stack (slide 6), step cards (slide 8), grouped cards (slide 9). */
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PageHero from '../../components/PageHero.astro';
-import SectionIntro from '../../components/SectionIntro.astro';
-import LedgerList from '../../components/LedgerList.astro';
-import WorkstreamTabs from '../../components/WorkstreamTabs.astro';
-import Timeline from '../../components/Timeline.astro';
-import WhyGrid from '../../components/WhyGrid.astro';
 import SectionHeader from '../../components/SectionHeader.astro';
-import Badge from '../../components/Badge.astro';
-import Button from '../../components/Button.astro';
+import SideTabs from '../../components/SideTabs.astro';
+import Carousel from '../../components/Carousel.astro';
 import PracticeCard from '../../components/PracticeCard.astro';
 import CtaBand from '../../components/CtaBand.astro';
 import DemoPanel from '../../components/DemoPanel.astro';
@@ -33,97 +30,120 @@ const tone = p.accent;
 const isTech = p.slug === 'technology-automation';
 const isEsg = p.slug === 'sustainability-esg';
 const isAcc = p.slug === 'accounting-finance-operations';
+const slugify = (t: string) => t.toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+const wsIcons = ['ph:compass-duotone', 'ph:database-duotone', 'ph:flow-arrow-duotone', 'ph:users-three-duotone', 'ph:seal-check-duotone'];
 const whoIcons = ['ph:buildings-duotone', 'ph:rocket-launch-duotone', 'ph:users-three-duotone'];
-const whyItems = about.why.items.map((w, i) => ({ ...w, icon: ['ph:trend-up-duotone', 'ph:eye-duotone', 'ph:shield-check-duotone'][i] }));
+const whyIcons = ['ph:trend-up-duotone', 'ph:eye-duotone', 'ph:shield-check-duotone'];
+
+type T = { label: string; sub?: string; icon?: string; key: string };
+const tabs: T[] = isEsg
+  ? p.work.workstreams.map((w, i) => ({ label: w.title, sub: `${w.modules.length} areas`, icon: wsIcons[i], key: `ws-${i}` }))
+  : [
+      p.challenge.situations.length && { label: 'The challenge', sub: 'When businesses call us', icon: 'ph:warning-circle-duotone', key: 'challenge' },
+      p.work.workstreams.length && { label: 'What we do', sub: `${p.work.workstreams.reduce((n, w) => n + w.modules.length, 0)} service modules`, icon: 'ph:squares-four-duotone', key: 'work' },
+      p.how.steps.length && { label: 'How we work', sub: `${p.how.steps.length} steps`, icon: 'ph:path-duotone', key: 'how' },
+      p.deliverables.items.length && { label: 'Deliverables', sub: 'What you receive', icon: 'ph:package-duotone', key: 'deliverables' },
+      p.who.items.length && { label: 'Who it is for', sub: 'Typical situations', icon: 'ph:users-three-duotone', key: 'who' },
+      { label: 'Why Vynzi', sub: 'One accountable team', icon: 'ph:seal-check-duotone', key: 'why' },
+    ].filter(Boolean) as T[];
 ---
 <BaseLayout title={p.name} description={p.hero.text}>
-  <PageHero eyebrow={p.name} title={p.hero.title} text={p.hero.text} tone={tone} primary={p.hero.cta} secondary="All services" secondaryHref="/services" panelTone={isEsg ? 'teal' : 'blush'}>
+  <PageHero eyebrow={p.name} title={p.hero.title} text={p.hero.text} tone={tone} primary={p.hero.cta} secondary="Explore the details" secondaryHref="#explore" panelTone={isEsg ? 'teal' : 'blush'}>
     <div slot="below">
       {isTech && <ArchitectureDiagram />}
       {isAcc && <CloseCalendar />}
-      {isEsg && <div class="esg-hero"><EsgLoop /><div class="esg-hero__text"><p class="eyebrow">The loop</p><p class="statement esg-hero__stmt">Disclosure is the output. <em>Management</em> is the work.</p><p class="muted">Govern, measure, report, improve: the same cycle every reporting period, with data your auditors and rating agencies can trace.</p></div></div>}
+      {isEsg && (
+        <div class="esg-hero">
+          <EsgLoop />
+          <div class="esg-hero__side">
+            <p class="eyebrow">Five areas of work</p>
+            <ul class="esg-hero__list">
+              {p.work.workstreams.map((w, i) => <li><a href={`#${slugify(w.title)}`}><span class="ring ring--sm ring--teal"><Icon name={wsIcons[i]} /></span><span>{w.title}</span><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a></li>)}
+            </ul>
+          </div>
+        </div>
+      )}
       {!isTech && !isAcc && !isEsg && <DemoPanel bare />}
     </div>
   </PageHero>
 
-  <!-- The challenge -->
-  <section class="section">
-    <div class="container split">
-      <div class="split__aside"><SectionIntro eyebrow="The challenge" title={p.challenge.title} lede={p.challenge.intro} tone={tone} /></div>
-      <LedgerList items={p.challenge.situations.map((s) => ({ text: s }))} />
-    </div>
-  </section>
-
-  <!-- What we do -->
-  <section class="section band">
+  <!-- One explorer replaces the stack of long sections -->
+  <section class="section" id="explore">
     <div class="container">
-      <SectionHeader eyebrow="What we do" title={p.work.title} text={p.work.intro} />
-      <WorkstreamTabs workstreams={p.work.workstreams} tone={tone} id={`ws-${p.slug}`} />
-    </div>
-  </section>
-
-  <!-- How we work -->
-  <section class="section">
-    <div class="container">
-      <SectionHeader eyebrow="How we work" title={p.how.title} text={p.how.intro} />
-      {isTech && <div class="flow-wrap"><FlowDiagram stages={p.how.steps.map((s) => s.title)} /></div>}
-      <Timeline steps={p.how.steps} tone={tone} />
-    </div>
-  </section>
-
-  <!-- Deliverables -->
-  <section class="section band">
-    <div class="container split">
-      <div class="split__aside">
-        <SectionIntro eyebrow="Deliverables" title={p.deliverables.title} tone={tone}>
-          <div class="dcard">
-            <p class="eyebrow dcard__eyebrow">In one line</p>
-            <p class="dcard__text">{p.deliverables.items.map((d) => d.title.toLowerCase()).join(' · ')}</p>
-            <Button href="/contact" variant="gold" icon>{p.hero.cta}</Button>
-          </div>
-        </SectionIntro>
-      </div>
-      <ul class="deliv">
-        {p.deliverables.items.map((d, i) => (
-          <li data-reveal style={`--i:${i}`}>
-            <span class:list={['ring', 'ring--sm', tone === 'teal' ? 'ring--teal' : 'ring--blue']}><Icon name="ph:check-bold" /></span>
-            <div><h4>{d.title}</h4>{d.text && <p class="small muted">{d.text}</p>}</div>
-          </li>
-        ))}
-      </ul>
-    </div>
-  </section>
-
-  <!-- Who it is for -->
-  <section class="section">
-    <div class="container">
-      <SectionHeader eyebrow="Who it is for" title={p.who.title} text="Typical situations and profiles of the businesses we work with in this practice." action="See it by sector" actionHref="/industries" />
-      <div class="who">
-        {p.who.items.map((w, i) => (
-          <div class="who__item" data-reveal style={`--i:${i}`}>
-            <span class:list={['ring', tone === 'teal' ? 'ring--teal' : 'ring--blue']}><Icon name={whoIcons[i % whoIcons.length]} /></span>
-            <p>{w}</p>
+      <SectionHeader eyebrow={isEsg ? p.name : 'The practice in detail'} title={isEsg ? 'What we do' : p.name} text={isEsg ? undefined : 'Everything about this practice in one place. Pick a tab, or step through them in order.'} />
+      <SideTabs tabs={tabs} id={`px-${p.slug}`} label={`${p.name} details`} tone={tone}>
+        {isEsg && p.work.workstreams.map((w, i) => (
+          <div data-panel data-slug={slugify(w.title)}>
+            <div class="ph"><span class="ring ring--teal"><Icon name={wsIcons[i]} /></span><div><p class="eyebrow">Area {i + 1} of {p.work.workstreams.length}</p><h3>{w.title}</h3></div></div>
+            <ul class="chips">{w.modules.map((m) => <li><Icon name="ph:check-bold" />{m}</li>)}</ul>
+            <div class="callout"><p class="eyebrow callout__eyebrow">Core positioning</p><p class="callout__text">Move from ESG disclosure to ESG management.</p></div>
           </div>
         ))}
-      </div>
+
+        {!isEsg && p.challenge.situations.length > 0 && (
+          <div data-panel data-slug="challenge">
+            <h3 class="pt">{p.challenge.title}</h3>
+            <p class="pi">{p.challenge.intro}</p>
+            <ol class="sit">{p.challenge.situations.map((s, i) => <li><span>{String(i + 1).padStart(2, '0')}</span><p>{s}</p></li>)}</ol>
+          </div>
+        )}
+
+        {!isEsg && p.work.workstreams.length > 0 && (
+          <div data-panel data-slug="what-we-do">
+            <h3 class="pt">{p.work.title}</h3>
+            <p class="pi">{p.work.intro}</p>
+            <div class="ws">
+              {p.work.workstreams.map((w) => (
+                <div class="ws__group">
+                  <p class="ws__title">{w.title}</p>
+                  <ul class="chips chips--col">{w.modules.map((m) => <li><Icon name="ph:check-bold" />{m}</li>)}</ul>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {!isEsg && p.how.steps.length > 0 && (
+          <div data-panel data-slug="how-we-work">
+            <h3 class="pt">{p.how.title}</h3>
+            <p class="pi">{p.how.intro}</p>
+            {isTech && <div class="flow"><FlowDiagram stages={p.how.steps.map((s) => s.title)} /></div>}
+            <ol class="flowlist">{p.how.steps.map((s, i) => <li><span class="flowlist__n">{i + 1}</span><div><strong>{s.title}</strong><p>{s.text}</p></div></li>)}</ol>
+          </div>
+        )}
+
+        {!isEsg && p.deliverables.items.length > 0 && (
+          <div data-panel data-slug="deliverables">
+            <h3 class="pt">{p.deliverables.title}</h3>
+            <ul class="deliv">{p.deliverables.items.map((d) => <li><span class="ring ring--sm ring--blue"><Icon name="ph:check-bold" /></span><div><strong>{d.title}</strong>{d.text && <p>{d.text}</p>}</div></li>)}</ul>
+          </div>
+        )}
+
+        {!isEsg && p.who.items.length > 0 && (
+          <div data-panel data-slug="who-it-is-for">
+            <h3 class="pt">{p.who.title}</h3>
+            <ul class="who">{p.who.items.map((w, i) => <li><span class="ring ring--blue"><Icon name={whoIcons[i % whoIcons.length]} /></span><p>{w}</p></li>)}</ul>
+            <a href="/industries" class="arrow arrow--blue who__link">See how this applies in your sector<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+          </div>
+        )}
+
+        {!isEsg && (
+          <div data-panel data-slug="why-vynzi">
+            <h3 class="pt">Senior capability, practical delivery, one accountable team</h3>
+            <ul class="why">{about.why.items.map((w, i) => <li><span class="ring ring--blue"><Icon name={whyIcons[i]} /></span><strong>{w.title}</strong><p>{w.text}</p></li>)}</ul>
+          </div>
+        )}
+      </SideTabs>
     </div>
   </section>
 
-  <!-- Proof: rendered only when real content exists -->
-  {p.proof.items.length > 0 && (
-    <section class="section band"><div class="container"><SectionIntro eyebrow="Proof" title={p.proof.title} tone={tone} /><div class="grid grid--3">{p.proof.items.map((c) => <div class="pcardlite"><h4>{c.title}</h4><p class="small muted">{c.text}</p></div>)}</div></div></section>
-  )}
-
-  <!-- Why VynziCFO (blueprint slide 2) -->
-  <WhyGrid heading={isEsg ? 'The same discipline we bring to financial reporting, applied to sustainability.' : 'Senior capability, practical delivery, one accountable team.'} items={whyItems} />
-
-  <!-- Other practices -->
-  <section class="section">
+  <!-- Related practices: one row, swipe on mobile -->
+  <section class="section section--tight">
     <div class="container">
-      <SectionHeader eyebrow="Also from VynziCFO" title="Practices that often work" titleDim="alongside this one" action="All services" actionHref="/services" />
-      <div class="grid grid--3">
+      <SectionHeader eyebrow="Also from Vynzi" title="Practices that often work" titleDim="alongside this one" action="All services" actionHref="/services" />
+      <Carousel per={3} label="Other practices">
         {others.map((o, i) => <PracticeCard href={`/services/${o.slug}`} icon={o.icon} title={o.name} text={oneLiner(o.slug)} verbs={o.eyebrow} accent={o.accent} variant="elevated" index={i} />)}
-      </div>
+      </Carousel>
     </div>
   </section>
 
@@ -131,26 +151,61 @@ const whyItems = about.why.items.map((w, i) => ({ ...w, icon: ['ph:trend-up-duot
 </BaseLayout>
 
 <style>
-  .wd__head { margin-bottom: 40px; }
-  .flow-wrap { margin: 0 0 40px; padding: 20px 24px; border-radius: var(--r-panel); background: var(--surface-elevated); box-shadow: var(--shadow-subtle); }
-  .esg-hero { display: grid; grid-template-columns: 1fr 1.2fr; gap: 40px; align-items: center; padding: 32px; border-radius: 16px; background: var(--surface-elevated); box-shadow: var(--shadow-float); }
-  .esg-hero__stmt { margin-top: 12px; font-size: clamp(24px, 3vw, 36px); }
-  .esg-hero__stmt em { font-style: normal; color: var(--teal); }
-  .esg-hero__text .muted { margin-top: 14px; max-width: 48ch; }
-  .dcard { padding: 24px; border-radius: var(--r-panel); background: var(--gradient-dark-card); color: #fff; }
-  .dcard__eyebrow { color: var(--gold); }
-  .dcard__text { margin: 12px 0 20px; font-size: 14.5px; line-height: 1.6; color: rgba(255,255,255,.78); }
-  .deliv { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0 32px; }
-  .deliv li { display: flex; gap: 14px; align-items: flex-start; padding: 20px 0; border-bottom: 1px solid var(--hairline); }
-  .deliv li:nth-child(-n+2) { border-top: 1px solid var(--hairline); }
-  .deliv p { margin-top: 4px; }
-  .who { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
-  .who__item { display: flex; flex-direction: column; gap: 18px; padding: 26px; border-radius: var(--r-panel); background: var(--surface-base); color: var(--graphite); }
-  .who__item--link { background: var(--gradient-dark-card); color: rgba(255,255,255,.78); transition: transform var(--dur) var(--ease-out); }
-  .who__item--link:hover { transform: translateY(-3px); }
-  .who__item--link strong { color: #fff; font-family: var(--font-display); font-size: 18px; letter-spacing: -0.015em; }
-  .who__item--link .arrow { margin-top: auto; font-size: 14px; }
-  .pcardlite { padding: 24px; border-radius: var(--r-card); background: var(--surface-elevated); box-shadow: var(--shadow-subtle); }
-  @media (max-width: 960px) { .who { grid-template-columns: repeat(2, 1fr); } .esg-hero { grid-template-columns: 1fr; padding: 24px; } }
-  @media (max-width: 640px) { .deliv { grid-template-columns: 1fr; } .deliv li:nth-child(2) { border-top: 0; } .who { grid-template-columns: 1fr; } }
+  .esg-hero { display: grid; grid-template-columns: 1fr 1.1fr; gap: 32px; align-items: center; padding: clamp(20px, 3vw, 36px); border-radius: 16px; background: var(--surface-elevated); box-shadow: var(--shadow-float); }
+  .esg-hero__list { margin-top: 12px; }
+  .esg-hero__list a { display: grid; grid-template-columns: auto 1fr 16px; align-items: center; gap: 12px; padding: 12px 4px; border-bottom: 1px dashed var(--ash); font-weight: 500; color: var(--ink); transition: padding var(--dur-fast), color var(--dur-fast); }
+  .esg-hero__list li:last-child a { border-bottom: 0; }
+  .esg-hero__list a svg { width: 16px; height: 16px; opacity: .4; transition: transform var(--dur-fast), opacity var(--dur-fast); }
+  .esg-hero__list a:hover { padding-left: 10px; color: var(--teal); }
+  .esg-hero__list a:hover svg { opacity: 1; transform: translateX(3px); }
+
+  .pt { font-size: clamp(22px, 2.2vw, 28px); max-width: 28ch; }
+  .pi { margin-top: 10px; color: var(--slate); max-width: 60ch; }
+  .ph { display: flex; align-items: center; gap: 14px; }
+  .ph .eyebrow { margin-bottom: 4px; }
+  .ph h3 { font-size: clamp(22px, 2.2vw, 28px); }
+
+  .chips { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; margin-top: 24px; }
+  .chips li { display: flex; align-items: center; gap: 10px; padding: 14px 16px; border-radius: 12px; background: var(--surface); box-shadow: rgba(11,31,77,.08) 0 0 0 1px; font-size: 14.5px; font-weight: 500; color: var(--ink); }
+  .chips li :global(svg) { width: 14px; height: 14px; color: var(--teal); flex: none; }
+  .chips--col { grid-template-columns: 1fr; margin-top: 12px; gap: 8px; }
+  .chips--col li { padding: 11px 14px; font-size: 14px; background: #fff; }
+  .callout { margin-top: 24px; padding: 22px 24px; border-radius: 14px; background: var(--gradient-dark-card); color: #fff; }
+  .callout__eyebrow { color: var(--gold); }
+  .callout__text { margin-top: 8px; font-family: var(--font-display); font-weight: 500; font-size: clamp(20px, 2vw, 24px); line-height: 1.25; }
+
+  .sit { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 24px; }
+  .sit li { display: flex; gap: 14px; padding: 18px 20px; border-radius: 12px; background: var(--surface); box-shadow: rgba(11,31,77,.08) 0 0 0 1px; }
+  .sit li span { font-family: var(--font-mono); font-size: 12px; color: var(--blue); padding-top: 4px; }
+  .sit li p { color: var(--graphite); font-size: 15px; line-height: 1.55; }
+
+  .ws { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-top: 24px; }
+  .ws__group { padding: 16px; border-radius: 14px; background: var(--surface-base); }
+  .ws__title { font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-72); }
+
+  .flow { margin-top: 20px; padding: 12px 16px; border-radius: 14px; background: var(--surface); box-shadow: rgba(11,31,77,.08) 0 0 0 1px; }
+  .flowlist { position: relative; margin-top: 24px; display: flex; flex-direction: column; gap: 10px; }
+  .flowlist::before { content: ''; position: absolute; left: 17px; top: 18px; bottom: 18px; width: 2px; background: var(--ash); }
+  .flowlist li { position: relative; display: grid; grid-template-columns: 36px 1fr; gap: 16px; align-items: start; padding: 14px 18px 14px 0; }
+  .flowlist__n { position: relative; z-index: 1; display: inline-flex; width: 36px; height: 36px; align-items: center; justify-content: center; border-radius: 50%; background: #fff; border: 2px solid var(--blue); color: var(--blue); font-family: var(--font-display); font-weight: 600; font-size: 15px; }
+  .flowlist strong { display: block; font-size: 16px; font-weight: 600; color: var(--ink); padding-top: 6px; }
+  .flowlist p { margin-top: 4px; font-size: 14.5px; line-height: 1.55; color: var(--slate); }
+
+  .deliv { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0 28px; margin-top: 20px; }
+  .deliv li { display: flex; gap: 14px; align-items: flex-start; padding: 16px 0; border-bottom: 1px solid var(--ash); }
+  .deliv strong { display: block; font-weight: 600; color: var(--ink); }
+  .deliv p { margin-top: 4px; font-size: 14px; color: var(--slate); }
+
+  .who { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 24px; }
+  .who li { display: flex; flex-direction: column; gap: 14px; padding: 20px; border-radius: 14px; background: var(--surface); box-shadow: rgba(11,31,77,.08) 0 0 0 1px; }
+  .who li p { color: var(--graphite); font-size: 15px; line-height: 1.55; }
+  .who__link { margin-top: 20px; font-size: 14px; }
+
+  .why { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 24px; }
+  .why li { display: flex; flex-direction: column; gap: 10px; padding: 22px; border-radius: 14px; background: var(--surface-base); }
+  .why strong { margin-top: 8px; font-family: var(--font-display); font-weight: 500; font-size: 22px; letter-spacing: -0.01em; color: var(--ink); }
+  .why p { font-size: 14.5px; line-height: 1.55; color: var(--slate); }
+
+  @media (max-width: 960px) { .esg-hero { grid-template-columns: 1fr; } .who, .why { grid-template-columns: 1fr; } }
+  @media (max-width: 700px) { .sit, .deliv { grid-template-columns: 1fr; } }
 </style>

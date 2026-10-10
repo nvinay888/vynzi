@@ -1,7 +1,7 @@
 // Site-wide data. Contact details are verbatim from the old site (source: OLD-SITE index.html).
 export const site = {
-  name: 'VynziCFO',
-  legalName: 'Vynzi CFO Services Private Limited',
+  name: 'Vynzi',
+  legalName: 'Vynzi CFO Services Private Limited', // registered entity: used only in Terms of use
   tagline: 'Smarter Finance. Better Decisions. Sustainable Growth.',
   description:
     'Virtual CFO, accounting and finance operations, technology and automation, and sustainability and ESG services for growing businesses.',
@@ -22,6 +22,7 @@ export const practices = [
 
 // Blueprint slide 3/4: four primary items. Industries lives inside Services.
 export const nav = [
+  { label: 'About', href: '/about' },
   {
     label: 'Services', href: '/services',
     children: [
@@ -32,7 +33,6 @@ export const nav = [
       { label: 'Industries', href: '/industries', note: 'Seven sectors we know well' },
     ],
   },
-  { label: 'About', href: '/about' },
   { label: 'Insights', href: '/insights' },
   { label: 'Contact', href: '/contact' },
 ];

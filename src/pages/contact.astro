@@ -1,23 +1,64 @@
 ---
+/* Contact, v5 (blueprint slide 13: "Start with the problem", enquiry categories Virtual CFO • Accounting • Technology •
+   Sustainability • Other). Left: the categories as service tabs. Right: the form box, which updates to the chosen
+   service (heading, what that practice covers, topic chips from its real modules, topic field, message prompt).
+   Address and phone live in the footer, so they are not repeated here. */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHero from '../components/PageHero.astro';
 import Field from '../components/Field.astro';
 import Button from '../components/Button.astro';
 import { Icon } from 'astro-icon/components';
 import { contact } from '../content/contact';
-import { site } from '../data/site';
-// Web3Forms access key; set PUBLIC_WEB3FORMS_KEY in .env. Without it the form opens the visitor's email client instead.
+import { practices } from '../content/services';
+import { practices as meta, site } from '../data/site';
 const accessKey = import.meta.env.PUBLIC_WEB3FORMS_KEY ?? '';
+
+// Lower-case for the sentence, but keep acronyms (SOPs, KPIs, BRSR, FP&A) as written.
+const soft = (m: string) => m.split(' ').map((w) => (/^[A-Z0-9&/-]{2,}s?$/.test(w) ? w : w.toLowerCase())).join(' ');
+const pick = (slug: string) => {
+  const p = practices.find((x) => x.slug === slug)!;
+  const m = meta.find((x) => x.slug === slug)!;
+  const modules = p.work.workstreams.flatMap((w) => w.modules);
+  return { name: p.name, icon: p.icon, accent: p.accent, line: m.oneLiner, chips: modules.slice(0, 5), href: `/services/${slug}`,
+    prompt: `For example: ${modules.slice(0, 3).map(soft).join(', ')}. What are you trying to improve, and by when?` };
+};
+const services = [
+  { category: 'Virtual CFO', ...pick('virtual-cfo') },
+  { category: 'Accounting', ...pick('accounting-finance-operations') },
+  { category: 'Technology', ...pick('technology-automation') },
+  { category: 'Sustainability', ...pick('sustainability-esg') },
+  { category: 'Other', name: 'Something else', icon: 'ph:chats-circle-duotone', accent: 'blue', line: 'Several of these together, or a question that does not fit a box.', chips: [] as string[], href: '/services', prompt: 'Tell us what you are trying to improve, and by when.' },
+];
 ---
 <BaseLayout title="Contact" description={contact.hero.text}>
   <PageHero eyebrow={contact.hero.eyebrow} title="Start with the problem." titleDim="We will help with the rest." text={contact.hero.text} compact>
-    <div slot="below" class="contact">
-      <div class="contact__form">
-        <h2>{contact.form.title}</h2>
+    <div slot="below" class="contact" data-contact>
+      <div class="svc" role="tablist" aria-label="What would you like to discuss?">
+        <p class="eyebrow svc__label">What would you like to discuss?</p>
+        {services.map((s, i) => (
+          <button type="button" role="tab" class:list={['svc__tab', { 'is-on': i === 0 }]} aria-selected={i === 0 ? 'true' : 'false'} aria-controls="enquiry-box" data-i={i}
+            data-category={s.category} data-name={s.name} data-line={s.line} data-href={s.href} data-prompt={s.prompt} data-chips={JSON.stringify(s.chips)} data-accent={s.accent}>
+            <span class="svc__icon"><Icon name={s.icon} /></span>
+            <span class="svc__text"><strong>{s.category}</strong><small>{s.category !== 'Other' ? s.name : s.line}</small></span>
+          </button>
+        ))}
+      </div>
+
+      <div class="box" id="enquiry-box" role="tabpanel" aria-live="polite">
+        <div class="box__head">
+          <span class="box__icon">{services.map((s, i) => <span hidden={i !== 0} data-box-ico={i}><Icon name={s.icon} /></span>)}</span>
+          <div>
+            <p class="eyebrow">Book a discussion about</p>
+            <h2 class="box__title" data-box-title>{services[0].name}</h2>
+          </div>
+        </div>
+        <p class="box__line"><span data-box-line>{services[0].line}</span> <a href={services[0].href} class="box__more" data-box-href>About this practice</a></p>
+        <ul class="box__chips" data-box-chips>{services[0].chips.map((c) => <li><button type="button" data-chip>{c}</button></li>)}</ul>
+
         <form id="enquiry" class="form" method="POST" action="https://api.web3forms.com/submit" data-fallback-email={site.email} novalidate>
           <input type="hidden" name="access_key" value={accessKey} />
-          <input type="hidden" name="subject" value="Website enquiry — VynziCFO" />
-          <input type="hidden" name="from_name" value="vynzicfo.com" />
+          <input type="hidden" name="subject" value="Website enquiry — Vynzi" />
+          <input type="hidden" name="from_name" value="Vynzi website" />
           <input type="checkbox" name="botcheck" class="sr-only" tabindex="-1" autocomplete="off" />
           <div class="form__grid">
             <Field label={contact.form.fields.name} name="name" required autocomplete="name" />
@@ -25,7 +66,7 @@ const accessKey = import.meta.env.PUBLIC_WEB3FORMS_KEY ?? '';
             <Field label={contact.form.fields.company} name="company" autocomplete="organization" />
             <Field label={contact.form.fields.phone} name="phone" type="tel" autocomplete="tel" />
             <div class="form__full"><Field label={contact.form.fields.topic} name="topic" type="select" options={contact.form.categories} placeholder="Choose one" required /></div>
-            <div class="form__full"><Field label={contact.form.fields.message} name="message" type="textarea" required placeholder="What are you trying to improve, and by when?" /></div>
+            <div class="form__full"><Field label={contact.form.fields.message} name="message" type="textarea" required placeholder={services[0].prompt} /></div>
           </div>
           <div class="form__foot">
             <Button type="submit" variant="primary" size="lg" icon>{contact.form.submit}</Button>
@@ -34,27 +75,60 @@ const accessKey = import.meta.env.PUBLIC_WEB3FORMS_KEY ?? '';
           <p class="form__msg" role="status" aria-live="polite" hidden data-success={contact.form.success} data-error={contact.form.error}></p>
         </form>
       </div>
-
-      <aside class="contact__side">
-        <div>
-          <p class="eyebrow">{contact.details.title}</p>
-          <ul class="details">
-            <li><Icon name="ph:phone-duotone" /><a href={site.phoneHref}>{site.phone}</a></li>
-            <li><Icon name="ph:whatsapp-logo-duotone" /><a href={site.whatsapp} target="_blank" rel="noopener">WhatsApp us</a></li>
-            <li><Icon name="ph:envelope-simple-duotone" /><a href={`mailto:${site.email}`}>{site.email}</a></li>
-            <li><Icon name="ph:map-pin-duotone" /><address><strong>{site.legalName}</strong><br />{site.address}</address></li>
-          </ul>
-        </div>
-        <div>
-          <p class="eyebrow">{contact.details.expect.title}</p>
-          <ul class="check-list" style="margin-top: 14px">{contact.details.expect.items.map((i) => <li>{i}</li>)}</ul>
-        </div>
-      </aside>
     </div>
   </PageHero>
 </BaseLayout>
 
 <script>
+  // Service tabs → update the enquiry box.
+  const root = document.querySelector<HTMLElement>('[data-contact]');
+  if (root) {
+    const tabs = [...root.querySelectorAll<HTMLButtonElement>('.svc__tab')];
+    const title = root.querySelector<HTMLElement>('[data-box-title]')!;
+    const line = root.querySelector<HTMLElement>('[data-box-line]')!;
+    const href = root.querySelector<HTMLAnchorElement>('[data-box-href]')!;
+    const chips = root.querySelector<HTMLElement>('[data-box-chips]')!;
+    const icons = [...root.querySelectorAll<HTMLElement>('[data-box-ico]')];
+    const box = root.querySelector<HTMLElement>('.box')!;
+    const topic = root.querySelector<HTMLSelectElement>('select[name=topic]')!;
+    const message = root.querySelector<HTMLTextAreaElement>('textarea[name=message]')!;
+    const render = (i: number, fromSelect = false) => {
+      const d = tabs[i].dataset;
+      tabs.forEach((b, j) => { b.classList.toggle('is-on', j === i); b.setAttribute('aria-selected', String(j === i)); b.tabIndex = j === i ? 0 : -1; });
+      icons.forEach((el, j) => { el.hidden = j !== i; });
+      title.textContent = d.name || '';
+      line.textContent = d.line || '';
+      href.href = d.href || '/services';
+      href.textContent = d.category === 'Other' ? 'See all services' : 'About this practice';
+      const list: string[] = JSON.parse(d.chips || '[]');
+      chips.innerHTML = '';
+      list.forEach((c) => { const li = document.createElement('li'); const b = document.createElement('button'); b.type = 'button'; b.dataset.chip = ''; b.textContent = c; li.appendChild(b); chips.appendChild(li); });
+      chips.hidden = list.length === 0;
+      if (!fromSelect) topic.value = d.category || '';
+      message.placeholder = d.prompt || '';
+      box.dataset.accent = d.accent || 'blue';
+      box.classList.remove('is-swap'); void box.offsetWidth; box.classList.add('is-swap');
+    };
+    tabs.forEach((t, i) => {
+      t.addEventListener('click', () => render(i));
+      t.addEventListener('keydown', (e) => {
+        if (['ArrowDown', 'ArrowRight'].includes(e.key)) { e.preventDefault(); const n = (i + 1) % tabs.length; render(n); tabs[n].focus(); }
+        if (['ArrowUp', 'ArrowLeft'].includes(e.key)) { e.preventDefault(); const n = (i - 1 + tabs.length) % tabs.length; render(n); tabs[n].focus(); }
+      });
+    });
+    topic.addEventListener('change', () => { const i = tabs.findIndex((t) => t.dataset.category === topic.value); if (i >= 0) render(i, true); });
+    // Topic chips add themselves to the message.
+    chips.addEventListener('click', (e) => {
+      const b = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-chip]'); if (!b) return;
+      b.classList.toggle('is-on');
+      const picked = [...chips.querySelectorAll<HTMLButtonElement>('[data-chip].is-on')].map((x) => x.textContent?.trim());
+      const rest = message.value.replace(/^Interested in: .*\n?/, '');
+      message.value = (picked.length ? `Interested in: ${picked.join(', ')}\n` : '') + rest;
+    });
+    render(0);
+  }
+
+  // Submit: Web3Forms when a key is set, otherwise hand off to the visitor's email client.
   const form = document.getElementById('enquiry') as HTMLFormElement | null;
   const msg = form?.querySelector<HTMLElement>('.form__msg');
   form?.addEventListener('submit', async (e) => {
@@ -64,7 +138,6 @@ const accessKey = import.meta.env.PUBLIC_WEB3FORMS_KEY ?? '';
     const key = String(data.get('access_key') || '');
     const show = (text: string, ok: boolean) => { if (msg) { msg.hidden = false; msg.textContent = text; msg.dataset.state = ok ? 'ok' : 'err'; } };
     if (!key) {
-      // No form service configured: hand off to the visitor's email client with the message prefilled.
       const to = form.dataset.fallbackEmail;
       const body = ['Name: ' + data.get('name'), 'Email: ' + data.get('email'), 'Company: ' + data.get('company'), 'Phone: ' + data.get('phone'), 'Topic: ' + data.get('topic'), '', String(data.get('message'))].join('\n');
       window.location.href = `mailto:${to}?subject=${encodeURIComponent('Website enquiry: ' + data.get('topic'))}&body=${encodeURIComponent(body)}`;
@@ -83,24 +156,54 @@ const accessKey = import.meta.env.PUBLIC_WEB3FORMS_KEY ?? '';
 </script>
 
 <style>
-  .contact { display: grid; grid-template-columns: 0.8fr 1.4fr; gap: 16px; align-items: stretch; }
-  .contact__form { order: 2; padding: clamp(24px, 3vw, 36px); border-radius: 16px; background: #fff; box-shadow: var(--shadow-float); }
-  .contact__form h2 { font-size: 24px; }
-  .form { margin-top: 20px; }
+  .contact { display: grid; grid-template-columns: 320px minmax(0, 1fr); gap: 16px; align-items: start; }
+  .svc { display: flex; flex-direction: column; gap: 6px; padding: 16px; border-radius: 16px; background: rgba(255,255,255,.72); backdrop-filter: blur(6px); box-shadow: var(--shadow-subtle-2); }
+  .svc__label { padding: 6px 8px 10px; }
+  .svc__tab { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: center; width: 100%; padding: 12px; border-radius: 12px; text-align: left; color: var(--slate); transition: background var(--dur-fast), box-shadow var(--dur-fast), color var(--dur-fast); }
+  .svc__tab:hover { background: #fff; color: var(--ink); }
+  .svc__tab.is-on { background: #fff; color: var(--ink); box-shadow: var(--shadow-subtle-2); }
+  .svc__icon { display: inline-flex; width: 36px; height: 36px; align-items: center; justify-content: center; border-radius: 10px; background: var(--surface-base); color: var(--stone); flex: none; transition: all var(--dur-fast); }
+  .svc__icon :global(svg) { width: 20px; height: 20px; }
+  .svc__tab.is-on .svc__icon { background: var(--blue-soft); color: var(--blue); }
+  .svc__text strong { display: block; font-size: 15px; font-weight: 600; }
+  .svc__text small { display: block; margin-top: 2px; font-size: 12.5px; line-height: 1.35; color: var(--stone); }
+
+  .box { padding: clamp(24px, 3vw, 36px); border-radius: 16px; background: #fff; box-shadow: var(--shadow-float); }
+  .box.is-swap .box__head, .box.is-swap .box__line, .box.is-swap .box__chips { animation: swap .35s var(--ease-out); }
+  .box__head { display: flex; align-items: center; gap: 14px; }
+  .box__icon { display: inline-flex; width: 48px; height: 48px; align-items: center; justify-content: center; border-radius: 14px; background: var(--blue-soft); color: var(--blue); flex: none; }
+  .box[data-accent="teal"] .box__icon { background: var(--teal-soft); color: var(--teal); }
+  .box__icon :global(svg) { width: 24px; height: 24px; }
+  .box__icon > span { display: inline-flex; }
+  .box__icon > span[hidden] { display: none; }
+  .box__title { margin-top: 4px; font-size: clamp(22px, 2.2vw, 28px); }
+  .box__line { margin-top: 14px; color: var(--slate); max-width: 62ch; }
+  .box__more { margin-left: 4px; font-weight: 500; color: var(--blue); white-space: nowrap; }
+  .box__more:hover { text-decoration: underline; text-underline-offset: 3px; }
+  .box__chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  .box__chips[hidden] { display: none; }
+  .box__chips :global(button) { padding: 7px 12px; border-radius: 999px; font-size: 13px; font-weight: 500; color: var(--ink-72); box-shadow: rgba(11,31,77,.14) 0 0 0 1px inset; transition: all var(--dur-fast); }
+  .box__chips :global(button:hover) { color: var(--ink); box-shadow: rgba(11,31,77,.35) 0 0 0 1px inset; }
+  .box__chips :global(button.is-on) { background: var(--ink-fill); color: #fff; box-shadow: none; }
+
+  .form { margin-top: 24px; padding-top: 22px; border-top: 1px solid var(--ash); }
   .form__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
   .form__full { grid-column: 1 / -1; }
   .form__foot { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; margin-top: 20px; }
   .form__msg { margin-top: 16px; padding: 12px 14px; border-radius: 10px; font-size: 14px; }
   .form__msg[data-state="ok"] { background: var(--teal-soft); color: #0b7a6b; }
   .form__msg[data-state="err"] { background: #fdecec; color: #a12626; }
-  .contact__side { order: 1; display: flex; flex-direction: column; gap: 28px; padding: clamp(24px, 3vw, 32px); border-radius: 16px; background: rgba(255,255,255,.72); backdrop-filter: blur(6px); box-shadow: var(--shadow-subtle-2); }
-  .details { margin-top: 14px; display: flex; flex-direction: column; gap: 14px; }
-  .details li { display: flex; gap: 12px; align-items: flex-start; color: var(--graphite); }
-  .details li :global(svg) { flex: none; width: 22px; height: 22px; color: var(--blue); margin-top: 1px; }
-  .details a { font-weight: 600; color: var(--ink); }
-  .details a:hover { text-decoration: underline; text-underline-offset: 3px; }
-  .details address { font-style: normal; font-size: 14px; line-height: 1.6; color: var(--slate); }
-  .details address strong { color: var(--ink); font-weight: 600; }
-  @media (max-width: 900px) { .contact { grid-template-columns: 1fr; } .contact__form { order: 1; } .contact__side { order: 2; } }
+  @keyframes swap { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+  @media (max-width: 900px) {
+    .contact { grid-template-columns: 1fr; }
+    .svc { flex-direction: row; overflow-x: auto; padding: 8px; gap: 6px; scrollbar-width: none; }
+    .svc::-webkit-scrollbar { display: none; }
+    .svc__label { display: none; }
+    .svc__tab { width: auto; flex: none; grid-template-columns: auto auto; padding: 8px 14px 8px 8px; border-radius: 999px; white-space: nowrap; }
+    .svc__icon { width: 28px; height: 28px; border-radius: 8px; }
+    .svc__icon :global(svg) { width: 16px; height: 16px; }
+    .svc__text small { display: none; }
+  }
   @media (max-width: 560px) { .form__grid { grid-template-columns: 1fr; } }
 </style>

@@ -6,7 +6,7 @@ const { steps, tone = 'blue' } = Astro.props;
 ---
 <div class:list={['tl', `tl--${tone}`]} data-reveal style={`--n:${steps.length}`}>
   <div class="tl__line" aria-hidden="true"><span class="tl__progress"></span></div>
-  <ol class="tl__steps">
+  <ol class="tl__steps m-swipe">
     {steps.map((s, i) => (
       <li class="tl__step" style={`--i:${i}`}>
         <span class="tl__node" aria-hidden="true">
@@ -49,5 +49,5 @@ const { steps, tone = 'blue' } = Astro.props;
   .tl__out li { display: flex; align-items: center; gap: 8px; font-size: 13.5px; font-weight: 500; color: var(--ink); }
   .tl__out :global(svg) { width: 14px; height: 14px; color: var(--teal); flex: none; }
   @media (max-width: 960px) { .tl__steps { grid-template-columns: repeat(2, 1fr); } .tl__line { display: none; } .tl__node { box-shadow: none; } }
-  @media (max-width: 560px) { .tl__steps { grid-template-columns: 1fr; } }
+  @media (max-width: 760px) { .tl__line { display: none; } .tl__node { box-shadow: none; } }
 </style>

@@ -1,8 +1,9 @@
 ---
-/* Sectors as a real section (blueprint block 2, "Trust: sectors"): a tile per sector with icon, name and the
-   "what we provide" line from the industries page, each linking to that sector. */
+/* Sectors (blueprint block 2, "Trust: sectors"): one-row carousel of sector tiles (icon, name, what we provide),
+   each opening that sector's tab on /industries. Swipe on mobile. */
 import { Icon } from 'astro-icon/components';
 import SectionHeader from './SectionHeader.astro';
+import Carousel from './Carousel.astro';
 import { industries } from '../content/industries';
 import { sectors as sectorMeta } from '../data/site';
 const iconFor = (slug: string) => sectorMeta.find((s) => s.slug === slug)?.icon ?? 'ph:buildings-duotone';
@@ -10,9 +11,9 @@ const iconFor = (slug: string) => sectorMeta.find((s) => s.slug === slug)?.icon 
 <section class="section section--tight sectors">
   <div class="container">
     <SectionHeader eyebrow="Industries" title="Cross-sector experience," titleDim="applied to the right solution for your business" text="Seven industries where we already know the leading practices, the regulations and the numbers that matter, and the lessons that carry across them." action="All industries" actionHref="/industries" />
-    <ul class="sectors__grid">
+    <Carousel per={4} label="Sectors">
       {industries.sectors.map((s, i) => (
-        <li data-reveal style={`--i:${i}`}>
+        <div>
           <a href={`/industries#${s.slug}`} class:list={['tile', { 'tile--muted': s.slug === 'other' }]}>
             <span class="ring ring--blue"><Icon name={iconFor(s.slug)} /></span>
             <span class="tile__body">
@@ -21,9 +22,9 @@ const iconFor = (slug: string) => sectorMeta.find((s) => s.slug === slug)?.icon 
             </span>
             <svg class="tile__arrow" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
           </a>
-        </li>
+        </div>
       ))}
-    </ul>
+    </Carousel>
   </div>
 </section>
 

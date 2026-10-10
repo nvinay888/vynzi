@@ -13,7 +13,7 @@ export const industries = {
   hero: {
     eyebrow: 'Industries',
     title: 'Finance, technology and ESG support for seven sectors',
-    text: 'Whether you are in software, retail, construction, healthcare, manufacturing, financial services or hospitality, our team brings experience of the leading practices and solutions in your industry. Vynzi CFO provides a specialised and comprehensive range of virtual CFO, strategic consulting, accounting and technology integration services across all of them.',
+    text: 'Whether you are in software, retail, construction, healthcare, manufacturing, financial services or hospitality, our team brings experience of the leading practices and solutions in your industry. Vynzi provides a specialised and comprehensive range of virtual CFO, strategic consulting, accounting and technology integration services across all of them.',
   },
   sectors: [
     {
@@ -101,7 +101,7 @@ export const industries = {
     },
     {
       slug: 'other', name: 'Other businesses',
-      context: 'Vynzi CFO provides a specialised and comprehensive range of virtual CFO, strategic consulting, accounting and technology integration services to a wide range of industries. If your sector is not listed, talk to us about what you need.',
+      context: 'Vynzi provides a specialised and comprehensive range of virtual CFO, strategic consulting, accounting and technology integration services to a wide range of industries. If your sector is not listed, talk to us about what you need.',
       provide: 'The same four practices, scoped to your business.',
       services: [],
       practices: ['virtual-cfo', 'accounting-finance-operations', 'technology-automation', 'sustainability-esg'],

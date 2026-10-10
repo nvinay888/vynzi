@@ -1,6 +1,6 @@
-/* VynziCFO design tokens — v3, calibrated against panxo.com measurements (3 Oct 2026):
+/* Vynzi design tokens — v3, calibrated against panxo.com measurements (3 Oct 2026):
    headings Mona Sans 500 at -0.01em, hero 56/56, h2 40/48, eyebrow Inter 500 12px +0.04em at 72% ink,
-   lede Inter 500 18/24 at 72% ink, compact 40px pill buttons, hairline column grid. Colours = VynziCFO brand. */
+   lede Inter 500 18/24 at 72% ink, compact 40px pill buttons, hairline column grid. Colours = Vynzi brand. */
 :root {
   --ink: #0b1f4d;
   --ink-fill: #002058;

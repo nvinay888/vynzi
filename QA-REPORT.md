@@ -115,3 +115,20 @@ Root cause: earlier builds followed the Refero text summary (700 weight, -0.04em
 | Article: split hero, reading column + sticky practice card, related reading | 7 articles |
 | Bug fixed: earlier label sweep had renamed `tabindex` to `tabeyebrow` in markup; restored | contact, sector marquee leftovers |
 | Build | 23 pages, 0 broken links or in-page anchors, 0 placeholder markers, no console errors, no mobile overflow |
+
+---
+
+# QA report — Revision 6 (10 Oct 2026): brand, layouts, ESG, nav, contact, statement
+
+| Change | Result |
+|---|---|
+| Brand | "Vynzi" everywhere. Registered name "Vynzi CFO Services Private Limited" kept only in Terms of use (legal publisher). 0 other mentions in output. |
+| Long scroll | New SideTabs explorer (vertical tabs desktop; sticky swipeable tab bar + prev/next on mobile) on practice pages, Industries, Services selector, About, Insights, home problems. New Carousel for home sectors and related practices. Mobile swipe rows for home practices, insights, stat row, steps, services hero cards. |
+| Page heights (desktop 1440) | Virtual CFO ~3,800px; Services ~3,000; About ~3,250; Industries ~2,550 |
+| Page heights (mobile 375) | Home 11,055 → 8,172; practice pages ~5,000; Industries ~3,900; Contact ~3,250. No horizontal overflow anywhere. |
+| ESG | Practice content replaced with deck slides 2, 5, 9, 13 only; five areas as explorer tabs; loop now Govern / Measure / Improve (deck) instead of an invented four-step loop. |
+| Nav | About, Services, Insights, Contact |
+| Contact | Address / phone / "what to expect" removed (footer carries contact details). Deck enquiry categories as service tabs; each updates the form box heading, description, topic chips (real modules), topic field and prompt. Unconfirmed "reply within one business day" promise removed. |
+| Statement | Home statement in golden yellow, Title Case, on navy (gold on light page = 1.6:1, on navy = 9.1:1). |
+| Bugs fixed during QA | Contact box icons hidden by an attribute collision with the icon library; explorer forced 927px wide on phones and its sticky tab bar was offset inside the card (overflow:hidden → overflow:clip, minmax(0,1fr)). |
+| Build | 22 pages, 0 broken links or in-page anchors, 0 placeholder markers, 0 console errors |

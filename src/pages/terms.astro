@@ -2,7 +2,7 @@
 import ProseLayout from '../layouts/ProseLayout.astro';
 import { terms } from '../content/utility';
 ---
-<ProseLayout title={terms.title} eyebrow={terms.eyebrow} text={`Status: ${terms.updated}`} description="Terms governing use of the VynziCFO website.">
+<ProseLayout title={terms.title} eyebrow={terms.eyebrow} text={`Status: ${terms.updated}`} description="Terms governing use of the Vynzi website.">
   {terms.sections.map((s) => <><h2>{s.title}</h2><p>{s.text}</p></>)}
   <p class="notice">These terms are a draft prepared with the website and are pending legal review.</p>
 </ProseLayout>

@@ -1,92 +1,68 @@
 ---
-/* Services overview (blueprint slide 5): four practices + problem-led selector + why VynziCFO. */
+/* Services overview, v5 (blueprint slide 5): the four practices sit in the hero panel, so they are the first thing
+   a visitor sees; the problem-led selector is one side-tab explorer; then the CTA. */
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PageHero from '../../components/PageHero.astro';
-import SectionIntro from '../../components/SectionIntro.astro';
-import PracticeCard from '../../components/PracticeCard.astro';
-import Pill from '../../components/Pill.astro';
-import Badge from '../../components/Badge.astro';
-import Timeline from '../../components/Timeline.astro';
-import WhyGrid from '../../components/WhyGrid.astro';
 import SectionHeader from '../../components/SectionHeader.astro';
+import SideTabs from '../../components/SideTabs.astro';
+import PracticeCard from '../../components/PracticeCard.astro';
 import CtaBand from '../../components/CtaBand.astro';
 import { Icon } from 'astro-icon/components';
 import { overview, practices } from '../../content/services';
-import { about } from '../../content/about';
 import { practices as meta } from '../../data/site';
 const byId = (slug: string) => practices.find((p) => p.slug === slug)!;
-const whyItems = about.why.items.map((w, i) => ({ ...w, icon: ['ph:trend-up-duotone', 'ph:eye-duotone', 'ph:shield-check-duotone'][i] }));
+const oneLiner = (slug: string) => meta.find((m) => m.slug === slug)?.oneLiner ?? '';
+const probIcons: Record<string, string> = { Growth: 'ph:trend-up-duotone', Visibility: 'ph:eye-duotone', Control: 'ph:shield-check-duotone', Automation: 'ph:lightning-duotone', 'ESG readiness': 'ph:leaf-duotone' };
+const tabs = overview.selector.problems.map((p) => ({ label: p.label, sub: p.practices.map((s) => byId(s).short).join(' · '), icon: probIcons[p.label] }));
 ---
 <BaseLayout title="Services" description={overview.hero.text}>
-  <PageHero eyebrow={overview.hero.eyebrow} title="Finance, technology and ESG services" titleDim="for growing companies" text={overview.hero.text} primary="Book a consultation" secondary="Find your situation" secondaryHref="#selector" />
-
-  <section class="section section--tight practices">
-    <div class="container">
-      <div class="grid grid--4">
-        {meta.map((m, i) => { const p = byId(m.slug); return <PracticeCard href={`/services/${p.slug}`} icon={p.icon} title={p.name} text={m.oneLiner} verbs={p.eyebrow} accent={p.accent} variant="elevated" index={i} />; })}
-      </div>
+  <PageHero eyebrow={overview.hero.eyebrow} title="Finance, technology and ESG services" titleDim="for growing companies" text={overview.hero.text} primary="Book a consultation" secondary="Find your situation" secondaryHref="#selector">
+    <div slot="below" class="pgrid m-swipe">
+      {meta.map((m, i) => { const p = byId(m.slug); return <PracticeCard href={`/services/${p.slug}`} icon={p.icon} title={p.name} text={m.oneLiner} verbs={p.eyebrow} accent={p.accent} variant="elevated" index={i} />; })}
     </div>
-  </section>
+  </PageHero>
 
-  <section class="section band" id="selector">
-    <div class="container split">
-      <div class="split__aside">
-        <SectionIntro eyebrow="Problem-led selector" title={overview.selector.title} lede={overview.selector.intro} tone="blue">
-          <div class="cluster" role="tablist" aria-label="Filter by problem" data-filters>
-            <Pill active>All</Pill>
-            {overview.selector.problems.map((p) => <Pill>{p.label}</Pill>)}
-          </div>
-        </SectionIntro>
-      </div>
-      <ul class="problems" data-problems>
-        {overview.selector.problems.map((p, i) => (
-          <li class="problem" data-key={p.label} data-reveal style={`--i:${i}`}>
-            <div class="problem__head"><h3>{p.label}</h3></div>
-            <p class="problem__text">{p.text}</p>
-            <div class="problem__practices">
-              <span class="small muted">Resolved by</span>
-              {p.practices.map((slug) => { const pr = byId(slug); return <a href={`/services/${slug}`} class="problem__link"><Icon name={pr.icon} /><Badge tone={pr.accent}>{pr.name}</Badge></a>; })}
+  <section class="section" id="selector">
+    <div class="container">
+      <SectionHeader eyebrow="Problem-led selector" title={overview.selector.title} text={overview.selector.intro} />
+      <SideTabs tabs={tabs} id="problems" label="Situations">
+        {overview.selector.problems.map((p) => (
+          <div data-panel data-slug={p.key}>
+            <div class="ph"><span class="ring ring--blue"><Icon name={probIcons[p.label]} /></span><h3>{p.label}</h3></div>
+            <p class="lead">{p.text}</p>
+            <p class="eyebrow by">Resolved by</p>
+            <div class="res">
+              {p.practices.map((slug) => { const pr = byId(slug); return (
+                <a href={`/services/${slug}`} class="res__card">
+                  <span class:list={['ring', 'ring--sm', pr.accent === 'teal' ? 'ring--teal' : 'ring--blue']}><Icon name={pr.icon} /></span>
+                  <strong>{pr.name}</strong>
+                  <span>{oneLiner(slug)}</span>
+                  <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </a>
+              ); })}
             </div>
-          </li>
+          </div>
         ))}
-      </ul>
+      </SideTabs>
     </div>
   </section>
-
-  <section class="section">
-    <div class="container">
-      <SectionHeader eyebrow="How every engagement runs" title="Four steps," titleDim="every engagement" text="Whether the work is a forecast, a month-end close, an ERP or an ESG report, the sequence is the same." />
-      <Timeline steps={overview.how.steps} />
-    </div>
-  </section>
-
-  <WhyGrid heading="One team across finance, technology and sustainability, sized to your stage." items={whyItems} />
 
   <CtaBand />
 </BaseLayout>
 
-<script>
-  const bar = document.querySelector('[data-filters]');
-  const cards = [...document.querySelectorAll<HTMLElement>('[data-problems] .problem')];
-  bar?.addEventListener('click', (e) => {
-    const pill = (e.target as HTMLElement).closest('.pill') as HTMLElement | null;
-    if (!pill) return;
-    bar.querySelectorAll('.pill').forEach((p) => { p.classList.toggle('is-active', p === pill); p.setAttribute('aria-pressed', String(p === pill)); });
-    const key = pill.textContent?.trim();
-    cards.forEach((c) => { c.hidden = key !== 'All' && c.dataset.key !== key; });
-  });
-</script>
-
 <style>
-  .problems { display: flex; flex-direction: column; gap: 14px; }
-  .problem { padding: 24px 26px; border-radius: var(--r-panel); background: var(--surface-elevated); box-shadow: var(--shadow-subtle); }
-  .problem__head { display: flex; align-items: baseline; gap: 14px; }
-  .problem__head h3 { font-size: 24px; }
-  .problem__text { margin-top: 10px; color: var(--graphite); max-width: 60ch; }
-  .problem__practices { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--ash); }
-  .problem__link { display: inline-flex; align-items: center; gap: 6px; }
-  .problem__link :global(svg) { width: 18px; height: 18px; color: var(--blue); }
-  .problem__link:hover :global(.badge) { background: var(--ink-fill); color: #fff; }
-  .how__head { margin-bottom: 44px; }
-  .practices { padding-top: 40px; }
+  .pgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .ph { display: flex; align-items: center; gap: 14px; }
+  .ph h3 { font-size: clamp(24px, 2.4vw, 30px); }
+  .lead { margin-top: 18px; font-size: 18px; line-height: 1.55; font-weight: 500; color: var(--ink-72); max-width: 52ch; }
+  .by { margin-top: 28px; }
+  .res { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 12px; }
+  .res__card { position: relative; display: flex; flex-direction: column; gap: 10px; padding: 20px; border-radius: 14px; background: var(--surface); box-shadow: rgba(11,31,77,.08) 0 0 0 1px; color: inherit; transition: transform var(--dur) var(--ease-out), box-shadow var(--dur); }
+  .res__card:hover { transform: translateY(-2px); box-shadow: var(--shadow-float); }
+  .res__card strong { font-family: var(--font-display); font-weight: 500; font-size: 19px; letter-spacing: -0.01em; color: var(--ink); }
+  .res__card span:not(.ring) { font-size: 14px; color: var(--slate); }
+  .res__card svg { position: absolute; top: 22px; right: 20px; width: 16px; height: 16px; color: var(--stone); transition: transform var(--dur-fast), color var(--dur-fast); }
+  .res__card:hover svg { color: var(--blue); transform: translateX(3px); }
+  @media (max-width: 960px) { .pgrid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 620px) { .pgrid, .res { grid-template-columns: 1fr; } }
 </style>

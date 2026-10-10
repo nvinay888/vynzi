@@ -1,4 +1,4 @@
-# VynziCFO website
+# Vynzi website
 
 Static site built with [Astro](https://astro.build). Deployed on Vercel from `main`.
 

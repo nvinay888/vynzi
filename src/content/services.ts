@@ -250,7 +250,9 @@ const technology: PracticeContent = {
   },
 };
 
-/* ---------- Practice 4: Sustainability & ESG (blueprint slide 9 only) ---------- */
+/* ---------- Practice 4: Sustainability & ESG — deck content ONLY (founder instruction, 10 Oct 2026) ----------
+   Sources: slide 2 (Govern. Measure. Improve.), slide 5 (one-liner), slide 9 (positioning, five groups, every module,
+   core positioning line), slide 13 (enquiry wording). Nothing here is written outside those slides. */
 const esg: PracticeContent = {
   slug: 'sustainability-esg',
   name: 'Sustainability & ESG',
@@ -259,65 +261,30 @@ const esg: PracticeContent = {
   icon: 'ph:leaf-duotone',
   accent: 'teal',
   hero: {
-    title: 'From ESG disclosure to ESG management',
-    text: 'An implementation-oriented ESG partner: we help you set the strategy, build the data, produce the reports and improve the ratings, with the same discipline we bring to financial reporting.',
-    cta: 'Discuss ESG readiness',
+    title: 'Move from ESG disclosure to ESG management',
+    text: 'An implementation-oriented ESG partner. Governance, data, reporting and implementation.',
+    cta: 'Request a discussion',
   },
-  challenge: {
-    title: 'When businesses call us',
-    intro: 'The trigger is usually one of these.',
-    situations: [
-      'A customer, lender or regulator has asked for ESG disclosures, and the data does not exist yet.',
-      'Reporting under BRSR (Business Responsibility and Sustainability Reporting) or GRI (Global Reporting Initiative) standards is due, and the data is scattered across departments and suppliers.',
-      'An ESG rating is below where it should be, and the gaps are not clear.',
-      'Sustainability is a stated priority, but there are no KPIs, owners or governance behind it.',
-    ],
-  },
+  challenge: { title: '', intro: '', situations: [] },
   work: {
     title: 'What we do',
-    intro: 'Five workstreams covering strategy, data, technology, capability and assurance.',
+    intro: 'Five areas of work, from strategy to assurance.',
     workstreams: [
-      { title: 'ESG strategy and GRC', modules: ['Standard operating procedures', 'Frameworks and strategy', 'KPIs', 'Risks and opportunities', 'Materiality assessment', 'Stakeholder evaluation', 'GHG inventory'] },
-      { title: 'ESG data and reporting', modules: ['BRSR reporting', 'GRI reporting', 'Data-point mapping', 'Data governance', 'Validation', 'Value-chain data'] },
-      { title: 'Automation and technology', modules: ['Automated data collection', 'Standardised sources', 'Dashboards', 'Workflow integration'] },
-      { title: 'Implementation and capability', modules: ['Training', 'Implementation support', 'Value-chain partner training', 'ESG readiness'] },
-      { title: 'Ratings and assurance', modules: ['ESG rating improvement', 'Disclosure quality', 'Gap assessment', 'Assurance coordination'] },
+      { title: 'ESG Strategy & GRC', modules: ['SOPs', 'Frameworks', 'Strategy', 'KPIs', 'Risks & opportunities', 'Materiality', 'Stakeholder evaluation', 'GHG inventory'] },
+      { title: 'ESG Data & Reporting', modules: ['BRSR', 'GRI', 'Data-point mapping', 'Data governance', 'Validation', 'Value-chain data'] },
+      { title: 'Automation & Technology', modules: ['Automated data collection', 'Standardised sources', 'Dashboards', 'Workflow integration'] },
+      { title: 'Implementation & Capability', modules: ['Training', 'Implementation support', 'Value-chain partner training', 'ESG readiness'] },
+      { title: 'Ratings & Assurance', modules: ['ESG rating improvement', 'Disclosure quality', 'Gap assessment', 'Assurance coordination'] },
     ],
   },
-  how: {
-    title: 'How we work',
-    intro: 'The same loop we use for finance, applied to sustainability.',
-    steps: [
-      { title: 'Assess', text: 'Materiality, stakeholder expectations, current disclosures and data gaps.' },
-      { title: 'Design', text: 'Framework, KPIs, governance, data-point mapping and ownership.' },
-      { title: 'Implement', text: 'Data collection, validation, dashboards and the first reporting cycle.' },
-      { title: 'Improve', text: 'Ratings, disclosure quality and assurance readiness, cycle after cycle.' },
-    ],
-  },
-  deliverables: {
-    title: 'What you receive',
-    items: [
-      { title: 'ESG strategy and framework', text: 'Materiality, KPIs, risks and opportunities, governance.' },
-      { title: 'GHG inventory', text: 'Emissions baseline with documented sources and methods.' },
-      { title: 'BRSR or GRI report', text: 'Mapped data points, validated figures, complete disclosure.' },
-      { title: 'ESG data system', text: 'Standardised sources, automated collection and dashboards.' },
-      { title: 'Training and SOPs', text: 'For internal teams and value-chain partners.' },
-      { title: 'Rating and assurance readiness', text: 'Gap assessment, remediation plan and assurance coordination.' },
-    ],
-  },
-  who: {
-    title: 'Who it is for',
-    items: [
-      'Companies required to file BRSR or report under GRI.',
-      'Suppliers to large customers who now ask for sustainability data.',
-      'Businesses seeking better ESG ratings, green financing or investor confidence.',
-    ],
-  },
+  how: { title: '', intro: '', steps: [] },
+  deliverables: { title: '', items: [] },
+  who: { title: '', items: [] },
   proof: { title: 'Proof', items: [] },
   cta: {
-    title: 'Discuss ESG readiness',
-    text: 'Tell us what has been asked of you and by whom. We will map the gap between what you have and what you need to report.',
-    primary: 'Discuss ESG readiness',
+    title: 'Move from ESG disclosure to ESG management',
+    text: 'Tell us what you are trying to improve. We will help identify where Vynzi can add value.',
+    primary: 'Request a discussion',
   },
 };
 
@@ -381,18 +348,16 @@ export const practiceSources: Record<string, SourceMap> = {
   },
   'sustainability-esg': {
     'name': 'BLUEPRINT',
-    'eyebrow': 'BLUEPRINT',
-    'hero.title': { src: 'BLUEPRINT', note: 'Slide 9 core positioning: "Move from ESG disclosure to ESG management."' },
-    'hero.text': { src: 'EDITED', note: 'Slide 9: "Establish VynziCFO as an implementation-oriented ESG partner."' },
-    'hero.cta': 'EDITED',
-    'challenge': { src: 'EDITED', note: 'Derived from the five workstreams; BRSR and GRI are named in the blueprint.' },
-    'work.workstreams': { src: 'BLUEPRINT', note: 'Five workstreams and all modules verbatim from slide 9.' },
-    'work.title': 'BLUEPRINT',
-    'work.intro': 'EDITED',
-    'how': { src: 'EDITED', note: 'Blueprint four-step loop applied to ESG.' },
-    'deliverables': { src: 'EDITED', note: 'Outputs of the listed modules.' },
-    'who': 'EDITED',
+    'eyebrow': { src: 'BLUEPRINT', note: 'Slide 2.' },
+    'hero.title': { src: 'BLUEPRINT', note: 'Slide 9 core positioning, verbatim.' },
+    'hero.text': { src: 'BLUEPRINT', note: 'Slide 9 subtitle ("implementation-oriented ESG partner") + slide 5 one-liner.' },
+    'hero.cta': { src: 'BLUEPRINT', note: 'Slide 10: "Book a consultation / request a discussion".' },
+    'work': { src: 'BLUEPRINT', note: 'Five groups and every module verbatim from slide 9 (bullets split into items).' },
     'proof': 'NEEDS-INPUT',
-    'cta': 'EDITED',
+    'cta': { src: 'BLUEPRINT', note: 'Slide 9 positioning + slide 13 enquiry wording.' },
+    'challenge': { src: 'BLUEPRINT', note: 'Deliberately empty: the founder asked for deck-only ESG content and the deck has no challenge list. Not rendered.' },
+    'how': { src: 'BLUEPRINT', note: 'Deliberately empty (deck-only ESG content). Not rendered.' },
+    'deliverables': { src: 'BLUEPRINT', note: 'Deliberately empty (deck-only ESG content). Not rendered.' },
+    'who': { src: 'BLUEPRINT', note: 'Deliberately empty (deck-only ESG content). Not rendered.' },
   },
 };

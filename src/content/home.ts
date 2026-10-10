@@ -42,9 +42,9 @@ export const home = {
     ],
   },
   about: {
-    eyebrow: 'About VynziCFO',
+    eyebrow: 'About Vynzi',
     title: 'A finance partner built for the way modern businesses operate',
-    text: 'Finance, data, technology and sustainability always overlap. Vynzi CFO is a strategic and technology-driven consulting and accounting firm, committed to helping clients optimise their finance strategy, achieve operational excellence, adopt the right technology and grow sustainably and profitably.',
+    text: 'Finance, data, technology and sustainability always overlap. Vynzi is a strategic and technology-driven consulting and accounting firm, committed to helping clients optimise their finance strategy, achieve operational excellence, adopt the right technology and grow sustainably and profitably.',
     cta: 'About us',
   },
   proof: {
@@ -60,7 +60,7 @@ export const home = {
   },
   finalCta: {
     title: 'Book a confidential consultation',
-    text: 'Tell us what you are trying to improve. We will help identify where VynziCFO can add value.',
+    text: 'Tell us what you are trying to improve. We will help identify where Vynzi can add value.',
     primary: 'Book a consultation',
     secondary: 'See our services',
   },

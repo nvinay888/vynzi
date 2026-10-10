@@ -129,5 +129,5 @@ export const insightsSources: SourceMap = {
   'hero.text': { src: 'EDITED', note: 'Slide 12: "Every article should have a relevant service CTA".' },
   'types': { src: 'BLUEPRINT', note: 'Four content types from slide 12; descriptions lightly edited. Guides listed first because they are the type with content.' },
   'emptyByType': { src: 'EDITED', note: 'Honest empty states for the two types that need client permission or scheduling.' },
-  'articles': { src: 'EDITED', note: 'Original editorial content written for the site from general finance, systems and ESG practice. Contains no client data, no figures and no claims about VynziCFO results. Founder review requested (CONTENT-REQUESTS item 6). BRSR described factually as the SEBI-prescribed format.' },
+  'articles': { src: 'EDITED', note: 'Original editorial content written for the site from general finance, systems and ESG practice. Contains no client data, no figures and no claims about Vynzi results. Founder review requested (CONTENT-REQUESTS item 6). BRSR described factually as the SEBI-prescribed format.' },
 };

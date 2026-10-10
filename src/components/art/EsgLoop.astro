@@ -1,22 +1,26 @@
 ---
-/* "From disclosure to management" loop (blueprint slide 9 positioning). Four arcs: Govern → Measure → Report → Improve. */
-const steps = ['Govern', 'Measure', 'Report', 'Improve'];
+/* ESG loop: the deck's three verbs (slide 2: Govern. Measure. Improve.) as a continuous cycle around "ESG management"
+   (slide 9 core positioning). Arcs draw in on reveal. */
+interface Props { steps?: string[] }
+const { steps = ['Govern', 'Measure', 'Improve'] } = Astro.props;
+const n = steps.length;
 const cx = 160, cy = 160, r = 112;
+const seg = 360 / n, gap = 8;
 const pt = (deg: number, rad = r) => [cx + rad * Math.cos((deg - 90) * Math.PI / 180), cy + rad * Math.sin((deg - 90) * Math.PI / 180)];
-const arc = (a: number, b: number) => { const [x1, y1] = pt(a), [x2, y2] = pt(b); return `M${x1.toFixed(1)} ${y1.toFixed(1)} A${r} ${r} 0 0 1 ${x2.toFixed(1)} ${y2.toFixed(1)}`; };
+const arc = (a: number, b: number) => { const [x1, y1] = pt(a), [x2, y2] = pt(b); const large = b - a > 180 ? 1 : 0; return `M${x1.toFixed(1)} ${y1.toFixed(1)} A${r} ${r} 0 ${large} 1 ${x2.toFixed(1)} ${y2.toFixed(1)}`; };
 ---
-<svg class="loop" viewBox="0 0 320 320" aria-hidden="true" data-reveal>
+<svg class="loop" viewBox="0 0 320 320" role="img" aria-label={`${steps.join(', ')}: the ESG management cycle`} data-reveal>
   <defs><linearGradient id="loopg" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#2f6fed"/><stop offset="1" stop-color="#14b8a0"/></linearGradient></defs>
   <circle cx={cx} cy={cy} r={r} fill="none" stroke="#eceef2" stroke-width="10"/>
-  {steps.map((_, i) => <path d={arc(i * 90 + 6, i * 90 + 84)} fill="none" stroke="url(#loopg)" stroke-width="10" stroke-linecap="round" class="loop__arc" style={`--i:${i}`}/>)}
-  {steps.map((s, i) => { const [x, y] = pt(i * 90 + 45, r + 34); return <text x={x} y={y + 4} text-anchor="middle" font-family="Inter, sans-serif" font-weight="600" font-size="13" fill="#0b1f4d">{s}</text>; })}
+  {steps.map((_, i) => <path d={arc(i * seg + gap, (i + 1) * seg - gap)} fill="none" stroke="url(#loopg)" stroke-width="10" stroke-linecap="round" class="loop__arc" style={`--i:${i}`}/>)}
+  {steps.map((s, i) => { const [x, y] = pt(i * seg + seg / 2, r + 32); return <text x={x} y={y + 5} text-anchor="middle" font-family="Inter, sans-serif" font-weight="600" font-size="14" fill="#0b1f4d">{s}</text>; })}
   <circle cx={cx} cy={cy} r="62" fill="#fff" stroke="#eceef2"/>
-  <text x={cx} y={cy - 6} text-anchor="middle" font-family="Mona Sans, Inter, sans-serif" font-weight="700" font-size="14" fill="#0b1f4d">ESG</text>
-  <text x={cx} y={cy + 12} text-anchor="middle" font-family="Inter, sans-serif" font-size="11" fill="#5f6678">management</text>
+  <text x={cx} y={cy - 6} text-anchor="middle" font-family="Mona Sans, Inter, sans-serif" font-weight="600" font-size="15" fill="#0b1f4d">ESG</text>
+  <text x={cx} y={cy + 13} text-anchor="middle" font-family="Inter, sans-serif" font-size="11.5" fill="#5f6678">management</text>
 </svg>
 
 <style>
-  .loop { width: 100%; max-width: 360px; height: auto; margin: 0 auto; }
-  .loop__arc { stroke-dasharray: 160; stroke-dashoffset: 160; transition: stroke-dashoffset 1s var(--ease-out); transition-delay: calc(var(--i) * 260ms); }
+  .loop { width: 100%; max-width: 360px; height: auto; margin: 0 auto; overflow: visible; }
+  .loop__arc { stroke-dasharray: 260; stroke-dashoffset: 260; transition: stroke-dashoffset 1.1s var(--ease-out); transition-delay: calc(var(--i) * 300ms); }
   .loop.is-in .loop__arc { stroke-dashoffset: 0; }
 </style>

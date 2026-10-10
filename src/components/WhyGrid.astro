@@ -1,14 +1,14 @@
 ---
 /* Panxo stats row (measured layout): one dark anchor card + three light cells, label on top, large display text at the
-   bottom. VynziCFO has no verified figures yet, so the large text is the benefit itself, never a number. */
+   bottom. Vynzi has no verified figures yet, so the large text is the benefit itself, never a number. */
 import { Icon } from 'astro-icon/components';
 interface Item { title: string; text: string; icon?: string }
 interface Props { eyebrow?: string; heading: string; items: Item[] }
-const { eyebrow = 'Why VynziCFO', heading, items } = Astro.props;
+const { eyebrow = 'Why Vynzi', heading, items } = Astro.props;
 const icons = ['ph:trend-up-duotone', 'ph:eye-duotone', 'ph:shield-check-duotone'];
 ---
 <section class="section section--tight why">
-  <div class="container why__grid">
+  <div class="container"><div class="why__grid m-swipe">
     <div class="why__dark" data-reveal>
       <span class="why__rings" aria-hidden="true"></span>
       <p class="eyebrow why__eyebrow">{eyebrow}</p>
@@ -23,7 +23,7 @@ const icons = ['ph:trend-up-duotone', 'ph:eye-duotone', 'ph:shield-check-duotone
         <p class="why__title">{it.title}</p>
       </div>
     ))}
-  </div>
+  </div></div>
 </section>
 
 <style>
@@ -37,5 +37,5 @@ const icons = ['ph:trend-up-duotone', 'ph:eye-duotone', 'ph:shield-check-duotone
   .why__text { font-size: 15px; line-height: 1.5; color: var(--slate); max-width: 28ch; }
   .why__title { font-family: var(--font-display); font-weight: 500; font-size: clamp(26px, 2.6vw, 34px); line-height: 1.05; letter-spacing: -0.02em; color: var(--ink); }
   @media (max-width: 960px) { .why__grid { grid-template-columns: repeat(2, 1fr); } }
-  @media (max-width: 560px) { .why__grid { grid-template-columns: 1fr; } .why__dark, .why__cell { min-height: 0; } }
+  @media (max-width: 760px) { .why__dark, .why__cell { min-height: 240px; } }
 </style>

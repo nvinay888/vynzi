@@ -24,11 +24,11 @@ const year = new Date().getFullYear();
           <li><a href={`mailto:${site.email}`} class="footer__link">{site.email}</a></li>
           <li><a href={site.whatsapp} class="footer__link" rel="noopener" target="_blank">WhatsApp</a></li>
         </ul>
-        <address class="footer__addr"><strong>{site.legalName}</strong><br />{site.address}</address>
+        <address class="footer__addr"><strong>{site.name}</strong><br />{site.address}</address>
       </div>
     </div>
     <div class="footer__bottom">
-      <p>© {year} {site.legalName}. All rights reserved.</p>
+      <p>© {year} {site.name}. All rights reserved.</p>
       <p>Hyderabad, India</p>
     </div>
   </div>

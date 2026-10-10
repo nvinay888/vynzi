@@ -1,6 +1,6 @@
 # Content ledger
 
-Generated 2026-10-02 by `scripts/ledger.mjs`. Every string that renders on the site, with where it came from.
+Generated 2026-10-10 by `scripts/ledger.mjs`. Every string that renders on the site, with where it came from.
 
 Legend: **OLD-SITE** vynzicfo.com copy (verbatim or trimmed) · **BLUEPRINT** founder's deck · **EDITED** rewritten, origin noted · **NEEDS-INPUT** slot only, nothing renders.
 
@@ -62,9 +62,9 @@ Legend: **OLD-SITE** vynzicfo.com copy (verbatim or trimmed) · **BLUEPRINT** fo
 | `how.steps[3].outputs[0]` | EDITED | Monthly review |
 | `how.steps[3].outputs[1]` | EDITED | Forecast refreshed |
 | `how.steps[3].outputs[2]` | EDITED | Next priorities |
-| `about.eyebrow` | BLUEPRINT | About VynziCFO |
+| `about.eyebrow` | BLUEPRINT | About Vynzi |
 | `about.title` | BLUEPRINT <br><sub>Slide 11 "The story".</sub> | A finance partner built for the way modern businesses operate |
-| `about.text` | OLD-SITE <br><sub>Old home page intro, lightly trimmed and combined with the slide 11 story line.</sub> | Finance, data, technology and sustainability always overlap. Vynzi CFO is a strategic and technology-driven consulting and accounting firm, committed to helping clients optimise their finance strategy, achieve operational excellence, adopt the right technology and grow sustainably and profitably. |
+| `about.text` | OLD-SITE <br><sub>Old home page intro, lightly trimmed and combined with the slide 11 story line.</sub> | Finance, data, technology and sustainability always overlap. Vynzi is a strategic and technology-driven consulting and accounting firm, committed to helping clients optimise their finance strategy, achieve operational excellence, adopt the right technology and grow sustainably and profitably. |
 | `about.cta` | EDITED | About us |
 | `proof.eyebrow` | NEEDS-INPUT | Proof |
 | `proof.title` | NEEDS-INPUT | Outcomes, case studies and client voices |
@@ -74,7 +74,7 @@ Legend: **OLD-SITE** vynzicfo.com copy (verbatim or trimmed) · **BLUEPRINT** fo
 | `insights.empty` | EDITED <br><sub>Honest empty state; no article titles invented.</sub> | First guides and articles are in preparation. In the meantime, the fastest way to get an answer is to ask us directly. |
 | `insights.cta` | EDITED | Visit insights |
 | `finalCta.title` | BLUEPRINT <br><sub>Slide 15 block 8 and slide 13.</sub> | Book a confidential consultation |
-| `finalCta.text` | BLUEPRINT | Tell us what you are trying to improve. We will help identify where VynziCFO can add value. |
+| `finalCta.text` | BLUEPRINT | Tell us what you are trying to improve. We will help identify where Vynzi can add value. |
 | `finalCta.primary` | BLUEPRINT | Book a consultation |
 | `finalCta.secondary` | BLUEPRINT | See our services |
 
@@ -321,80 +321,58 @@ Legend: **OLD-SITE** vynzicfo.com copy (verbatim or trimmed) · **BLUEPRINT** fo
 | Block | Source | Text |
 |---|---|---|
 | `name` | BLUEPRINT | Sustainability & ESG |
-| `eyebrow` | BLUEPRINT | Govern. Measure. Improve. |
-| `hero.title` | BLUEPRINT <br><sub>Slide 9 core positioning: "Move from ESG disclosure to ESG management."</sub> | From ESG disclosure to ESG management |
-| `hero.text` | EDITED <br><sub>Slide 9: "Establish VynziCFO as an implementation-oriented ESG partner."</sub> | An implementation-oriented ESG partner: we help you set the strategy, build the data, produce the reports and improve the ratings, with the same discipline we bring to financial reporting. |
-| `hero.cta` | EDITED | Discuss ESG readiness |
-| `challenge.title` | EDITED <br><sub>Derived from the five workstreams; BRSR and GRI are named in the blueprint.</sub> | When businesses call us |
-| `challenge.intro` | EDITED | The trigger is usually one of these. |
-| `challenge.situations[0]` | EDITED | A customer, lender or regulator has asked for ESG disclosures, and the data does not exist yet. |
-| `challenge.situations[1]` | EDITED | Reporting under BRSR (Business Responsibility and Sustainability Reporting) or GRI (Global Reporting Initiative) standards is due, and the data is scattered across departments and suppliers. |
-| `challenge.situations[2]` | EDITED | An ESG rating is below where it should be, and the gaps are not clear. |
-| `challenge.situations[3]` | EDITED | Sustainability is a stated priority, but there are no KPIs, owners or governance behind it. |
-| `work.title` | BLUEPRINT | What we do |
-| `work.intro` | EDITED | Five workstreams covering strategy, data, technology, capability and assurance. |
-| `work.workstreams[0].title` | BLUEPRINT <br><sub>Five workstreams and all modules verbatim from slide 9.</sub> | ESG strategy and GRC |
-| `work.workstreams[0].modules[0]` | BLUEPRINT | Standard operating procedures |
-| `work.workstreams[0].modules[1]` | BLUEPRINT | Frameworks and strategy |
-| `work.workstreams[0].modules[2]` | BLUEPRINT | KPIs |
-| `work.workstreams[0].modules[3]` | BLUEPRINT | Risks and opportunities |
-| `work.workstreams[0].modules[4]` | BLUEPRINT | Materiality assessment |
-| `work.workstreams[0].modules[5]` | BLUEPRINT | Stakeholder evaluation |
-| `work.workstreams[0].modules[6]` | BLUEPRINT | GHG inventory |
-| `work.workstreams[1].title` | BLUEPRINT | ESG data and reporting |
-| `work.workstreams[1].modules[0]` | BLUEPRINT | BRSR reporting |
-| `work.workstreams[1].modules[1]` | BLUEPRINT | GRI reporting |
+| `eyebrow` | BLUEPRINT <br><sub>Slide 2.</sub> | Govern. Measure. Improve. |
+| `hero.title` | BLUEPRINT <br><sub>Slide 9 core positioning, verbatim.</sub> | Move from ESG disclosure to ESG management |
+| `hero.text` | BLUEPRINT <br><sub>Slide 9 subtitle ("implementation-oriented ESG partner") + slide 5 one-liner.</sub> | An implementation-oriented ESG partner. Governance, data, reporting and implementation. |
+| `hero.cta` | BLUEPRINT <br><sub>Slide 10: "Book a consultation / request a discussion".</sub> | Request a discussion |
+| `challenge.title` | BLUEPRINT <br><sub>Deliberately empty: the founder asked for deck-only ESG content and the deck has no challenge list. Not rendered.</sub> |  |
+| `challenge.intro` | BLUEPRINT |  |
+| `challenge.situations` | BLUEPRINT | (empty — slot only) |
+| `work.title` | BLUEPRINT <br><sub>Five groups and every module verbatim from slide 9 (bullets split into items).</sub> | What we do |
+| `work.intro` | BLUEPRINT | Five areas of work, from strategy to assurance. |
+| `work.workstreams[0].title` | BLUEPRINT | ESG Strategy & GRC |
+| `work.workstreams[0].modules[0]` | BLUEPRINT | SOPs |
+| `work.workstreams[0].modules[1]` | BLUEPRINT | Frameworks |
+| `work.workstreams[0].modules[2]` | BLUEPRINT | Strategy |
+| `work.workstreams[0].modules[3]` | BLUEPRINT | KPIs |
+| `work.workstreams[0].modules[4]` | BLUEPRINT | Risks & opportunities |
+| `work.workstreams[0].modules[5]` | BLUEPRINT | Materiality |
+| `work.workstreams[0].modules[6]` | BLUEPRINT | Stakeholder evaluation |
+| `work.workstreams[0].modules[7]` | BLUEPRINT | GHG inventory |
+| `work.workstreams[1].title` | BLUEPRINT | ESG Data & Reporting |
+| `work.workstreams[1].modules[0]` | BLUEPRINT | BRSR |
+| `work.workstreams[1].modules[1]` | BLUEPRINT | GRI |
 | `work.workstreams[1].modules[2]` | BLUEPRINT | Data-point mapping |
 | `work.workstreams[1].modules[3]` | BLUEPRINT | Data governance |
 | `work.workstreams[1].modules[4]` | BLUEPRINT | Validation |
 | `work.workstreams[1].modules[5]` | BLUEPRINT | Value-chain data |
-| `work.workstreams[2].title` | BLUEPRINT | Automation and technology |
+| `work.workstreams[2].title` | BLUEPRINT | Automation & Technology |
 | `work.workstreams[2].modules[0]` | BLUEPRINT | Automated data collection |
 | `work.workstreams[2].modules[1]` | BLUEPRINT | Standardised sources |
 | `work.workstreams[2].modules[2]` | BLUEPRINT | Dashboards |
 | `work.workstreams[2].modules[3]` | BLUEPRINT | Workflow integration |
-| `work.workstreams[3].title` | BLUEPRINT | Implementation and capability |
+| `work.workstreams[3].title` | BLUEPRINT | Implementation & Capability |
 | `work.workstreams[3].modules[0]` | BLUEPRINT | Training |
 | `work.workstreams[3].modules[1]` | BLUEPRINT | Implementation support |
 | `work.workstreams[3].modules[2]` | BLUEPRINT | Value-chain partner training |
 | `work.workstreams[3].modules[3]` | BLUEPRINT | ESG readiness |
-| `work.workstreams[4].title` | BLUEPRINT | Ratings and assurance |
+| `work.workstreams[4].title` | BLUEPRINT | Ratings & Assurance |
 | `work.workstreams[4].modules[0]` | BLUEPRINT | ESG rating improvement |
 | `work.workstreams[4].modules[1]` | BLUEPRINT | Disclosure quality |
 | `work.workstreams[4].modules[2]` | BLUEPRINT | Gap assessment |
 | `work.workstreams[4].modules[3]` | BLUEPRINT | Assurance coordination |
-| `how.title` | EDITED <br><sub>Blueprint four-step loop applied to ESG.</sub> | How we work |
-| `how.intro` | EDITED | The same loop we use for finance, applied to sustainability. |
-| `how.steps[0].title` | EDITED | Assess |
-| `how.steps[0].text` | EDITED | Materiality, stakeholder expectations, current disclosures and data gaps. |
-| `how.steps[1].title` | EDITED | Design |
-| `how.steps[1].text` | EDITED | Framework, KPIs, governance, data-point mapping and ownership. |
-| `how.steps[2].title` | EDITED | Implement |
-| `how.steps[2].text` | EDITED | Data collection, validation, dashboards and the first reporting cycle. |
-| `how.steps[3].title` | EDITED | Improve |
-| `how.steps[3].text` | EDITED | Ratings, disclosure quality and assurance readiness, cycle after cycle. |
-| `deliverables.title` | EDITED <br><sub>Outputs of the listed modules.</sub> | What you receive |
-| `deliverables.items[0].title` | EDITED | ESG strategy and framework |
-| `deliverables.items[0].text` | EDITED | Materiality, KPIs, risks and opportunities, governance. |
-| `deliverables.items[1].title` | EDITED | GHG inventory |
-| `deliverables.items[1].text` | EDITED | Emissions baseline with documented sources and methods. |
-| `deliverables.items[2].title` | EDITED | BRSR or GRI report |
-| `deliverables.items[2].text` | EDITED | Mapped data points, validated figures, complete disclosure. |
-| `deliverables.items[3].title` | EDITED | ESG data system |
-| `deliverables.items[3].text` | EDITED | Standardised sources, automated collection and dashboards. |
-| `deliverables.items[4].title` | EDITED | Training and SOPs |
-| `deliverables.items[4].text` | EDITED | For internal teams and value-chain partners. |
-| `deliverables.items[5].title` | EDITED | Rating and assurance readiness |
-| `deliverables.items[5].text` | EDITED | Gap assessment, remediation plan and assurance coordination. |
-| `who.title` | EDITED | Who it is for |
-| `who.items[0]` | EDITED | Companies required to file BRSR or report under GRI. |
-| `who.items[1]` | EDITED | Suppliers to large customers who now ask for sustainability data. |
-| `who.items[2]` | EDITED | Businesses seeking better ESG ratings, green financing or investor confidence. |
+| `how.title` | BLUEPRINT <br><sub>Deliberately empty (deck-only ESG content). Not rendered.</sub> |  |
+| `how.intro` | BLUEPRINT |  |
+| `how.steps` | BLUEPRINT | (empty — slot only) |
+| `deliverables.title` | BLUEPRINT |  |
+| `deliverables.items` | BLUEPRINT | (empty — slot only) |
+| `who.title` | BLUEPRINT |  |
+| `who.items` | BLUEPRINT | (empty — slot only) |
 | `proof.title` | NEEDS-INPUT | Proof |
 | `proof.items` | NEEDS-INPUT | (empty — slot only) |
-| `cta.title` | EDITED | Discuss ESG readiness |
-| `cta.text` | EDITED | Tell us what has been asked of you and by whom. We will map the gap between what you have and what you need to report. |
-| `cta.primary` | EDITED | Discuss ESG readiness |
+| `cta.title` | BLUEPRINT <br><sub>Slide 9 positioning + slide 13 enquiry wording.</sub> | Move from ESG disclosure to ESG management |
+| `cta.text` | BLUEPRINT | Tell us what you are trying to improve. We will help identify where Vynzi can add value. |
+| `cta.primary` | BLUEPRINT | Request a discussion |
 
 ## Industries (/industries)
 
@@ -402,7 +380,7 @@ Legend: **OLD-SITE** vynzicfo.com copy (verbatim or trimmed) · **BLUEPRINT** fo
 |---|---|---|
 | `hero.eyebrow` | OLD-SITE | Industries |
 | `hero.title` | EDITED <br><sub>US register: what + for whom.</sub> | Finance, technology and ESG support for seven sectors |
-| `hero.text` | OLD-SITE <br><sub>Old industries intro and closing line, combined.</sub> | Whether you are in software, retail, construction, healthcare, manufacturing, financial services or hospitality, our team brings experience of the leading practices and solutions in your industry. Vynzi CFO provides a specialised and comprehensive range of virtual CFO, strategic consulting, accounting and technology integration services across all of them. |
+| `hero.text` | OLD-SITE <br><sub>Old industries intro and closing line, combined.</sub> | Whether you are in software, retail, construction, healthcare, manufacturing, financial services or hospitality, our team brings experience of the leading practices and solutions in your industry. Vynzi provides a specialised and comprehensive range of virtual CFO, strategic consulting, accounting and technology integration services across all of them. |
 | `sectors[0].name` | OLD-SITE <br><sub>Context, "we provide" line and every service paragraph are the old industries.html copy in full, with grammar corrected. Hospitality technology paragraph: the old site repeated the financial-institutions text under hospitality; "financial institutions" changed to "hospitality businesses" for sense. `practices` links are derived from the services each sector lists.</sub> | Technology |
 | `sectors[0].context` | OLD-SITE | Technology changes at a rapid pace, and there is an undoubted need for a robust financial system to adopt those changes and drive growth. We have expert staff to help you navigate the changes. |
 | `sectors[0].provide` | OLD-SITE | Financial planning, mergers and acquisitions support, and a full finance and accounting service. |
@@ -500,7 +478,7 @@ Legend: **OLD-SITE** vynzicfo.com copy (verbatim or trimmed) · **BLUEPRINT** fo
 | `sectors[6].practices[1]` | OLD-SITE | accounting-finance-operations |
 | `sectors[6].practices[2]` | OLD-SITE | technology-automation |
 | `sectors[7].name` | OLD-SITE | Other businesses |
-| `sectors[7].context` | OLD-SITE | Vynzi CFO provides a specialised and comprehensive range of virtual CFO, strategic consulting, accounting and technology integration services to a wide range of industries. If your sector is not listed, talk to us about what you need. |
+| `sectors[7].context` | OLD-SITE | Vynzi provides a specialised and comprehensive range of virtual CFO, strategic consulting, accounting and technology integration services to a wide range of industries. If your sector is not listed, talk to us about what you need. |
 | `sectors[7].provide` | OLD-SITE | The same four practices, scoped to your business. |
 | `sectors[7].services` | OLD-SITE | (empty — slot only) |
 | `sectors[7].practices[0]` | OLD-SITE | virtual-cfo |
@@ -512,11 +490,11 @@ Legend: **OLD-SITE** vynzicfo.com copy (verbatim or trimmed) · **BLUEPRINT** fo
 
 | Block | Source | Text |
 |---|---|---|
-| `hero.eyebrow` | BLUEPRINT | About VynziCFO |
+| `hero.eyebrow` | BLUEPRINT | About Vynzi |
 | `hero.title` | BLUEPRINT <br><sub>Slide 11 "The story".</sub> | A finance partner designed around the way modern businesses operate |
-| `hero.text` | EDITED <br><sub>From the slide 11 story line.</sub> | Finance, data, technology and sustainability always overlap. We built VynziCFO so that one team can cover it all. |
+| `hero.text` | EDITED <br><sub>From the slide 11 story line.</sub> | Finance, data, technology and sustainability always overlap. We built Vynzi so that one team can cover it all. |
 | `story.title` | BLUEPRINT <br><sub>Slide 3 sitemap: "Who we are".</sub> | Who we are |
-| `story.paragraphs[0]` | OLD-SITE <br><sub>Old home page "About Us" section, trimmed from six paragraphs to three; service list preserved as written there (including taxation and forensic accounting, see CONTENT-REQUESTS).</sub> | Vynzi CFO is a strategic and technology-driven consulting and accounting firm. What sets us apart is an unwavering commitment to excellence and to delivering results. |
+| `story.paragraphs[0]` | OLD-SITE <br><sub>Old home page "About Us" section, trimmed from six paragraphs to three; service list preserved as written there (including taxation and forensic accounting, see CONTENT-REQUESTS).</sub> | Vynzi is a strategic and technology-driven consulting and accounting firm. What sets us apart is an unwavering commitment to excellence and to delivering results. |
 | `story.paragraphs[1]` | OLD-SITE | We provide virtual CFO services, virtual accounting, strategic consulting, technology integration support and other financial solutions tailored to the needs of each client. From accounting and technology integration to taxation, forensic accounting and financial consulting, we offer a comprehensive suite of services designed to help you achieve your goals with confidence. |
 | `story.paragraphs[2]` | OLD-SITE | We understand that behind every balance sheet there is a story of hard work, ambition and dedication. Our commitment goes beyond the numbers: we build meaningful relationships with clients to understand their aspirations and challenges, and we become trusted advisers rather than just accountants. |
 | `approach.title` | BLUEPRINT | Our approach |
@@ -567,7 +545,7 @@ Legend: **OLD-SITE** vynzicfo.com copy (verbatim or trimmed) · **BLUEPRINT** fo
 | `emptyByType.webinar.title` | EDITED | No sessions scheduled yet |
 | `emptyByType.webinar.text` | EDITED | When the first session is announced it will be listed here. If your team would like a private walkthrough of any guide on this page, we are happy to run one. |
 | `emptyByType.webinar.cta` | EDITED | Request a session |
-| `articles[0].practice` | EDITED <br><sub>Original editorial content written for the site from general finance, systems and ESG practice. Contains no client data, no figures and no claims about VynziCFO results. Founder review requested (CONTENT-REQUESTS item 6). BRSR described factually as the SEBI-prescribed format.</sub> | accounting-finance-operations |
+| `articles[0].practice` | EDITED <br><sub>Original editorial content written for the site from general finance, systems and ESG practice. Contains no client data, no figures and no claims about Vynzi results. Founder review requested (CONTENT-REQUESTS item 6). BRSR described factually as the SEBI-prescribed format.</sub> | accounting-finance-operations |
 | `articles[0].readTime` | EDITED | 5 min |
 | `articles[0].title` | EDITED | Month-end close checklist: a reporting calendar that holds |
 | `articles[0].summary` | EDITED | A close that lands on the same working day every month comes from a fixed calendar, named owners and a short list of sign-offs. Here is the list. |
@@ -651,7 +629,7 @@ Legend: **OLD-SITE** vynzicfo.com copy (verbatim or trimmed) · **BLUEPRINT** fo
 |---|---|---|
 | `hero.eyebrow` | BLUEPRINT | Contact |
 | `hero.title` | BLUEPRINT | Start with the problem. |
-| `hero.text` | BLUEPRINT | Tell us what you are trying to improve. We will help identify where VynziCFO can add value. |
+| `hero.text` | BLUEPRINT | Tell us what you are trying to improve. We will help identify where Vynzi can add value. |
 | `form.title` | BLUEPRINT | Book a discussion |
 | `form.categories[0]` | BLUEPRINT | Virtual CFO |
 | `form.categories[1]` | BLUEPRINT | Accounting |
@@ -666,13 +644,8 @@ Legend: **OLD-SITE** vynzicfo.com copy (verbatim or trimmed) · **BLUEPRINT** fo
 | `form.fields.message` | BLUEPRINT | How can we help? |
 | `form.submit` | BLUEPRINT | Book a discussion |
 | `form.privacy` | EDITED | We use your details only to respond to this enquiry. |
-| `form.success` | EDITED <br><sub>The one-business-day reply promise is a commitment the founder must be comfortable with; see CONTENT-REQUESTS.</sub> | Thank you. We have received your message and will reply within one business day. |
+| `form.success` | EDITED | Thank you. We have received your message and will be in touch shortly. |
 | `form.error` | EDITED | Something went wrong sending the form. Please email us directly. |
-| `details.title` | BLUEPRINT | Contact details |
-| `details.expect.title` | EDITED <br><sub>Slide 13 "low-friction and consultative"; the one-business-day promise needs confirmation.</sub> | What to expect |
-| `details.expect.items[0]` | EDITED | A reply within one business day. |
-| `details.expect.items[1]` | EDITED | A short call to understand the situation before any proposal. |
-| `details.expect.items[2]` | EDITED | A confidential conversation. No obligation. |
 
 ## Careers (/careers)
 
@@ -724,7 +697,7 @@ Legend: **OLD-SITE** vynzicfo.com copy (verbatim or trimmed) · **BLUEPRINT** fo
 
 | Source | Blocks |
 |---|---|
-| EDITED | 345 |
-| BLUEPRINT | 141 |
+| EDITED | 302 |
+| BLUEPRINT | 157 |
 | OLD-SITE | 150 |
 | NEEDS-INPUT | 15 |

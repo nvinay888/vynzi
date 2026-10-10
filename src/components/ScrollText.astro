@@ -1,10 +1,19 @@
 ---
-/* Panxo signature: a long statement whose words light up from 25% to full ink as the reader scrolls through it. */
-interface Props { text: string }
-const { text } = Astro.props;
-const words = text.split(' ');
+/* Panxo signature: a long statement whose words light up as the reader scrolls through it.
+   `dark` sets it on the navy band in golden yellow (gold on navy ≈ 9:1; gold on the light page would fail contrast).
+   `titleCase` capitalises every word except short joining words ("Finance, Data, Technology and Sustainability…"). */
+interface Props { text: string; dark?: boolean; titleCase?: boolean }
+const { text, dark = false, titleCase = false } = Astro.props;
+const minor = new Set(['a', 'an', 'and', 'as', 'at', 'but', 'by', 'for', 'in', 'nor', 'of', 'on', 'or', 'the', 'to', 'via', 'with']);
+const toTitle = (s: string) => s.split(' ').map((w, i, arr) => {
+  const bare = w.toLowerCase().replace(/[^a-z]/g, '');
+  const afterBreak = i === 0 || /[:.]$/.test(arr[i - 1]);
+  if (!afterBreak && minor.has(bare)) return w.toLowerCase();
+  return w.charAt(0).toUpperCase() + w.slice(1);
+}).join(' ');
+const words = (titleCase ? toTitle(text) : text).split(' ');
 ---
-<section class="section st" data-scrolltext>
+<section class:list={['section', 'st', { 'st--dark': dark }]} data-scrolltext>
   <div class="container">
     <p class="st__text">
       {words.map((w) => <span class="st__w">{w} </span>)}
@@ -21,7 +30,6 @@ const words = text.split(' ');
       ticking = false;
       const r = root.getBoundingClientRect();
       const vh = innerHeight;
-      // 0 when the block's top reaches 80% of the viewport, 1 when its bottom reaches 45%.
       const start = vh * 0.8, end = vh * 0.45;
       const p = Math.min(1, Math.max(0, (start - r.top) / (start - end + r.height * 0.6)));
       const lit = Math.round(p * words.length);
@@ -33,8 +41,13 @@ const words = text.split(' ');
 </script>
 
 <style>
-  .st__text { max-width: 30ch; margin: 0 auto; font-family: var(--font-display); font-weight: 500; font-size: clamp(26px, 3vw, 40px); line-height: 1.25; letter-spacing: -0.01em; }
+  .st__text { max-width: 32ch; margin: 0 auto; font-family: var(--font-display); font-weight: 500; font-size: clamp(26px, 3vw, 40px); line-height: 1.25; letter-spacing: -0.01em; }
   .st__w { color: rgba(11, 31, 77, 0.2); transition: color .35s ease; }
   .st__w.on { color: var(--ink); }
-  @media (min-width: 900px) { .st__text { max-width: 32ch; } }
+  .st--dark { position: relative; overflow: hidden; background: var(--ink-fill); }
+  .st--dark::before { content: ''; position: absolute; inset: -40% -10% auto auto; width: 60%; height: 140%; background: radial-gradient(closest-side, rgba(47,111,237,.35), transparent 70%); pointer-events: none; }
+  .st--dark .container { position: relative; }
+  .st--dark .st__w { color: rgba(240, 192, 48, 0.24); }
+  .st--dark .st__w.on { color: var(--gold); }
+  @media (min-width: 900px) { .st__text { max-width: 34ch; } }
 </style>

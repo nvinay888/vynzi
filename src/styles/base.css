@@ -94,3 +94,11 @@ html.js [data-reveal].is-in { opacity: 1; transform: none; }
   html.js [data-reveal] { opacity: 1; transform: none; transition: none; }
   *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
 }
+
+/* Mobile swipe row: card rows that would stack into a long scroll become one horizontal, snap-scrolling row on phones,
+   with the next card peeking in so the swipe is obvious. Desktop layout is untouched. */
+@media (max-width: 760px) {
+  .m-swipe { display: grid !important; grid-auto-flow: column; grid-template-columns: none !important; grid-auto-columns: 84%; gap: 12px !important; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-left: 2px; scrollbar-width: none; padding: 2px 2px 8px; margin: -2px -2px -8px; -webkit-overflow-scrolling: touch; }
+  .m-swipe::-webkit-scrollbar { display: none; }
+  .m-swipe > * { scroll-snap-align: start; min-width: 0; }
+}

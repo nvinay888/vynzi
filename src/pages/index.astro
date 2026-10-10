@@ -9,7 +9,7 @@ import ScrollText from '../components/ScrollText.astro';
 import SectionHeader from '../components/SectionHeader.astro';
 import SectorGrid from '../components/SectorGrid.astro';
 import PracticeCard from '../components/PracticeCard.astro';
-import LedgerList from '../components/LedgerList.astro';
+import SideTabs from '../components/SideTabs.astro';
 import Timeline from '../components/Timeline.astro';
 import CtaBand from '../components/CtaBand.astro';
 import { Icon } from 'astro-icon/components';
@@ -17,9 +17,11 @@ import { home } from '../content/home';
 import { about } from '../content/about';
 import { insights } from '../content/insights';
 import { practices, site } from '../data/site';
+import { overview } from '../content/services';
 
 const showProof = home.proof.items.length > 0;
-const problemTag = ['Virtual CFO', 'Finance ops', 'Finance ops', 'Technology', 'ESG'];
+const probIcons: Record<string, string> = { Growth: 'ph:trend-up-duotone', Visibility: 'ph:eye-duotone', Control: 'ph:shield-check-duotone', Automation: 'ph:lightning-duotone', 'ESG readiness': 'ph:leaf-duotone' };
+const problemTabs = overview.selector.problems.map((p) => ({ label: p.label, sub: p.practices.map((s) => practices.find((x) => x.slug === s)!.short).join(' · '), icon: probIcons[p.label] }));
 const latest = insights.articles.slice(0, 3);
 const typeLabel = (k: string) => insights.types.find((t) => t.key === k)?.label ?? k;
 ---
@@ -33,13 +35,13 @@ const typeLabel = (k: string) => insights.types.find((t) => t.key === k)?.label 
   <WhyGrid heading="One accountable team for finance, technology and sustainability." items={about.why.items} />
 
   <!-- Statement -->
-  <ScrollText text="Finance, data, technology and sustainability always overlap. We built one team to cover it all: senior finance leadership when decisions need it, dependable operations every month, systems that connect the numbers, and sustainability reporting your stakeholders can trust." />
+  <ScrollText dark titleCase text="Finance, data, technology and sustainability always overlap. We built one team to cover it all: senior finance leadership when decisions need it, dependable operations every month, systems that connect the numbers, and sustainability reporting your stakeholders can trust." />
 
   <!-- 3. Four practices -->
   <section class="section">
     <div class="container">
       <SectionHeader eyebrow={home.practices.eyebrow} title="One partner for finance," titleDim="technology and sustainability" text={home.practices.text} action="See all services" actionHref="/services" />
-      <div class="grid grid--4">
+      <div class="grid grid--4 m-swipe">
         {practices.map((p, i) => <PracticeCard href={`/services/${p.slug}`} icon={p.icon} title={p.nav} text={p.oneLiner} verbs={p.verbs} accent={p.accent} variant="elevated" index={i} />)}
       </div>
     </div>
@@ -48,11 +50,23 @@ const typeLabel = (k: string) => insights.types.find((t) => t.key === k)?.label 
   <!-- Sectors -->
   <SectorGrid />
 
-  <!-- 4. Problems -->
+  <!-- 4. Problems: one explorer -->
   <section class="section band">
     <div class="container">
-      <SectionHeader eyebrow="Situations we help with" title="Support for the situations" titleDim="growing businesses face" text="Most engagements start with one of these five. Each links to the practices that resolve it." action="Find your situation" actionHref="/services#selector" />
-      <LedgerList large items={home.problems.items.map((p, i) => ({ title: p.label, text: p.text, href: '/services#selector', tag: problemTag[i] }))} />
+      <SectionHeader eyebrow="Situations we help with" title="Support for the situations" titleDim="growing businesses face" text="Most engagements start with one of these five. Pick yours to see which practices resolve it." action="All services" actionHref="/services" />
+      <SideTabs tabs={problemTabs} id="home-problems" label="Situations">
+        {overview.selector.problems.map((p) => (
+          <div data-panel data-slug={`problem-${p.key}`}>
+            <div class="pb"><span class="ring ring--blue"><Icon name={probIcons[p.label]} /></span><h3>{p.label}</h3></div>
+            <p class="pb__lead">{p.text}</p>
+            <div class="pb__res">
+              {p.practices.map((slug) => { const pr = practices.find((x) => x.slug === slug)!; return (
+                <a href={`/services/${slug}`} class="pb__card"><span class:list={['ring', 'ring--sm', pr.accent === 'teal' ? 'ring--teal' : 'ring--blue']}><Icon name={pr.icon} /></span><span><strong>{pr.nav}</strong><small>{pr.oneLiner}</small></span><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+              ); })}
+            </div>
+          </div>
+        ))}
+      </SideTabs>
     </div>
   </section>
 
@@ -72,7 +86,7 @@ const typeLabel = (k: string) => insights.types.find((t) => t.key === k)?.label 
   <section class="section">
     <div class="container">
       <SectionHeader eyebrow={home.insights.eyebrow} title="Practical thinking on finance," titleDim="automation and ESG" text="Guides and checklists you can run this month, and short articles on CFO work, automation and ESG." action="Browse insights" actionHref="/insights" />
-      <div class="posts">
+      <div class="posts m-swipe">
         {latest.map((a, i) => (
           <a href={`/insights/${a.slug}`} class="post" data-reveal style={`--i:${i}`}>
             <span class="post__type"><Icon name={insights.types.find((t) => t.key === a.type)?.icon ?? 'ph:file-text-duotone'} />{typeLabel(a.type)}</span>
@@ -90,6 +104,16 @@ const typeLabel = (k: string) => insights.types.find((t) => t.key === k)?.label 
 </BaseLayout>
 
 <style>
+  .pb { display: flex; align-items: center; gap: 14px; }
+  .pb h3 { font-size: clamp(24px, 2.4vw, 30px); }
+  .pb__lead { margin-top: 16px; font-size: 18px; line-height: 1.55; font-weight: 500; color: var(--ink-72); max-width: 52ch; }
+  .pb__res { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 24px; }
+  .pb__card { display: grid; grid-template-columns: auto 1fr 16px; gap: 14px; align-items: center; padding: 18px; border-radius: 14px; background: var(--surface); box-shadow: rgba(11,31,77,.08) 0 0 0 1px; color: inherit; transition: transform var(--dur) var(--ease-out), box-shadow var(--dur); }
+  .pb__card:hover { transform: translateY(-2px); box-shadow: var(--shadow-float); }
+  .pb__card strong { display: block; font-weight: 600; color: var(--ink); }
+  .pb__card small { display: block; margin-top: 2px; font-size: 13px; color: var(--slate); }
+  .pb__card svg { width: 16px; height: 16px; color: var(--stone); }
+  @media (max-width: 700px) { .pb__res { grid-template-columns: 1fr; } }
   .card-lite { padding: 24px; border-radius: var(--r-card); background: var(--surface-base); }
   .posts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
   .post { display: flex; flex-direction: column; gap: 12px; padding: 24px; border-radius: var(--r-panel); background: var(--surface-elevated); box-shadow: var(--shadow-subtle-2); color: inherit; transition: transform var(--dur) var(--ease-out), box-shadow var(--dur); }

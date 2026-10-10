@@ -1,108 +1,61 @@
 ---
-/* Industries: centered hero, sticky side index, one substantial block per sector (context, what we provide, full service paragraphs, related practices). */
+/* Industries, v5 — the whole page is one explorer: hero headline, then a side-tab panel per sector holding the full
+   old-site copy (context, what we provide, every service paragraph, the practices that deliver it). No long scroll. */
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHero from '../components/PageHero.astro';
+import SideTabs from '../components/SideTabs.astro';
 import Badge from '../components/Badge.astro';
 import CtaBand from '../components/CtaBand.astro';
-import SectorExplorer from '../components/art/SectorExplorer.astro';
 import { Icon } from 'astro-icon/components';
 import { industries } from '../content/industries';
 import { sectors as sectorMeta, practices as practiceMeta } from '../data/site';
 const iconFor = (slug: string) => sectorMeta.find((s) => s.slug === slug)?.icon ?? 'ph:buildings-duotone';
 const practice = (slug: string) => practiceMeta.find((p) => p.slug === slug);
+const tabs = industries.sectors.map((s) => ({ label: s.name, sub: s.services.length ? `${s.services.length} service areas` : 'Talk to us', icon: iconFor(s.slug) }));
 ---
 <BaseLayout title="Industries" description={industries.hero.text}>
-  <PageHero eyebrow={industries.hero.eyebrow} title="Finance, technology and ESG support" titleDim="for seven sectors" text={industries.hero.text.split('. ').slice(0, 1).join('. ') + '.'} primary="Book a consultation" secondary="Browse sectors" secondaryHref="#technology">
-    <div slot="below"><SectorExplorer /></div>
-  </PageHero>
-
-  <section class="section">
-    <div class="container doc">
-      <nav class="doc__nav" aria-label="Sectors">
-        <p class="eyebrow">Sectors</p>
-        <ul>{industries.sectors.map((s, i) => <li><a href={`#${s.slug}`} class="doc__link" data-target={s.slug}>{s.name}</a></li>)}</ul>
-      </nav>
-
-      <div class="doc__body">
-        {industries.sectors.map((s, i) => (
-          <article class="sector" id={s.slug} data-reveal>
-            <header class="sector__head">
-              <span class="ring ring--blue"><Icon name={iconFor(s.slug)} /></span>
-              <h2>{s.name}</h2>
-            </header>
-
-            <div class="sector__intro">
-              <p class="sector__context">{s.context}</p>
-              <div class="sector__provide">
-                <p class="eyebrow eyebrow--blue">What we provide</p>
-                <p>{s.provide}</p>
-              </div>
+  <PageHero eyebrow={industries.hero.eyebrow} title="Finance, technology and ESG support" titleDim="for seven sectors" text={industries.hero.text.split('. ').slice(0, 1).join('. ') + '.'} primary="Book a consultation" secondary="Browse sectors" secondaryHref="#sectors">
+    <div slot="below">
+      <SideTabs tabs={tabs} id="sectors" label="Sectors">
+        {industries.sectors.map((s) => (
+          <div data-panel data-slug={s.slug}>
+            <div class="sh"><span class="ring ring--blue"><Icon name={iconFor(s.slug)} /></span><h2>{s.name}</h2></div>
+            <div class="intro">
+              <p class="ctx">{s.context}</p>
+              <div class="provide"><p class="eyebrow">What we provide</p><p>{s.provide}</p></div>
             </div>
-
             {s.services.length > 0 && (
-              <div class="services">
-                {s.services.map((f, k) => (
-                  <div class="svc" style={`--i:${k}`}>
-                    <span class="svc__num">{String(k + 1).padStart(2, '0')}</span>
-                    <div>
-                      <h3 class="svc__title">{f.title}</h3>
-                      <p class="svc__text">{f.text}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <ul class="svc">
+                {s.services.map((f) => <li><strong>{f.title}</strong><p>{f.text}</p></li>)}
+              </ul>
             )}
-
-            <footer class="sector__foot">
-              <div class="sector__practices">
-                <span class="small muted">Delivered by</span>
-                {s.practices.map((slug) => { const p = practice(slug); return p ? <a href={`/services/${p.slug}`} class="plink"><Icon name={p.icon} /><Badge tone={p.accent}>{p.nav}</Badge></a> : null; })}
-              </div>
+            <div class="foot">
+              <div class="pr"><span class="small muted">Delivered by</span>{s.practices.map((slug) => { const p = practice(slug); return p ? <a href={`/services/${p.slug}`} class="plink"><Badge tone={p.accent}>{p.nav}</Badge></a> : null; })}</div>
               <a href="/contact" class="arrow arrow--blue">{s.slug === 'other' ? 'Discuss your business' : `Discuss your ${s.name.toLowerCase()} business`}<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
-            </footer>
-          </article>
+            </div>
+          </div>
         ))}
-      </div>
+      </SideTabs>
     </div>
-  </section>
+  </PageHero>
 
   <CtaBand />
 </BaseLayout>
 
-<script>
-  const links = [...document.querySelectorAll<HTMLAnchorElement>('.doc__link')];
-  const secs = [...document.querySelectorAll<HTMLElement>('.sector')];
-  if ('IntersectionObserver' in window && secs.length) {
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((e) => { if (e.isIntersecting) links.forEach((l) => l.classList.toggle('is-active', l.dataset.target === e.target.id)); });
-    }, { rootMargin: '-25% 0px -65% 0px' });
-    secs.forEach((s) => io.observe(s));
-  }
-</script>
-
 <style>
-  .doc { display: grid; grid-template-columns: 220px 1fr; gap: var(--s-16); align-items: start; }
-  .doc__nav { position: sticky; top: 100px; }
-  .doc__nav ul { margin-top: 12px; display: flex; flex-direction: column; border-left: 1px solid var(--hairline); }
-  .doc__link { display: flex; gap: 10px; padding: 8px 14px; margin-left: -1px; border-left: 2px solid transparent; font-size: 14px; color: var(--slate); transition: all var(--dur-fast); }
-  .doc__link:hover, .doc__link.is-active { color: var(--ink); border-left-color: var(--blue); }
-  .sector { padding: 56px 0; border-top: 1px solid var(--hairline); scroll-margin-top: 100px; }
-  .sector:first-child { padding-top: 0; border-top: 0; }
-  .sector__head { display: flex; gap: 16px; align-items: center; }
-  .sector__head h2 { margin-top: 2px; }
-  .sector__intro { display: grid; grid-template-columns: 1.4fr 1fr; gap: 28px; margin-top: 22px; align-items: start; }
-  .sector__context { font-size: 17px; line-height: 1.65; color: var(--graphite); }
-  .sector__provide { padding: 18px 20px; border-radius: 12px; background: var(--surface-base); }
-  .sector__provide p + p { margin-top: 8px; font-size: 15px; line-height: 1.55; color: var(--ink); }
-  .services { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 28px; }
-  .svc { display: grid; grid-template-columns: 40px 1fr; gap: 12px; padding: 22px 24px; border-radius: var(--r-panel); background: var(--surface-elevated); box-shadow: var(--shadow-subtle-2); }
-  .svc__num { font-family: var(--font-display); font-weight: 500; font-size: 18px; letter-spacing: -0.02em; color: var(--blue); padding-top: 2px; }
-  .svc__title { font-size: 19px; }
-  .svc__text { margin-top: 8px; font-size: 14.5px; line-height: 1.6; color: var(--slate); }
-  .sector__foot { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px; margin-top: 26px; padding-top: 20px; border-top: 1px dashed var(--ash); }
-  .sector__practices { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
-  .plink { display: inline-flex; align-items: center; gap: 6px; }
-  .plink :global(svg) { width: 18px; height: 18px; color: var(--blue); }
+  .sh { display: flex; align-items: center; gap: 14px; }
+  .sh h2 { font-size: clamp(24px, 2.4vw, 32px); }
+  .intro { display: grid; grid-template-columns: 1.4fr 1fr; gap: 20px; margin-top: 20px; align-items: start; }
+  .ctx { font-size: 16px; line-height: 1.65; color: var(--graphite); }
+  .provide { padding: 16px 18px; border-radius: 12px; background: var(--surface-base); }
+  .provide p + p { margin-top: 6px; font-size: 14.5px; font-weight: 500; line-height: 1.5; color: var(--ink); }
+  .svc { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 22px; }
+  .svc li { padding: 18px 20px; border-radius: 14px; background: var(--surface); box-shadow: rgba(11,31,77,.08) 0 0 0 1px; }
+  .svc strong { display: block; font-weight: 600; font-size: 15.5px; color: var(--ink); }
+  .svc p { margin-top: 6px; font-size: 14px; line-height: 1.6; color: var(--slate); }
+  .foot { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 14px; margin-top: 22px; }
+  .pr { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
   .plink:hover :global(.badge) { background: var(--ink-fill); color: #fff; }
-  @media (max-width: 900px) { .doc { grid-template-columns: 1fr; gap: 24px; } .doc__nav { position: static; } .doc__nav ul { flex-direction: row; flex-wrap: wrap; border: 0; gap: 4px; } .doc__link { border: 1px solid var(--hairline); border-radius: 999px; padding: 6px 12px; } .doc__link.is-active { background: var(--ink-fill); color: #fff; border-color: var(--ink-fill); } .sector__intro { grid-template-columns: 1fr; } .services { grid-template-columns: 1fr; } }
+  .foot .arrow { font-size: 14px; }
+  @media (max-width: 760px) { .intro, .svc { grid-template-columns: 1fr; } }
 </style>

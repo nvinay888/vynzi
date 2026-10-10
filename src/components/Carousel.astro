@@ -1,0 +1,53 @@
+---
+/* Horizontal card carousel: one row, scroll-snap, arrow buttons on desktop, swipe on touch.
+   Direct children of the default slot are the slides. `per` = slides visible on desktop. */
+interface Props { per?: 2 | 3 | 4; label?: string; id?: string }
+const { per = 3, label = 'Carousel', id } = Astro.props;
+---
+<div class="car" data-carousel style={`--per:${per}`} id={id}>
+  <div class="car__track" role="region" aria-label={label} tabindex="0"><slot /></div>
+  <div class="car__nav">
+    <button type="button" class="car__btn" data-dir="-1" aria-label="Previous"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg></button>
+    <span class="car__dots" aria-hidden="true"></span>
+    <button type="button" class="car__btn" data-dir="1" aria-label="Next"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></button>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-carousel]').forEach((root) => {
+    const track = root.querySelector<HTMLElement>('.car__track')!;
+    const slides = [...track.children] as HTMLElement[];
+    const dots = root.querySelector<HTMLElement>('.car__dots')!;
+    const [prev, next] = [...root.querySelectorAll<HTMLButtonElement>('.car__btn')];
+    slides.forEach(() => { const d = document.createElement('i'); dots.appendChild(d); });
+    const step = () => (slides[1] ? slides[1].offsetLeft - slides[0].offsetLeft : track.clientWidth);
+    const update = () => {
+      const max = track.scrollWidth - track.clientWidth - 2;
+      prev.disabled = track.scrollLeft <= 2; next.disabled = track.scrollLeft >= max;
+      const idx = Math.round(track.scrollLeft / (step() || 1));
+      [...dots.children].forEach((d, i) => d.classList.toggle('on', i === idx));
+      root.classList.toggle('is-static', max <= 2);
+    };
+    root.querySelectorAll<HTMLButtonElement>('.car__btn').forEach((b) => b.addEventListener('click', () => track.scrollBy({ left: Number(b.dataset.dir) * step(), behavior: 'smooth' })));
+    track.addEventListener('scroll', () => requestAnimationFrame(update), { passive: true });
+    addEventListener('resize', update); update();
+  });
+</script>
+
+<style>
+  .car { --gap: 14px; }
+  .car__track { display: grid; grid-auto-flow: column; grid-auto-columns: calc((100% - (var(--per) - 1) * var(--gap)) / var(--per)); gap: var(--gap); overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding: 4px 2px 8px; margin: -4px -2px -8px; outline: none; }
+  .car__track::-webkit-scrollbar { display: none; }
+  .car__track > :global(*) { scroll-snap-align: start; min-width: 0; }
+  .car__nav { display: flex; align-items: center; justify-content: flex-end; gap: 12px; margin-top: 18px; }
+  .car.is-static .car__nav { display: none; }
+  .car__btn { display: inline-flex; width: 40px; height: 40px; align-items: center; justify-content: center; border-radius: 999px; background: #fff; color: var(--ink); box-shadow: rgba(11,31,77,.12) 0 0 0 1px; transition: box-shadow var(--dur-fast), opacity var(--dur-fast); }
+  .car__btn:hover:not(:disabled) { box-shadow: rgba(11,31,77,.3) 0 0 0 1px, rgba(11,31,77,.08) 0 2px 6px; }
+  .car__btn:disabled { opacity: .35; cursor: default; }
+  .car__btn svg { width: 16px; height: 16px; }
+  .car__dots { display: inline-flex; gap: 6px; margin-right: auto; }
+  .car__dots :global(i) { width: 6px; height: 6px; border-radius: 999px; background: var(--fossil); transition: width var(--dur-fast), background var(--dur-fast); }
+  .car__dots :global(i.on) { width: 18px; background: var(--ink); }
+  @media (max-width: 960px) { .car__track { grid-auto-columns: calc((100% - var(--gap)) / 2); } }
+  @media (max-width: 620px) { .car__track { grid-auto-columns: 84%; } }
+</style>

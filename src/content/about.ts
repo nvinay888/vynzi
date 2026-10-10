@@ -2,14 +2,14 @@ import type { SourceMap } from './types';
 
 export const about = {
   hero: {
-    eyebrow: 'About VynziCFO',
+    eyebrow: 'About Vynzi',
     title: 'A finance partner designed around the way modern businesses operate',
-    text: 'Finance, data, technology and sustainability always overlap. We built VynziCFO so that one team can cover it all.',
+    text: 'Finance, data, technology and sustainability always overlap. We built Vynzi so that one team can cover it all.',
   },
   story: {
     title: 'Who we are',
     paragraphs: [
-      'Vynzi CFO is a strategic and technology-driven consulting and accounting firm. What sets us apart is an unwavering commitment to excellence and to delivering results.',
+      'Vynzi is a strategic and technology-driven consulting and accounting firm. What sets us apart is an unwavering commitment to excellence and to delivering results.',
       'We provide virtual CFO services, virtual accounting, strategic consulting, technology integration support and other financial solutions tailored to the needs of each client. From accounting and technology integration to taxation, forensic accounting and financial consulting, we offer a comprehensive suite of services designed to help you achieve your goals with confidence.',
       'We understand that behind every balance sheet there is a story of hard work, ambition and dedication. Our commitment goes beyond the numbers: we build meaningful relationships with clients to understand their aspirations and challenges, and we become trusted advisers rather than just accountants.',
     ],
