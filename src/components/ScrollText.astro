@@ -1,22 +1,26 @@
 ---
 /* Panxo signature: a long statement whose words light up as the reader scrolls through it.
-   `dark` sets it on the navy band in golden yellow (gold on navy ≈ 9:1; gold on the light page would fail contrast).
-   `titleCase` capitalises every word except short joining words ("Finance, Data, Technology and Sustainability…"). */
-interface Props { text: string; dark?: boolean; titleCase?: boolean }
-const { text, dark = false, titleCase = false } = Astro.props;
+   `dark` sets it on the navy band. `accent` names one phrase inside `text` that is set in Title Case and golden
+   yellow ("Finance, Data, Technology and Sustainability"); the rest of the sentence stays as written.
+   Gold sits on navy because gold on the light page fails contrast (≈1.6:1 vs ≈9:1). */
+interface Props { text: string; dark?: boolean; accent?: string }
+const { text, dark = false, accent } = Astro.props;
 const minor = new Set(['a', 'an', 'and', 'as', 'at', 'but', 'by', 'for', 'in', 'nor', 'of', 'on', 'or', 'the', 'to', 'via', 'with']);
-const toTitle = (s: string) => s.split(' ').map((w, i, arr) => {
+const toTitle = (s: string) => s.split(' ').map((w, i) => {
   const bare = w.toLowerCase().replace(/[^a-z]/g, '');
-  const afterBreak = i === 0 || /[:.]$/.test(arr[i - 1]);
-  if (!afterBreak && minor.has(bare)) return w.toLowerCase();
+  if (i > 0 && minor.has(bare)) return w.toLowerCase();
   return w.charAt(0).toUpperCase() + w.slice(1);
 }).join(' ');
-const words = (titleCase ? toTitle(text) : text).split(' ');
+const at = accent ? text.toLowerCase().indexOf(accent.toLowerCase()) : -1;
+const parts = at >= 0
+  ? [{ s: text.slice(0, at), a: false }, { s: toTitle(text.slice(at, at + accent!.length)), a: true }, { s: text.slice(at + accent!.length), a: false }]
+  : [{ s: text, a: false }];
+const words = parts.flatMap((p) => p.s.split(' ').filter(Boolean).map((w) => ({ w, a: p.a })));
 ---
 <section class:list={['section', 'st', { 'st--dark': dark }]} data-scrolltext>
   <div class="container">
     <p class="st__text">
-      {words.map((w) => <span class="st__w">{w} </span>)}
+      {words.map(({ w, a }) => <span class:list={['st__w', { 'st__w--accent': a }]}>{w} </span>)}
     </p>
   </div>
 </section>
@@ -47,7 +51,10 @@ const words = (titleCase ? toTitle(text) : text).split(' ');
   .st--dark { position: relative; overflow: hidden; background: var(--ink-fill); }
   .st--dark::before { content: ''; position: absolute; inset: -40% -10% auto auto; width: 60%; height: 140%; background: radial-gradient(closest-side, rgba(47,111,237,.35), transparent 70%); pointer-events: none; }
   .st--dark .container { position: relative; }
-  .st--dark .st__w { color: rgba(240, 192, 48, 0.24); }
-  .st--dark .st__w.on { color: var(--gold); }
+  .st__w--accent.on { color: var(--gold-deep); }
+  .st--dark .st__w { color: rgba(255, 255, 255, 0.2); }
+  .st--dark .st__w.on { color: #fff; }
+  .st--dark .st__w--accent { color: rgba(240, 192, 48, 0.28); }
+  .st--dark .st__w--accent.on { color: var(--gold); }
   @media (min-width: 900px) { .st__text { max-width: 34ch; } }
 </style>
