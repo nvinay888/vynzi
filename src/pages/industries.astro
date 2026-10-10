@@ -14,7 +14,7 @@ const practice = (slug: string) => practiceMeta.find((p) => p.slug === slug);
 const tabs = industries.sectors.map((s) => ({ label: s.name, sub: s.services.length ? `${s.services.length} service areas` : 'Talk to us', icon: iconFor(s.slug) }));
 ---
 <BaseLayout title="Industries" description={industries.hero.text}>
-  <PageHero eyebrow={industries.hero.eyebrow} title="Finance, technology and ESG support" titleDim="for seven sectors" text={industries.hero.text.split('. ').slice(0, 1).join('. ') + '.'} primary="Book a consultation" secondary="Browse sectors" secondaryHref="#sectors">
+  <PageHero eyebrow={industries.hero.eyebrow} title="Finance, technology and ESG support" titleDim="for seven sectors" text={industries.hero.text.split('. ').slice(0, 1).join('. ') + '.'}>
     <div slot="below">
       <SideTabs tabs={tabs} id="sectors" label="Sectors">
         {industries.sectors.map((s) => (

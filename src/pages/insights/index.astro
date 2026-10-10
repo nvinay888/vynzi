@@ -18,7 +18,7 @@ const more = insights.articles.filter((a) => a.slug !== featured.slug).slice(0, 
 const typeTabs = insights.types.map((t) => { const n = byType(t.key).length; return { label: t.label, sub: n ? `${n} ${n === 1 ? 'piece' : 'pieces'}` : 'Coming soon', icon: t.icon }; });
 ---
 <BaseLayout title="Insights" description={insights.hero.text}>
-  <PageHero eyebrow={insights.hero.eyebrow} title="Practical thinking on finance," titleDim="automation and ESG" text={insights.hero.text} primary="Read the latest guide" primaryHref={`/insights/${featured.slug}`} secondary="Browse by type" secondaryHref="#types">
+  <PageHero eyebrow={insights.hero.eyebrow} title="Practical thinking on finance," titleDim="automation and ESG" text={insights.hero.text}>
     <div slot="below" class="feat">
       <a href={`/insights/${featured.slug}`} class="feat__main">
         <span class="feat__label"><Icon name="ph:star-four-duotone" />Featured guide</span>

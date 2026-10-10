@@ -16,7 +16,7 @@ const probIcons: Record<string, string> = { Growth: 'ph:trend-up-duotone', Visib
 const tabs = overview.selector.problems.map((p) => ({ label: p.label, sub: p.practices.map((s) => byId(s).short).join(' · '), icon: probIcons[p.label] }));
 ---
 <BaseLayout title="Services" description={overview.hero.text}>
-  <PageHero eyebrow={overview.hero.eyebrow} title="Finance, technology and ESG services" titleDim="for growing companies" text={overview.hero.text} primary="Book a consultation" secondary="Find your situation" secondaryHref="#selector">
+  <PageHero eyebrow={overview.hero.eyebrow} title="Finance, technology and ESG services" titleDim="for growing companies" text={overview.hero.text}>
     <div slot="below" class="pgrid m-swipe">
       {meta.map((m, i) => { const p = byId(m.slug); return <PracticeCard href={`/services/${p.slug}`} icon={p.icon} title={p.name} text={m.oneLiner} verbs={p.eyebrow} accent={p.accent} variant="elevated" index={i} />; })}
     </div>
